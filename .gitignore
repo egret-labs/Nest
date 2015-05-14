@@ -2,3 +2,4 @@
 *.zip
 libs/*
 bin-debug/*
+release/

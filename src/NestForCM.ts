@@ -27,61 +27,237 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+/*
+ * cm old solution
+ */
+
+
 var VERSION = 0;
 egret.ExternalInterface.addCallback("get_game_sdk_version", function (ver) {
     VERSION = ver;
 });
 egret.ExternalInterface.call("get_game_sdk_version", "");
 
-module nest.cm.user {
-    export function checkLogin(loginData:nest.user.LoginInfo, callback) {
 
-        var client_id = "141717597";
-        var client_secret = "5BDF8CEE843DFF7B90B3B9CE558D52D3";
-        var redirect_uri = "emdrauthcallback://emdr";
+var appId = 88;
+var spId = 10044;
+var egretInfo:nest.cm.EgretData;
 
-        var postData = "client_id=" + client_id + "&client_secret=" + client_secret + "&redirect_uri=" + redirect_uri + "&type=1";
-        var get_device_id_key = VERSION == 0 ? "getUid" : "get_device_info";
-        egret.ExternalInterface.addCallback(get_device_id_key, function (id) {
-            postData += "&deviceid=" + id;
-            quickRegister(postData, callback);
-        });
-        egret.ExternalInterface.call(get_device_id_key, "");
+module  nest.cm {
+    export interface EgretData {
+        egretUserId:string;
     }
 
+    export function callRuntime(data:NestData, callback) {
+        var tag = VERSION == 0 ? "getUid" : "get_device_info";
+        egret.ExternalInterface.addCallback(tag, function (id) {
+            data["postData"]["deviceid"] = id;
+            quickRegister(data["postData"], callback);
+        });
 
-    function quickRegister(postdata, callback) {
-        var cmpostdata = postdata;
-        var cmcallback = function (data) {
-            callback(data);
+        egret.ExternalInterface.call(tag, "");
+    }
+
+    export function loginBefore(callback):void {
+        var postdata = {};
+        var url:string = "http://api.egret-labs.org/games/www/game.php/";
+        url += appId + "_" + spId;
+        postdata["runtime"] = 1;
+
+        setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
+            callback(resultData);
+        });
+    }
+
+    export function loginAfter(postdata, callback):void {
+        var url:string = "http://api.egret-labs.org/games/www/game.php/";
+        url += appId + "_" + spId;
+        postdata["runtime"] = 1;
+        postdata["showGame"] = 1;
+
+        setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
+            callback(resultData);
+        });
+    }
+
+    export function payBefore(orderInfo:nest.iap.PayInfo, callback):void {
+        var url:string = "http://api.egret-labs.org/games/api.php";
+
+        var postdata = {
+            "action": "pay.buy",
+            "id": egretInfo.egretUserId,
+            "appId": appId,
+            "time": Date.now(),
+            "runtime": 1
+        };
+        for (var k in orderInfo) {
+            postdata[k] = orderInfo[k];
         }
 
-        var url:string = "http://gclogin.liebao.cn/api/user/quick_register";
-        var loader:egret.URLLoader = new egret.URLLoader();
-        loader.addEventListener(egret.Event.COMPLETE, function () {
-            console.log(loader.data);
-            var jsonObj = JSON.parse(loader.data);
-            if (jsonObj.ret == 1) {
-                //touchTag=true;
-                egret.localStorage.setItem("ssid", jsonObj.ssid);
-                egret.localStorage.setItem("deviceid", jsonObj.deviceid);
-                if (typeof cmcallback == "function") {
-                    cmcallback({openid: jsonObj.openid});
-                }
-            } else if (jsonObj.ret == 12005) {
-                //已经注册过了
-            }
-        }, this);
-        var request:egret.URLRequest = new egret.URLRequest(url);
-        request.method = egret.URLRequestMethod.POST;
-        request.data = new egret.URLVariables(postdata);
-        loader.load(request);
+        setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
+            callback(resultData);
+        });
     }
 
+    /**
+     * @private
+     * @param postdata
+     * @param callback
+     */
+    function quickRegister(postdata, callback) {
+        var url:string = "http://gclogin.liebao.cn/api/user/quick_register";
+        setProxy(url, postdata, egret.URLRequestMethod.POST, callback);
+    }
+
+    function setProxy(url:string, postData:Object, method:string, callback:Function):void {
+        var cmpostdata = "";
+        for (var key in postData) {
+            cmpostdata += key + "=" + postData[key] + "&";
+        }
+        if (cmpostdata != "") {
+            cmpostdata = cmpostdata.substr(0, cmpostdata.length - 1);
+        }
+
+        console.log("cm old solution =" + url + "?" + cmpostdata);
+
+        var loader:egret.URLLoader = new egret.URLLoader();
+        loader.addEventListener(egret.Event.COMPLETE, function () {
+            console.log("cm old solution  =" + loader.data);
+            var jsonObj = JSON.parse(loader.data);
+            callback(jsonObj);
+        }, this);
+        var request:egret.URLRequest = new egret.URLRequest(url);
+        request.method = method;
+        request.data = new egret.URLVariables(cmpostdata);
+        loader.load(request);
+    }
+}
+
+module nest.cm.user {
+    export function checkLogin(loginInfo:nest.user.LoginInfo, callback) {
+
+        var postData = {};
+
+        function checkAfter(resultData) {
+            egretInfo = {egretUserId: resultData["data"]["id"]};
+
+            callback(resultData);
+        }
+
+        function loginHandler(resultData) {
+            if (resultData.ret == 1) {
+                resultData["access_token"] = resultData["ssid"];
+
+                nest.cm.loginAfter(resultData, checkAfter);
+            }
+        }
+
+        function checkBefore(resultData) {
+            if (resultData["status"] == 0) {
+                postData["client_id"] = resultData["data"]["client_id"];
+                postData["client_secret"] = resultData["data"]["client_secret"];
+                postData["redirect_uri"] = resultData["data"]["redirect_uri"];
+
+                nest.cm.callRuntime({
+                    module: "user",
+                    action: "checkLogin",
+                    param: loginInfo,
+                    postData: postData
+                }, loginHandler);
+            }
+        }
+
+        nest.cm.loginBefore(checkBefore);
+
+
+    }
+
+    /**
+     * 调用渠道登录接口
+     * @param loginInfo
+     * @param callback
+     * @callback-param  @see nest.user.LoginCallbackInfo
+     */
+    export function login(loginInfo:nest.user.LoginInfo, callback:Function) {
+        var data = {module: "user", action: "login", param: loginInfo};
+        nest.cm.callRuntime(data, callback);
+    }
+}
+module nest.cm.iap {
+
+    export var isFirst:boolean = true;
+    /**
+     * 支付
+     * @param orderInfo
+     * @param callback
+     */
+    export function pay(orderInfo:nest.iap.PayInfo, callback:Function) {
+        var succInt = 0;
+        var cancInt = -1;
+        var failInt = -2;
+
+        payBefore(orderInfo, function (data) {
+            if (data["status"] == 0) {//成功
+                if (nest.cm.iap.isFirst) {
+                    CMPAY_EGRET.on('cmpay_order_complete', function (msg) {
+                        console.log("cm old solution cmpay_order_complete  " + JSON.stringify(msg, null, 4));
+                        if (msg["success"] == true) {
+                            callback({"result": succInt});
+                        }
+                        else {
+                            if (msg["ret"] == 2) {//取消
+                                callback({"result": cancInt});
+                            }
+                            else {
+                                callback({"result": failInt});
+                            }
+                        }
+                    });
+                    nest.cm.iap.isFirst = false;
+                }
+
+                var option = {
+                    access_token: data["data"]["access_token"],                // 游戏服务器传给js 的access_token
+                    client_id: data["data"]["client_id"],                 // 每个游戏单独申请的 client_id
+                    product_id: data["data"]["product_id"],                // 每个游戏有自己的道具产品id
+                    unit: data["data"]["unit"],                            // 个数, 一般是1
+                    payload: data["data"]["payload"],                       // payload, 一般是空字符串或者其他
+                    notify_url: data["data"]["notify_url"],                     // 用户支付完成后, 平台服务器向哪个地址发通知
+
+                    /* 我是分界线, 上边的参数是下单时必填的, 下面的参数是前端展示用的 */
+
+                    money: data["data"]["money"],                     // 金额, 仅供支付页面显示用
+                    order_name: data["data"]["order_name"],             // 订单名称, 仅供支付页面显示用
+                    game_icon: data["data"]["game_icon"],            // 游戏图标, 仅供支付页面显示用
+                    game_name: data["data"]["game_name"]                    // 游戏名称, 仅供支付页面显示用
+                };
+                CMPAY_EGRET.purchase(option);
+            }
+            else {//失败
+                callback({result: failInt});
+            }
+
+
+        });
+    }
 
 }
 
+module nest.cm.share {
 
-if (true) {
+    /**
+     * 是否支持分享
+     * @param callback
+     * @callback-param {status:0,{share:0}}
+     */
+    export function isSupport(callback:Function) {
+        callback({status:0, share:0});
+    }
+}
+
+if (!egret_native.getOption("egret.runtime.nest")) {
+    CMPAY_DEBUG = false;
     nest.user.checkLogin = nest.cm.user.checkLogin;
+    nest.iap.pay = nest.cm.iap.pay;
+    nest.share.isSupport = nest.cm.share.isSupport;
 }

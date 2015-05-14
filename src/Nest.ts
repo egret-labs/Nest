@@ -174,6 +174,7 @@ module nest.share {
     /**
      * 是否支持分享
      * @param callback
+     * @callback-param {status:0,{share:0}}
      */
     export function isSupport(callback:Function) {
         var data = {module: "share", action: "isSupport"};
@@ -270,9 +271,7 @@ module nest {
 
         action:string;
 
-        data?:Object;
-
-
+        param?:Object;
     }
 
     export function callRuntime(data:NestData, callback) {

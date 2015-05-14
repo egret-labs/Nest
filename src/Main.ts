@@ -129,7 +129,7 @@ class Main extends egret.DisplayObjectContainer {
     private testPay():void {
         var self = this;
         var payInfo:nest.iap.PayInfo = {
-            goodsId: "1",
+            goodsId: "8",
             goodsNumber: "1",
             serverId: "1",
             ext: "fdsfdsf"
