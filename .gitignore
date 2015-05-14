@@ -1,0 +1,4 @@
+.idea/
+*.zip
+libs/*
+bin-debug/*
