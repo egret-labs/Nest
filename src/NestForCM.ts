@@ -33,11 +33,6 @@
 
 
 var VERSION = 0;
-egret.ExternalInterface.addCallback("get_game_sdk_version", function (ver) {
-    VERSION = ver;
-});
-egret.ExternalInterface.call("get_game_sdk_version", "");
-
 
 var appId = 88;
 var spId = 10044;
@@ -256,6 +251,11 @@ module nest.cm.share {
 }
 
 if (!egret_native.getOption("egret.runtime.nest")) {
+    egret.ExternalInterface.addCallback("get_game_sdk_version", function (ver) {
+        VERSION = ver;
+    });
+    egret.ExternalInterface.call("get_game_sdk_version", "");
+
     CMPAY_DEBUG = false;
     nest.user.checkLogin = nest.cm.user.checkLogin;
     nest.iap.pay = nest.cm.iap.pay;
