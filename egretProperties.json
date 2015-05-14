@@ -1,21 +1,19 @@
 {
-    "document_class": "Main",
-    "modules": [
-        {
-            "name": "core"
-        },
-        {
-            "name": "res"
-        },
-        {
-            "name": "nest",
-            "path": "."
-        }
-    ],
-    "native": {
-        "path_ignore": [
-
-        ]
-    },
-    "egret_version":"1.6.2"
+	"document_class": "Main",
+	"modules": [
+		{
+			"name": "core"
+		},
+		{
+			"name": "res"
+		},
+		{
+			"name": "nest",
+			"path": "."
+		}
+	],
+	"native": {
+		"path_ignore": []
+	},
+	"egret_version": "1.7.1"
 }
