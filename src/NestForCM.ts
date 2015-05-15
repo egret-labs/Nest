@@ -46,7 +46,7 @@ module  nest.cm {
     export function callRuntime(data:NestData, callback) {
         var tag = VERSION == 0 ? "getUid" : "get_device_info";
         egret.ExternalInterface.addCallback(tag, function (id) {
-            data["postData"]["deviceid"] = id;
+            data["postData"]["deviceid"] = id || egret.localStorage.getItem("deviceid") || "";
             quickRegister(data["postData"], callback);
         });
 
@@ -142,6 +142,11 @@ module nest.cm.user {
         function loginHandler(resultData) {
             if (resultData.ret == 1) {
                 resultData["access_token"] = resultData["ssid"];
+
+                //保存设备id
+                if (!!resultData["deviceid"]) {
+                    egret.localStorage.setItem("deviceid", resultData["deviceid"]);
+                }
 
                 nest.cm.loginAfter(resultData, checkAfter);
             }
