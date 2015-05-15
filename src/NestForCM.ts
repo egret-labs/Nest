@@ -136,7 +136,7 @@ module nest.cm.user {
         function checkAfter(resultData) {
             egretInfo = {egretUserId: resultData["data"]["id"]};
 
-            callback(resultData);
+            callback(resultData["data"]);
         }
 
         function loginHandler(resultData) {
