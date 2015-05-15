@@ -255,6 +255,18 @@ module nest.cm.share {
     }
 }
 
+module nest.cm.app {
+
+    /**
+     * 是否支持特定功能
+     * @param callback
+     * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
+     */
+    export function isSupport(callback:Function) {
+        callback({status:0, sendToDesktop:0});
+    }
+}
+
 if (!egret_native.getOption("egret.runtime.nest")) {
     egret.ExternalInterface.addCallback("get_game_sdk_version", function (ver) {
         VERSION = ver;
@@ -265,4 +277,5 @@ if (!egret_native.getOption("egret.runtime.nest")) {
     nest.user.checkLogin = nest.cm.user.checkLogin;
     nest.iap.pay = nest.cm.iap.pay;
     nest.share.isSupport = nest.cm.share.isSupport;
+    nest.app.isSupport = nest.cm.app.isSupport;
 }
