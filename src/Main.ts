@@ -111,7 +111,7 @@ class Main extends egret.DisplayObjectContainer {
 
         var self = this;
         var loginInfo:nest.user.LoginInfo = {};
-        loginInfo.loginType = "wx";
+        //loginInfo.loginType = "wx";
         nest.user.login(loginInfo, function (data) {
 
             self.print(data);

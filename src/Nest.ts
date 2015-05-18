@@ -111,12 +111,12 @@ module nest.user {
          * 状态值，0表示成功
          * 该值未来可能会被废弃
          */
-        status:string;
+        status:number;
 
         /**
          * 结果值，0表示成功
          */
-        result:string;
+        result:number;
 
         /**
          * isSupport 函数返回。
