@@ -4,6 +4,10 @@
   "source":"src",
   "file_list" : [
     "Nest.ts",
+    "NestForCM.ts",
+    "CMPAY_EGRET.js",
+    "CMPAY_EGRET.d.ts",
+    "egret_sdk_bridge.js",
     "h5/NestForH5.ts",
     "h5/EgretH5Sdk.d.ts"
   ]

@@ -112,9 +112,14 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
 
     nest.social.isSupport = function (callback:Function) {
         //todo
+        callback.call(null,{"result": 0, "getFriends":0, "openBBS":0});
     };
 
     nest.social.getFriends = function (data, callback:Function) {
+        //todo
+    };
+
+    nest.social.openBBS = function (data, callback:Function) {
         //todo
     };
 

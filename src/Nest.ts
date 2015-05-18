@@ -215,18 +215,20 @@ module nest.share {
 
 
 module nest.social {
-
-
-    export function isSupport(callback:Function) {
-        var data = {module: "social", action: "isSupport"};
-        callRuntime(data, callback);
+    export function isSupport(callback:Function){
+        var data = {module:"social",action:"isSupport"};
+        callRuntime(data,callback);
     }
 
-    export function getFriends(data, callback:Function) {
-        data = {module: "social", action: "getFriends"};
-        callRuntime(data, callback);
+    export function getFriends(socialInfo,callback:Function){
+        var data = {module:"social",action:"getFriends"};
+        callRuntime(data,callback);
     }
 
+    export function openBBS(socialInfo,callback:Function){
+        var data = {module:"social",action:"openBBS"};
+        callRuntime(data,callback);
+    }
 }
 
 module nest.app {

@@ -267,7 +267,7 @@ module nest.cm.app {
     }
 }
 
-if (!egret_native.getOption("egret.runtime.nest")) {
+if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE && !egret_native.getOption("egret.runtime.nest")) {
     egret.ExternalInterface.addCallback("get_game_sdk_version", function (ver) {
         VERSION = ver;
     });

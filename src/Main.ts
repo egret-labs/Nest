@@ -74,7 +74,7 @@ class Main extends egret.DisplayObjectContainer {
         this.createButton("分享", this.testShare, this);
         this.createButton("好友列表", this.testFriends, this);
         this.createButton("发送到桌面", this.testSendToDesktop, this);
-
+        this.createButton("打开游戏论坛",this.testOpenBBS,this);
 
         //var str:string = egret_native.getOption("startupParam");
         //console.log (str);
@@ -176,6 +176,13 @@ class Main extends egret.DisplayObjectContainer {
         })
     }
 
+    private testOpenBBS():void{
+        var self = this;
+        nest.social.openBBS(null, function(data){
+
+            self.print(data);
+        })
+    }
 }
 
 
