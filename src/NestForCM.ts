@@ -30,10 +30,6 @@
 /*
  * cm old solution
  */
-
-
-var VERSION = 0;
-
 var appId = 88;
 var spId = 10044;
 var egretInfo:nest.cm.EgretData;
@@ -44,7 +40,7 @@ module  nest.cm {
     }
 
     export function callRuntime(data:NestData, callback) {
-        var tag = VERSION == 0 ? "getUid" : "get_device_info";
+        var tag = (CMPAY_EGRET.version == 0 || CMPAY_EGRET.version == false) ? "getUid" : "get_device_info";
         egret.ExternalInterface.addCallback(tag, function (id) {
             data["postData"]["deviceid"] = id || egret.localStorage.getItem("deviceid") || "";
             quickRegister(data["postData"], callback);
@@ -268,10 +264,10 @@ module nest.cm.app {
 }
 
 if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE && !egret_native.getOption("egret.runtime.nest")) {
-    egret.ExternalInterface.addCallback("get_game_sdk_version", function (ver) {
-        VERSION = ver;
-    });
-    egret.ExternalInterface.call("get_game_sdk_version", "");
+    //egret.ExternalInterface.addCallback("get_game_sdk_version", function (ver) {
+    //    VERSION = ver;
+    //});
+    //egret.ExternalInterface.call("get_game_sdk_version", "");
 
     CMPAY_DEBUG = false;
     nest.user.checkLogin = nest.cm.user.checkLogin;

@@ -29,7 +29,7 @@
 
 module nest.h5 {
     export var uid:number = undefined;
-    export var appid:number = egret.getOption("appId") || 86;
+    export var appid:number = parseInt(egret.getOption("appId")) || 86;
 }
 if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
     nest.user.isSupport = function (callback:Function) {

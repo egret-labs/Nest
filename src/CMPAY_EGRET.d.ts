@@ -5,6 +5,7 @@ declare var CMPAY_EGRET: {
 	fire(eventName: String, ...args): void;
 	isReady: boolean;
 	type: string;
+	version;
 	ready(callback: Function): void;
 	purchase(option: Object): void;
 };
