@@ -373,6 +373,10 @@ var CMPAY_EGRET = (function(){
         callReady();
     }
     var version = false;
+    cmpay.getVersion = function () {
+        return version;
+    }
+
     var to = egret.setTimeout(function(){
         if(version === false){
             initOld();

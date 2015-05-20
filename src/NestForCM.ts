@@ -40,7 +40,8 @@ module  nest.cm {
     }
 
     export function callRuntime(data:NestData, callback) {
-        var tag = (CMPAY_EGRET.version == 0 || CMPAY_EGRET.version == false) ? "getUid" : "get_device_info";
+        console.log("cm old CMPAY_EGRET.version " + CMPAY_EGRET.getVersion())
+        var tag = (CMPAY_EGRET.getVersion() == 0 || CMPAY_EGRET.getVersion() == false) ? "getUid" : "get_device_info";
         egret.ExternalInterface.addCallback(tag, function (id) {
             data["postData"]["deviceid"] = id || egret.localStorage.getItem("deviceid") || "";
             quickRegister(data["postData"], callback);
