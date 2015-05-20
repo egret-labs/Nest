@@ -67,6 +67,7 @@ class Main extends egret.DisplayObjectContainer {
         this.resultText.y = 400;
 
 
+        this.createButton("检查支持", this.testSupport, this);
         this.createButton("检查登录类型", this.testLoginSupport, this);
         this.createButton("检测是否登录", this.testCheckLogin, this);
         this.createButton("登录", this.testLogin, this);
@@ -80,6 +81,19 @@ class Main extends egret.DisplayObjectContainer {
         //console.log (str);
 
 
+    }
+
+    private testSupport():void {
+
+        var self = this;
+        nest.share.isSupport(function (data) {
+            console.log("cm old share " + JSON.stringify(data))
+            self.print(data);
+        })
+        nest.app.isSupport(function (data) {
+            console.log("cm old app  " + JSON.stringify(data))
+            self.print(data);
+        })
     }
 
     private createButton(label:string, callback:Function, thisObject:any):egret.DisplayObject {

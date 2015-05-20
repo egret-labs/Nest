@@ -183,6 +183,7 @@ module nest.cm.user {
 module nest.cm.iap {
 
     export var isFirst:boolean = true;
+
     /**
      * 支付
      * @param orderInfo
@@ -248,7 +249,7 @@ module nest.cm.share {
      * @callback-param {status:0,{share:0}}
      */
     export function isSupport(callback:Function) {
-        callback({status:0, share:0});
+        callback({status: 0, share: 0});
     }
 }
 
@@ -260,7 +261,7 @@ module nest.cm.app {
      * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
      */
     export function isSupport(callback:Function) {
-        callback({status:0, sendToDesktop:0});
+        callback({status: 0, sendToDesktop: 0});
     }
 }
 

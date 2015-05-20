@@ -266,6 +266,7 @@ module nest.app {
 }
 
 module nest {
+    var externalArr:Array<any> = [];
 
     export interface NestData {
 
@@ -277,18 +278,33 @@ module nest {
     }
 
     export function callRuntime(data:NestData, callback) {
+        externalArr.push({"data" : data, "callback":callback});
 
-        var tag = "nest";
-        egret.ExternalInterface.addCallback(tag, function (data) {
-            console.log(data);
-            var obj = JSON.parse(data);
-            callback(obj.data);
-        });
-
-        egret.ExternalInterface.call(tag, JSON.stringify(data));
+        _getData();
     }
 
+    var isRunning:boolean = false;
+    function _getData():void {
+        if (externalArr.length) {
+            if (isRunning) {
+                return;
+            }
+            isRunning = true;
+            var info = externalArr.shift();
 
+            var tag = "nest";
+            egret.ExternalInterface.addCallback(tag, function (data) {
+                console.log(data);
+                var obj = JSON.parse(data);
+                info["callback"](obj.data);
+
+                isRunning = false;
+                _getData();
+            });
+
+            egret.ExternalInterface.call(tag, JSON.stringify(info["data"]));
+        }
+    }
 }
 
 declare module egret_native {
