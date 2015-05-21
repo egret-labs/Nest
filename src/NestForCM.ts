@@ -43,24 +43,25 @@ module  nest.cm {
         console.log("cm old CMPAY_EGRET.version " + CMPAY_EGRET.getVersion())
         var tag = (CMPAY_EGRET.getVersion() == 0 || CMPAY_EGRET.getVersion() == false) ? "getUid" : "get_device_info";
         var isFinish:boolean = false;
-        egret.ExternalInterface.addCallback(tag, function (id) {
+
+        var sendData = function (id) {
             if (isFinish) {
                 return;
             }
-            console.log("cm old CMPAY_EGRET");
             isFinish = true;
+            console.log(id);
             data["postData"]["deviceid"] = id || egret.localStorage.getItem("deviceid") || "";
             quickRegister(data["postData"], callback);
+        }
+
+        egret.ExternalInterface.addCallback(tag, function (id) {
+            console.log("cm old CMPAY_EGRET");
+            sendData(id);
         });
 
         egret.setTimeout(function () {
-            if (isFinish) {
-                return;
-            }
             console.log("cm old timeout");
-            isFinish = true;
-            data["postData"]["deviceid"] = "";
-            quickRegister(data["postData"], callback);
+            sendData(null);
         }, this, 2000);
 
         egret.ExternalInterface.call(tag, "");
