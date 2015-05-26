@@ -1,0 +1,73 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<style>
+    body{
+        font-size: 20px;
+    }
+    input,select,button{
+        font-size: 2em;
+        line-height: 2em;
+        display: block;
+        margin: 1em 0;
+    }
+</style>
+
+<input id="input_url" value=""/>
+<select id="input_orientation">
+    <option value=landscape>landscape</option>
+    <option value=portrait>portrait</option>
+</select>
+<button id="submit" onclick="start()">start</button>
+
+<script>
+    input_url.value = getOption("url");
+
+    function openUrlWithGameSDK(url){
+        if(typeof __injectionJavaScriptObject___ !== 'undefined' && __injectionJavaScriptObject___.openUrlWithGameSDK && __injectionJavaScriptObject___.openUrlWithGameSDK){
+            return __injectionJavaScriptObject___.openUrlWithGameSDK(url);
+        }else{
+            var e = {
+                class_name: "com.ijinshan.browser.KInjectionJavaScriptObject",
+                params: {
+                    function_name: "openUrlWithGameSDK",
+                    url: url
+                },
+                sync: true
+            };
+            alert('prompt:'+JSON.stringify(e));
+        }
+        return false;
+    }
+
+    function start() {
+        var url = window.location.href;
+        url = url.replace(/\?.*/, "");
+        var url2 = url.replace("runtime.html", "cm.html");
+        url2 += "?orientation=" + input_orientation.value;
+        url2 += "&url=" + input_url.value;
+
+        openUrlWithGameSDK(url2);
+    }
+
+
+    function getOption(key) {
+        if (window.hasOwnProperty("location")) {
+            var search = location.search;
+            if (search == "") {
+                return "";
+            }
+            search = search.slice(1);
+            var searchArr = search.split("&");
+            var length = searchArr.length;
+            for (var i = 0; i < length; i++) {
+                var str = searchArr[i];
+                var arr = str.split("=");
+                if (arr[0] == key) {
+                    return arr[1];
+                }
+            }
+        }
+        return "";
+    }
+</script>
