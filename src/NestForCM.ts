@@ -40,31 +40,40 @@ module  nest.cm {
     }
 
     export function callRuntime(data:NestData, callback) {
-        console.log("cm old CMPAY_EGRET.version " + CMPAY_EGRET.getVersion())
-        var tag = (CMPAY_EGRET.getVersion() == 0 || CMPAY_EGRET.getVersion() == false) ? "getUid" : "get_device_info";
-        var isFinish:boolean = false;
-
-        var sendData = function (id) {
-            if (isFinish) {
-                return;
-            }
-            isFinish = true;
-            console.log(id);
-            data["postData"]["deviceid"] = id || egret.localStorage.getItem("deviceid") || "";
+        var deviceId;
+        if (deviceId = egret.localStorage.getItem("deviceid")) {
+            console.log("cm old local deviceid " + deviceId);
+            data["postData"]["deviceid"] = deviceId;
             quickRegister(data["postData"], callback);
         }
+        else {
+            console.log("cm old CMPAY_EGRET.version " + CMPAY_EGRET.getVersion());
 
-        egret.ExternalInterface.addCallback(tag, function (id) {
-            console.log("cm old CMPAY_EGRET");
-            sendData(id);
-        });
+            var tag = (CMPAY_EGRET.getVersion() == 0 || CMPAY_EGRET.getVersion() == false) ? "getUid" : "get_device_info";
+            var isFinish:boolean = false;
 
-        egret.setTimeout(function () {
-            console.log("cm old timeout");
-            sendData(null);
-        }, this, 2000);
+            var sendData = function (id) {
+                if (isFinish) {
+                    return;
+                }
+                isFinish = true;
+                console.log(id);
+                data["postData"]["deviceid"] = id || egret.localStorage.getItem("deviceid") || "";
+                quickRegister(data["postData"], callback);
+            };
 
-        egret.ExternalInterface.call(tag, "");
+            egret.ExternalInterface.addCallback(tag, function (id) {
+                console.log("cm old CMPAY_EGRET");
+                sendData(id);
+            });
+
+            egret.setTimeout(function () {
+                console.log("cm old timeout");
+                sendData(null);
+            }, this, 2000);
+
+            egret.ExternalInterface.call(tag, "");
+        }
     }
 
     export function loginBefore(callback):void {
@@ -158,7 +167,7 @@ module nest.cm.user {
                 resultData["access_token"] = resultData["ssid"];
 
                 //保存设备id
-                if (!!resultData["deviceid"]) {
+                if (!egret.localStorage.getItem("deviceid")) {
                     egret.localStorage.setItem("deviceid", resultData["deviceid"]);
                 }
 
