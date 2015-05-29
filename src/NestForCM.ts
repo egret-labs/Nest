@@ -272,7 +272,7 @@ module nest.cm.share {
     /**
      * 是否支持分享
      * @param callback
-     * @callback-param {status:0,{share:0}}
+     * @callback-param {status:0, share:0}
      */
     export function isSupport(callback:Function) {
         callback({status: 0, share: 0});

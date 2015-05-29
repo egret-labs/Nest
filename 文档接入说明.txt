@@ -1,0 +1,23 @@
+1、按照第三方库的方式接入Nest
+
+2、api说明
+    nest.user.checkLogin  检测是否已登录
+    nest.user.login 调用渠道登录接口，checkLogin后如果没有登录，则调用此接口
+    nest.user.isSupport 检测支持何种登录方式
+
+    nest.iap.pay 支付
+
+    nest.share.isSupport 是否支持分享功能
+    nest.share.share 分享
+
+    nest.app.isSupport 是否支持特定功能
+    nest.app.attention 关注
+    nest.app.sendToDesktop 发送到桌面
+    nest.app.initDesktop 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
+
+3、测试方法：
+   猎豹 http://10.0.4.160/Egret/Nest/test/cm/runtime.html?url=http://10.0.4.160/Egret/Nest/test/publishJson.html
+
+   qq http://10.0.4.160/Egret/Nest/test/cm/runtime.html?url=http://10.0.4.160/Egret/Nest/test/publishJson.html
+
+4、具体调用可以参考Main.ts

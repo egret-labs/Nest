@@ -29,12 +29,6 @@
 
 class Main extends egret.DisplayObjectContainer {
 
-    /**
-     * 加载进度界面
-     * Process interface loading
-     */
-    private loadingView:LoadingUI;
-
     private container:egret.DisplayObjectContainer;
 
     private resultText:egret.TextField;
@@ -46,6 +40,7 @@ class Main extends egret.DisplayObjectContainer {
     }
 
     private onAddToStage(event:egret.Event) {
+        this.removeEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
 
         this.createGameScene();
     }
@@ -55,7 +50,6 @@ class Main extends egret.DisplayObjectContainer {
      * Create a game scene
      */
     private createGameScene():void {
-
         this.container = new egret.DisplayObjectContainer();
         this.addChild(this.container);
         this.resultText = new egret.TextField();
@@ -66,7 +60,6 @@ class Main extends egret.DisplayObjectContainer {
         this.resultText.x = 100;
         this.resultText.y = 400;
 
-
         this.createButton("保存桌面信息", this.testInitDesktop, this);
         this.createButton("检查支持", this.testSupport, this);
         this.createButton("检查登录类型", this.testLoginSupport, this);
@@ -76,33 +69,7 @@ class Main extends egret.DisplayObjectContainer {
         this.createButton("分享", this.testShare, this);
         this.createButton("好友列表", this.testFriends, this);
         this.createButton("发送到桌面", this.testSendToDesktop, this);
-        this.createButton("打开游戏论坛",this.testOpenBBS,this);
-
-        //var str:string = egret_native.getOption("startupParam");
-        //console.log (str);
-
-
-    }
-
-    private testInitDesktop():void {
-        nest.app.initDesktop({
-            Title:"Egret测试桌面",
-            DetailUrl:"",
-            PicUrl:"https://avatars2.githubusercontent.com/u/6657668?v=3&s=200"
-        });
-    }
-
-    private testSupport():void {
-
-        var self = this;
-        nest.share.isSupport(function (data) {
-            console.log("cm old share " + JSON.stringify(data))
-            self.print(data);
-        })
-        nest.app.isSupport(function (data) {
-            console.log("cm old app  " + JSON.stringify(data))
-            self.print(data);
-        })
+        this.createButton("打开游戏论坛", this.testOpenBBS, this);
     }
 
     private createButton(label:string, callback:Function, thisObject:any):egret.DisplayObject {
@@ -121,8 +88,31 @@ class Main extends egret.DisplayObjectContainer {
         this.resultText.text = JSON.stringify(text);
     }
 
-    private testCheckLogin():void {
+    //初始化浏览器快捷登陆需要的信息
+    private testInitDesktop():void {
+        nest.app.initDesktop({
+            Title: "Egret测试桌面",
+            DetailUrl: "",
+            PicUrl: "https://avatars2.githubusercontent.com/u/6657668?v=3&s=200"
+        });
+    }
 
+    //检测功能支持
+    private testSupport():void {
+
+        var self = this;
+        nest.share.isSupport(function (data) {
+            console.log("cm old share " + JSON.stringify(data))
+            self.print(data);
+        })
+        nest.app.isSupport(function (data) {
+            console.log("cm old app  " + JSON.stringify(data))
+            self.print(data);
+        })
+    }
+
+    //检测是否已登录
+    private testCheckLogin():void {
         var self = this;
         nest.user.checkLogin(null, function (data) {
 
@@ -130,6 +120,7 @@ class Main extends egret.DisplayObjectContainer {
         })
     }
 
+    //调用渠道登录接口
     private testLogin():void {
 
         var self = this;
@@ -141,6 +132,7 @@ class Main extends egret.DisplayObjectContainer {
         })
     }
 
+    //判断支持那种登录方式
     private testLoginSupport():void {
         var self = this;
         nest.user.isSupport(function (data) {
@@ -149,6 +141,7 @@ class Main extends egret.DisplayObjectContainer {
         })
     }
 
+    //充值调用
     private testPay():void {
         var self = this;
         var payInfo:nest.iap.PayInfo = {
@@ -163,6 +156,7 @@ class Main extends egret.DisplayObjectContainer {
         })
     }
 
+    //分享信息
     private testShare():void {
         var self = this;
 
@@ -181,6 +175,7 @@ class Main extends egret.DisplayObjectContainer {
         })
     }
 
+    //获取好友猎豹
     private testFriends():void {
 
         var self = this;
@@ -190,6 +185,7 @@ class Main extends egret.DisplayObjectContainer {
         })
     }
 
+    //生成桌面快捷图标
     private testSendToDesktop():void {
 
         var self = this;
@@ -199,9 +195,10 @@ class Main extends egret.DisplayObjectContainer {
         })
     }
 
-    private testOpenBBS():void{
+    //打开bbs
+    private testOpenBBS():void {
         var self = this;
-        nest.social.openBBS(null, function(data){
+        nest.social.openBBS(null, function (data) {
 
             self.print(data);
         })

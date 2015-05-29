@@ -174,7 +174,7 @@ module nest.share {
     /**
      * 是否支持分享
      * @param callback
-     * @callback-param {status:0,{share:0}}
+     * @callback-param {status:0, share:0}  share 1支持 0不支持
      */
     export function isSupport(callback:Function) {
         var data = {module: "share", action: "isSupport"};
@@ -215,19 +215,19 @@ module nest.share {
 
 
 module nest.social {
-    export function isSupport(callback:Function){
-        var data = {module:"social",action:"isSupport"};
-        callRuntime(data,callback);
+    export function isSupport(callback:Function) {
+        var data = {module: "social", action: "isSupport"};
+        callRuntime(data, callback);
     }
 
-    export function getFriends(socialInfo,callback:Function){
-        var data = {module:"social",action:"getFriends"};
-        callRuntime(data,callback);
+    export function getFriends(socialInfo, callback:Function) {
+        var data = {module: "social", action: "getFriends"};
+        callRuntime(data, callback);
     }
 
-    export function openBBS(socialInfo,callback:Function){
-        var data = {module:"social",action:"openBBS"};
-        callRuntime(data,callback);
+    export function openBBS(socialInfo, callback:Function) {
+        var data = {module: "social", action: "openBBS"};
+        callRuntime(data, callback);
     }
 }
 
@@ -241,7 +241,7 @@ module nest.app {
     /**
      * 是否支持特定功能
      * @param callback
-     * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
+     * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"} attention|sendToDesktop 1支持 0不支持
      */
     export function isSupport(callback:Function) {
         var data = {module: "app", action: "isSupport"};
@@ -292,12 +292,13 @@ module nest {
     }
 
     export function callRuntime(data:NestData, callback) {
-        externalArr.push({"data" : data, "callback":callback});
+        externalArr.push({"data": data, "callback": callback});
 
         _getData();
     }
 
     var isRunning:boolean = false;
+
     function _getData():void {
         if (externalArr.length) {
             if (isRunning) {
