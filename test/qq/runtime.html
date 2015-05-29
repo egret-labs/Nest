@@ -1,19 +1,24 @@
-<!doctype html>
-<meta charset="utf-8" />
-<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<style>
-    body{
-        font-size: 20px;
-    }
-    input,select,button{
-        font-size: 2em;
-        line-height: 2em;
-        display: block;
-        margin: 1em 0;
-    }
-</style>
-<script src="http://jsapi.qq.com/get?api=x5gameplayer.*" type="text/javascript"></script>
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>QQ Nest测试</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <script src="http://jsapi.qq.com/get?api=x5gameplayer.*" type="text/javascript"></script>
+    <style>
+        body {
 
+        }
+
+        input, select, button {
+            font-size: 2em;
+            line-height: 2em;
+            display: block;
+            margin: 1em 0;
+        }
+    </style>
+</head>
+<body>
 <input id="input_url" value=""/>
 <select id="input_orientation">
     <option value=landscape>landscape</option>
@@ -33,7 +38,7 @@
             "engineName": "egret",
             "localDebug": "false",
             "orientation": input_orientation.value,
-            "gameName": "萌战记",
+            "gameName": "helloworld",
             "gameIconUrl": "http://snscwl.egret-labs.org/common/shareicon.png",
             "gameUrl": "http://www.qq.com",
             "ext": JSON.stringify({
@@ -64,3 +69,5 @@
         return "";
     }
 </script>
+</body>
+</html>
