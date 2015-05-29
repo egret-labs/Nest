@@ -30,7 +30,7 @@
 /*
  * cm old solution
  */
-var appId = 88;
+var appId = 88;//开发平台的id
 var spId = 10044;
 var egretInfo:nest.cm.EgretData;
 
