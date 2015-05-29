@@ -232,6 +232,11 @@ module nest.social {
 }
 
 module nest.app {
+    export interface IDesktopInfo {
+        Title:string;           // 桌面图标标题，不要超过五个中文字
+        DetailUrl:string;      // 桌面图标对应的页面url
+        PicUrl: string; //120*120
+    }
 
     /**
      * 是否支持特定功能
@@ -254,6 +259,14 @@ module nest.app {
     }
 
     /**
+     * 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
+     * @param param
+     */
+    export function initDesktop(param:IDesktopInfo) {
+
+    }
+
+    /**
      * 发送到桌面
      * @param appInfo
      * @param callback
@@ -263,6 +276,7 @@ module nest.app {
         var data = {module: "app", action: "sendToDesktop"};
         callRuntime(data, callback);
     }
+
 }
 
 module nest {

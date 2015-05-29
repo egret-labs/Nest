@@ -280,6 +280,16 @@ module nest.cm.share {
 }
 
 module nest.cm.app {
+    /**
+     * 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
+     * @param param
+     */
+    export function initDesktop(param:nest.app.IDesktopInfo) {
+        egret.ExternalInterface.call("save_shortcut_info", JSON.stringify({
+            token: String(Math.random()),
+            value: JSON.stringify(param)
+        }));
+    }
 
     /**
      * 是否支持特定功能
@@ -292,14 +302,10 @@ module nest.cm.app {
 }
 
 if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE && !egret_native.getOption("egret.runtime.nest")) {
-    //egret.ExternalInterface.addCallback("get_game_sdk_version", function (ver) {
-    //    VERSION = ver;
-    //});
-    //egret.ExternalInterface.call("get_game_sdk_version", "");
-
     CMPAY_DEBUG = false;
     nest.user.checkLogin = nest.cm.user.checkLogin;
     nest.iap.pay = nest.cm.iap.pay;
     nest.share.isSupport = nest.cm.share.isSupport;
     nest.app.isSupport = nest.cm.app.isSupport;
+    nest.app.initDesktop = nest.cm.app.initDesktop;
 }

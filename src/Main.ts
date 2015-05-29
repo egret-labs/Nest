@@ -67,6 +67,7 @@ class Main extends egret.DisplayObjectContainer {
         this.resultText.y = 400;
 
 
+        this.createButton("保存桌面信息", this.testInitDesktop, this);
         this.createButton("检查支持", this.testSupport, this);
         this.createButton("检查登录类型", this.testLoginSupport, this);
         this.createButton("检测是否登录", this.testCheckLogin, this);
@@ -81,6 +82,14 @@ class Main extends egret.DisplayObjectContainer {
         //console.log (str);
 
 
+    }
+
+    private testInitDesktop():void {
+        nest.app.initDesktop({
+            Title:"Egret测试桌面",
+            DetailUrl:"http://www.liebao.cn/game/emdr/?f=desk",
+            PicUrl:"https://avatars2.githubusercontent.com/u/6657668?v=3&s=200"
+        });
     }
 
     private testSupport():void {
