@@ -87,7 +87,7 @@ class Main extends egret.DisplayObjectContainer {
     private testInitDesktop():void {
         nest.app.initDesktop({
             Title:"Egret测试桌面",
-            DetailUrl:"http://www.liebao.cn/game/emdr/?f=desk",
+            DetailUrl:"",
             PicUrl:"https://avatars2.githubusercontent.com/u/6657668?v=3&s=200"
         });
     }
