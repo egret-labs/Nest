@@ -43,7 +43,13 @@ module  nest.cm {
         var deviceId;
         if (deviceId = egret.localStorage.getItem("deviceid")) {
             console.log("cm old local deviceid " + deviceId);
-            data["postData"]["deviceid"] = deviceId;
+            if (deviceId.indexOf("{") >= 0) {//json数据
+                var json = JSON.parse(deviceId);
+                data["postData"]["deviceid"] = json["did"];
+            }
+            else {
+                data["postData"]["deviceid"] = deviceId;
+            }
             quickRegister(data["postData"], callback);
         }
         else {
@@ -64,7 +70,20 @@ module  nest.cm {
 
             egret.ExternalInterface.addCallback(tag, function (id) {
                 console.log("cm old CMPAY_EGRET");
-                sendData(id);
+                if (tag == "get_device_info") {
+                    console.log("cm old get_device_info " + id);
+                    if (id) {
+                        var json = JSON.parse(id);
+                        sendData(json["did"])
+                    }
+                    else {
+                        sendData(null);
+                    }
+
+                }
+                else {
+                    sendData(id);
+                }
             });
 
             egret.setTimeout(function () {
