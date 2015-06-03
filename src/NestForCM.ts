@@ -30,10 +30,6 @@
 /*
  * cm old solution
  */
-var appId = 88;//开发平台的id
-var spId = 10044;
-var egretInfo:nest.cm.EgretData;
-
 module  nest.cm {
     export interface EgretData {
         egretUserId:string;
@@ -321,10 +317,18 @@ module nest.cm.app {
 }
 
 if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE && !egret_native.getOption("egret.runtime.nest")) {
+    var appId = 88;//开发平台的id
+    var spId = 10044;
+    var egretInfo:nest.cm.EgretData;
+
+    egret_native["setOption"]("egret.runtime.spid", appId);
+    egret_native["setOption"]("channelTag", "cmbrowser");
     CMPAY_DEBUG = false;
     nest.user.checkLogin = nest.cm.user.checkLogin;
     nest.iap.pay = nest.cm.iap.pay;
     nest.share.isSupport = nest.cm.share.isSupport;
     nest.app.isSupport = nest.cm.app.isSupport;
     nest.app.initDesktop = nest.cm.app.initDesktop;
+
+
 }
