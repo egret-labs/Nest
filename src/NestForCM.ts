@@ -317,6 +317,7 @@ module nest.cm.app {
 }
 
 if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE && !egret_native.getOption("egret.runtime.nest")) {
+    console.log("cm old u r in cm");
     var appId = 88;//开发平台的id
     var spId = 10044;
     var egretInfo:nest.cm.EgretData;
