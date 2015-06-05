@@ -328,7 +328,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
         var spId = 10044;
         var egretInfo:nest.cm.EgretData;
 
-        egret_native["setOption"]("egret.runtime.spid", appId);
+        egret_native["setOption"]("egret.runtime.spid", spId);
         egret_native["setOption"]("channelTag", "cmbrowser");
         CMPAY_DEBUG = false;
         nest.user.checkLogin = nest.cm.user.checkLogin;
