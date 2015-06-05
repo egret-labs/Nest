@@ -33,16 +33,21 @@
  *
  * 逻辑：
  * 1.在游戏中展示一张登录背景界面
- * 2.调用 checkLogin 函数判断是否已经登录过，如果登录过，进入步骤5，否则进入步骤3
+ * 2.调用 checkLogin 函数判断是否已经登录过，如果登录过，进入步骤6，否则进入步骤3
  * 3.调用 isSupport 函数判断支持的登录类型，根据登录类型显示对应的登录图标
  * 4.用户点击登录图标后，调用 login 函数打开登录面板进行登录
- * 5.登录成功后，隐藏登录按钮，显示切换账号、选择服务器、进入游戏三个按钮（可缩减），或者直接进入步骤7进入游戏
- * 6.如果用户点击了切换账号，应回到步骤3，如果用户点击了进入游戏按钮，应该进入步骤7
- * 7.退出登录界面，进入游戏
+ * 5.如果登录成功，进入步骤6
+ * 6.退出登录界面，进入游戏
  *
  *
- * API变化：
- * 1. nest.user.init 接口被废弃，改用 egret.user.login
+ * 登出功能：
+ *
+ * 逻辑：
+ * 1.在游戏中放置一个“退出游戏”或者“切换账号”的按钮
+ * 2.用户点击“退出游戏”图标后，调用 logout 函数
+ * 3.在登出成功后，返回到登录逻辑的步骤1
+ *
+ *
  */
 module nest.user {
 
@@ -78,6 +83,24 @@ module nest.user {
         var data = {module: "user", action: "login", param: loginInfo};
         callRuntime(data, callback);
 
+    }
+
+
+    /**
+     * 登出接口
+     * @param loginInfo 可以传递null
+     * @param callback
+     * @callback-param   { result : 0 };
+     */
+    export function logout(loginInfo:LoginInfo,callback:Function) {
+        var nestVersion = egret_native.getOption("egret.runtime.nest");
+        if (nestVersion >= 4){
+            var data = {module: "user", action: "logout",param:loginInfo};
+            callRuntime(data, callback);
+        }
+        else{
+            callback({"result":0});
+        }
     }
 
 

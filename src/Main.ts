@@ -65,6 +65,7 @@ class Main extends egret.DisplayObjectContainer {
         this.createButton("检查登录类型", this.testLoginSupport, this);
         this.createButton("检测是否登录", this.testCheckLogin, this);
         this.createButton("登录", this.testLogin, this);
+        this.createButton("登出",this.testLogout,this);
         this.createButton("支付", this.testPay, this);
         this.createButton("分享", this.testShare, this);
         this.createButton("好友列表", this.testFriends, this);
@@ -86,6 +87,14 @@ class Main extends egret.DisplayObjectContainer {
 
     private print(text:any) {
         this.resultText.text = JSON.stringify(text);
+    }
+
+    private testLogout():void{
+        var self = this;
+        nest.user.logout(null, function(data){
+
+            self.print(data);
+        })
     }
 
     //初始化浏览器快捷登陆需要的信息
