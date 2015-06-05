@@ -82,6 +82,24 @@ module nest.user {
 
 
     /**
+     * 登出接口
+     * @param loginInfo 可以传递null
+     * @param callback
+     * @callback-param   { result : 0 };
+     */
+    export function logout(loginInfo:LoginInfo,callback:Function) {
+        var nestVersion = egret_native.getOption("egret.runtime.nest");
+        if (nestVersion >= 4){
+            var data = {module: "user", action: "logout",param:loginInfo};
+            callRuntime(data, callback);
+        }
+        else{
+            callback({"result":0});
+        }
+    }
+
+
+    /**
      * 检测支持何种登录方式
      * @param callback
      * @callback-param  @see nest.user.LoginCallbackInfo
