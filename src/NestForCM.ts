@@ -316,20 +316,25 @@ module nest.cm.app {
     }
 }
 
-if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE && !egret_native.getOption("egret.runtime.nest")) {
-    console.log("cm old u r in cm");
-    var appId = 88;//开发平台的id
-    var spId = 10044;
-    var egretInfo:nest.cm.EgretData;
+console.log("cm old 11111 ");
+console.log(egret_native.getOption("egret.runtime.nest"));
+console.log("cm old 22222 ");
 
-    egret_native["setOption"]("egret.runtime.spid", appId);
-    egret_native["setOption"]("channelTag", "cmbrowser");
-    CMPAY_DEBUG = false;
-    nest.user.checkLogin = nest.cm.user.checkLogin;
-    nest.iap.pay = nest.cm.iap.pay;
-    nest.share.isSupport = nest.cm.share.isSupport;
-    nest.app.isSupport = nest.cm.app.isSupport;
-    nest.app.initDesktop = nest.cm.app.initDesktop;
+if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
+    if (egret_native.getOption("egret.runtime.spid") == 10044
+        || (!egret_native.getOption("egret.runtime.nest"))) {
+        console.log("cm old u r in cm");
+        var appId = 88;//开发平台的id
+        var spId = 10044;
+        var egretInfo:nest.cm.EgretData;
 
-
+        egret_native["setOption"]("egret.runtime.spid", appId);
+        egret_native["setOption"]("channelTag", "cmbrowser");
+        CMPAY_DEBUG = false;
+        nest.user.checkLogin = nest.cm.user.checkLogin;
+        nest.iap.pay = nest.cm.iap.pay;
+        nest.share.isSupport = nest.cm.share.isSupport;
+        nest.app.isSupport = nest.cm.app.isSupport;
+        nest.app.initDesktop = nest.cm.app.initDesktop;
+    }
 }
