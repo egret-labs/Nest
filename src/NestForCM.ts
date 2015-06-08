@@ -317,6 +317,8 @@ module nest.cm.app {
 }
 
 console.log("cm old 11111 ");
+console.log(egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE);
+console.log(egret_native.getOption("egret.runtime.spid"));
 console.log(egret_native.getOption("egret.runtime.nest"));
 console.log("cm old 22222 ");
 
