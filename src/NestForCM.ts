@@ -295,11 +295,15 @@ module nest.cm.share {
 }
 
 module nest.cm.app {
+
+    var desktopInfo:nest.app.IDesktopInfo;
+
     /**
      * 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
      * @param param
      */
     export function initDesktop(param:nest.app.IDesktopInfo) {
+        desktopInfo = param;
         egret.ExternalInterface.call("save_shortcut_info", JSON.stringify({
             token: String(Math.random()),
             value: JSON.stringify(param)
@@ -312,7 +316,33 @@ module nest.cm.app {
      * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
      */
     export function isSupport(callback:Function) {
-        callback({status: 0, sendToDesktop: 0});
+        if (CMPAY_EGRET.getVersion() != false && !isNaN(CMPAY_EGRET.getVersion()) && CMPAY_EGRET.getVersion() > 301030) {
+            callback({status: 0, sendToDesktop: 1, attention: 0});
+        }
+        else {
+            callback({status: 0, sendToDesktop: 0, attention: 0});
+        }
+    }
+
+    /**
+     * 发送到桌面
+     * @param appInfo
+     * @param callback
+     * @param callback-param result 0表示添加桌面成功，-1表示添加失败
+     */
+    export function sendToDesktop(appInfo:any, callback:Function) {
+        if (desktopInfo) {
+            egret.ExternalInterface.call("push_icon", JSON.stringify({
+                title: desktopInfo.Title,
+                detailUrl: desktopInfo.DetailUrl,
+                picUrl: desktopInfo.PicUrl
+            }));
+
+            callback({result: 0});
+        }
+        else {
+            callback({result: -1});
+        }
     }
 }
 
@@ -338,5 +368,6 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
         nest.share.isSupport = nest.cm.share.isSupport;
         nest.app.isSupport = nest.cm.app.isSupport;
         nest.app.initDesktop = nest.cm.app.initDesktop;
+        nest.app.sendToDesktop = nest.cm.app.sendToDesktop;
     }
 }
