@@ -26,4 +26,5 @@
 
 
 注意
-1、必须手动修改NestForCM.ts里 var appId = 0;//开发平台的id
+1、必须手动修改NestForCM.ts里 appId的值。 var appId = 0;//开发平台的id
+2、接猎豹时，需要在游戏开始时（登陆前）调用nest.app.initDesktop，传入Json数据的3个参数中，DetailUrl对应的值为猎豹提供的地址。这个调用不影响其他的平台，因此可以同时更新到其他平台上。
