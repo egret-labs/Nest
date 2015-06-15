@@ -43,6 +43,11 @@ class Main extends egret.DisplayObjectContainer {
         this.removeEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
 
         this.createGameScene();
+
+
+        console.log("cm old option " + egret.getOption("egret.runtime.spid"));
+        console.log("cm old yjtx " + egret.getOption("yjtx"));
+        console.log("cm old channel " + egret.getOption("channelTag"));
     }
 
     /**

@@ -18,15 +18,8 @@
     </style>
 </head>
 <body>
-<input id="input_url" value=""/>
-<select id="input_orientation">
-    <option value=landscape>landscape</option>
-    <option value=portrait>portrait</option>
-</select>
-<button id="submit" onclick="start()">start</button>
 
 <script>
-    input_url.value = getOption("url");
 
     function openUrlWithGameSDK(url){
         if(typeof __injectionJavaScriptObject___ !== 'undefined' && __injectionJavaScriptObject___.openUrlWithGameSDK && __injectionJavaScriptObject___.openUrlWithGameSDK){
@@ -45,15 +38,13 @@
         return false;
     }
 
-    function start() {
+    window.onload = function () {
+
         var url = window.location.href;
-        url = url.replace(/\?.*/, "");
         var url2 = url.replace("runtime.html", "cm.html");
-        url2 += "?orientation=" + input_orientation.value;
-        url2 += "&url=" + input_url.value;
 
         openUrlWithGameSDK(url2);
-    }
+    };
 
 
     function getOption(key) {

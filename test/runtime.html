@@ -1,10 +1,9 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>QQ Nest测试</title>
+    <title>猎豹Nest测试</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <script src="http://jsapi.qq.com/get?api=x5gameplayer.*" type="text/javascript"></script>
     <style>
         body {
 
@@ -19,31 +18,27 @@
     </style>
 </head>
 <body>
+<input id="input_url" value=""/>
+<select id="input_orientation">
+    <option value=landscape>landscape</option>
+    <option value=portrait>portrait</option>
+</select>
+<button id="submit" onclick="start()">start</button>
 
 <script>
-
-    window.onload = function () {
-        start();
-    };
+    input_url.value = getOption("url");
 
     function start() {
-        window.onerror = function () {
-            alert(arguments[0])
-        };
+        var url2 = "orientation=" + input_orientation.value;
+        url2 += "&url=" + input_url.value;
 
-        var info = {
-            "engineName": "egret",
-            "localDebug": "false",
-            "orientation": getOption("orientation"),
-            "gameName": "helloworld",
-            "gameIconUrl": "http://snscwl.egret-labs.org/common/shareicon.png",
-            "gameUrl": "http://www.qq.com",
-            "ext": JSON.stringify({
-                "gameId": '86',
-                "zipUrl": getOption("url")
-            })
-        };
-        browser.x5gameplayer.run(info);
+        var ua = navigator.userAgent.toLowerCase();
+        if (ua.indexOf("liebao") >= 0) {
+            window.location.href = "cm/runtime.html?" + url2;
+        }
+        else if (ua.indexOf("qqbrowser") >= 0) {
+            window.location.href = "qq/runtime.html?" + url2
+        }
     }
 
     function getOption(key) {

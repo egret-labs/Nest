@@ -16,6 +16,8 @@
     nest.app.initDesktop 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
 
 3、测试方法：
+    h5 http://10.0.4.160/Egret/Nest/launcher/index.html?platinfo=open_22_9166
+
    猎豹 http://10.0.4.160/Egret/Nest/test/cm/runtime.html?url=http://10.0.4.160/Egret/Nest/test/publishJson.html
 
    qq http://10.0.4.160/Egret/Nest/test/cm/runtime.html?url=http://10.0.4.160/Egret/Nest/test/publishJson.html
