@@ -23,3 +23,7 @@
    qq http://10.0.4.160/Egret/Nest/test/cm/runtime.html?url=http://10.0.4.160/Egret/Nest/test/publishJson.html
 
 4、具体调用可以参考Main.ts
+
+
+注意
+1、必须手动修改NestForCM.ts里 var appId = 0;//开发平台的id
