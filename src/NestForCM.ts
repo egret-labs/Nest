@@ -355,11 +355,18 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         console.log("cm old u r in cm");
-        var appId = 88;//开发平台的id
-        var spId = 10044;
+        var appId = 0;//开发平台的id
+
+        var spId;
+        if (appId == 85 || appId == 88) {
+            spId = 10044;
+        }
+        else {
+            spId = 18287;
+        }
         var egretInfo:nest.cm.EgretData;
 
-        egret_native["setOption"]("egret.runtime.spid", spId);
+        //egret_native["setOption"]("egret.runtime.spid", spId);
         egret_native["setOption"]("channelTag", "cmbrowser");
         CMPAY_DEBUG = false;
         nest.user.checkLogin = nest.cm.user.checkLogin;
