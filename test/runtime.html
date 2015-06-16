@@ -20,10 +20,10 @@
 <body>
 <input id="input_url" value=""/>
 <select id="input_orientation">
-    <option value=landscape>landscape</option>
-    <option value=portrait>portrait</option>
+    <option value=landscape>横屏</option>
+    <option value=portrait>竖屏</option>
 </select>
-<button id="submit" onclick="start()">start</button>
+<button id="submit" onclick="start()">开始游戏</button>
 
 <script>
     input_url.value = getOption("url");
@@ -34,10 +34,10 @@
 
         var ua = navigator.userAgent.toLowerCase();
         if (ua.indexOf("liebao") >= 0) {
-            window.location.href = "cm/runtime.html?" + url2;
+            window.location.href = "cm/entry.html?" + url2;
         }
         else if (ua.indexOf("qqbrowser") >= 0) {
-            window.location.href = "qq/runtime.html?" + url2
+            window.location.href = "qq/entry.html?" + url2
         }
     }
 
