@@ -214,7 +214,7 @@ module nest.share {
     export function share(shareInfo:ShareInfo, callback:Function) {
 
         var data = {module: "share", action: "share", "param": shareInfo};
-        callRuntime(data, callback);
+        callRuntime(data, callback,true);
 
     }
 
@@ -314,10 +314,18 @@ module nest {
         param?:Object;
     }
 
-    export function callRuntime(data:NestData, callback) {
-        externalArr.push({"data": data, "callback": callback});
+    export function callRuntime(data:NestData, callback,parallel:boolean = false) {
 
-        _getData();
+        var tag = "nest";
+        if (parallel){
+            egret.ExternalInterface.call(tag, JSON.stringify(data));
+        }
+        else{
+            externalArr.push({"data": data, "callback": callback});
+            _getData();
+
+        }
+
     }
 
     var isRunning:boolean = false;

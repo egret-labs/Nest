@@ -1,36 +1,73 @@
 <!DOCTYPE html>
-<html>
+<br>
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
+    <title>Egret Runtime 游戏地址</title>
+    <meta name="viewport"
+          content="width=320,target-densitydpi=320"/>
 </head>
-<body>
+<script src="http://jsapi.qq.com/get?api=x5gameplayer.*" type="text/javascript"></script>
+
+
+
+
 
 
 <script>
-
-
-
     window.onerror = function () {
         alert(arguments[0])
     }
 
+    function startEgretRuntime(gameId,gameUrl){
 
-    alert(GameEngine)
 
-    var info = {
-        "engineName": "egret",
-        "localDebug": "false",
-        "orientation": "portrait",
-        "gameName": "萌战记",
-        "gameIconUrl": "http://snscwl.egret-labs.org/common/shareicon.png",
-        "gameUrl": "http://www.qq.com",
-        "ext": JSON.stringify({
-            "gameId": '86',
-            "zipUrl": 'http://10.0.4.106/Egret/Nest/release/android/yjtx/game_code_yjtx.zip'
-        })
-    };
-    GameEngine.run(JSON.stringify(info));
+        var gameId = encodeURIComponent(gameId);
+        var gameUrl = encodeURIComponent(gameUrl);
+
+        location.href = "x5gameplayer://10.0.11.6:3000/launcher/qq.html?gameId=" + gameId + "&gameUrl=" + gameUrl ;
+
+    }
+
+    function run(){
+        var gameId = document.getElementById("gameIdText").value;
+        var gameUrl = document.getElementById("gameUrlText").value;
+        if (!gameId){
+            alert ("请输入gameId");
+            return;
+        }
+        if (!gameUrl){
+            alert ("请输入gameUrl");
+            return;
+        }
+
+        localStorage.setItem("egret.runtime.gameId",gameId);
+        localStorage.setItem("egret.runtime.gameUrl",gameUrl);
+
+
+        startEgretRuntime(gameId,gameUrl);
+    }
+
+
+    function init(){
+        var gameId = localStorage.getItem("egret.runtime.gameId");
+        var gameUrl = localStorage.getItem("egret.runtime.gameUrl");
+        var gameIdText = document.getElementById("gameIdText");
+        var gameUrlText = document.getElementById("gameUrlText");
+        gameIdText.value = gameId;
+        gameUrlText.value = gameUrl;
+        alert (gameId);
+    }
+</script>
+
+<input id="gameIdText" type="text">请输入 gameId</input><br /><br />
+<input id="gameUrlText" type="text">请输入 runtimeURL</input><br /><br />
+<button onclick="run()">启动 Runtime</button><br />
+
+<script>
+
+
+    init();
+
 
 </script>
 
