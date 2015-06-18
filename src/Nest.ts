@@ -81,7 +81,7 @@ module nest.user {
     export function login(loginInfo:LoginInfo, callback:Function) {
 
         var data = {module: "user", action: "login", param: loginInfo};
-        callRuntime(data, callback);
+        callRuntime(data, callback ,true);
 
     }
 
@@ -287,6 +287,17 @@ module nest.app {
      */
     export function initDesktop(param:IDesktopInfo) {
 
+    }
+
+
+    /**
+     * 退出游戏，回到 App 界面
+     * @param appInfo
+     * @param callback
+     */
+    export function exitGame(appInfo:any, callback:Function){
+        var data = {module: "app", action: "exitGame"};
+        callRuntime(data, callback);
     }
 
     /**
