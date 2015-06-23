@@ -59,17 +59,8 @@ module nest.user {
      */
     export function checkLogin(loginInfo:LoginInfo, callback:Function) {
 
-        var version = egret_native.getOption("egret.runtime.nest");
-        if (version > 1) {//todo  暂时一处兼容代码，下个版本删除
-            var data = {module: "user", action: "checkLogin", param: loginInfo};
-            callRuntime(data, callback);
-        }
-        else {
-            var result = {token: null, status: "-1"}
-            callback(result);
-        }
-
-
+        var data = {module: "user", action: "checkLogin", param: loginInfo};
+        callRuntime(data, callback);
     }
 
     /**
@@ -329,6 +320,12 @@ module nest {
 
         var tag = "nest";
         if (parallel){
+
+            egret.ExternalInterface.addCallback(tag, function (data) {
+                console.log(data);
+                var obj = JSON.parse(data);
+                callback(obj.data);
+            });
             egret.ExternalInterface.call(tag, JSON.stringify(data));
         }
         else{
