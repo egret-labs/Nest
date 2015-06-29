@@ -273,15 +273,6 @@ module nest.app {
     }
 
     /**
-     * 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
-     * @param param
-     */
-    export function initDesktop(param:IDesktopInfo) {
-
-    }
-
-
-    /**
      * 退出游戏，回到 App 界面
      * @param appInfo
      * @param callback

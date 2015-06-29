@@ -93,9 +93,9 @@ module  nest.cm {
 
     export function loginBefore(callback):void {
         var postdata = {};
-        var url:string = "http://api.egret-labs.org/games/www/game.php/";
+        var url:string = "http://api.egret-labs.org/games/www/getAppInfo.php/";
         url += appId + "_" + spId;
-        postdata["runtime"] = 1;
+        postdata["debug"] = 1;
 
         setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
             callback(resultData);
@@ -192,9 +192,18 @@ module nest.cm.user {
 
         function checkBefore(resultData) {
             if (resultData["status"] == 0) {
-                postData["client_id"] = resultData["data"]["client_id"];
-                postData["client_secret"] = resultData["data"]["client_secret"];
-                postData["redirect_uri"] = resultData["data"]["redirect_uri"];
+
+                var tempData = resultData["data"];
+                postData["client_id"] = tempData["client_id"];
+                postData["client_secret"] = tempData["client_secret"];
+                postData["redirect_uri"] = tempData["redirect_uri"];
+
+                //调用初始化桌面快捷方式
+                nest.cm.app.initDesktop({
+                    "Title": tempData["title"],
+                    "DetailUrl": tempData["detailUrl"],
+                    "PicUrl": tempData["picUrl"]
+                });
 
                 nest.cm.callRuntime({
                     module: "user",
@@ -202,6 +211,8 @@ module nest.cm.user {
                     param: loginInfo,
                     postData: postData
                 }, loginHandler);
+
+
             }
         }
 
@@ -355,7 +366,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         console.log("cm old u r in cm");
-        var appId = 0;//开发平台的id
+        var appId = 126;//开发平台的id
 
         var spId;
         if (appId == 85 || appId == 88) {
@@ -367,13 +378,12 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
         var egretInfo:nest.cm.EgretData;
 
         //egret_native["setOption"]("egret.runtime.spid", spId);
-        egret_native["setOption"]("channelTag", "cmbrowser");
+        egret_native["setOption"]("channelTag", "liebao");
         CMPAY_DEBUG = false;
         nest.user.checkLogin = nest.cm.user.checkLogin;
         nest.iap.pay = nest.cm.iap.pay;
         nest.share.isSupport = nest.cm.share.isSupport;
         nest.app.isSupport = nest.cm.app.isSupport;
-        nest.app.initDesktop = nest.cm.app.initDesktop;
         nest.app.sendToDesktop = nest.cm.app.sendToDesktop;
     }
 }
