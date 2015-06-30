@@ -18,8 +18,9 @@
     </style>
 </head>
 <body>
-<input id="input_url" value=""/>
-<select id="input_orientation">
+runtime地址：<input id="input_url" value=""/>
+游戏id：<input id="input_gameId" value=""/>
+横竖屏设置：<select id="input_orientation">
     <option value=landscape>横屏</option>
     <option value=portrait>竖屏</option>
 </select>
@@ -27,17 +28,30 @@
 
 <script>
     input_url.value = getOption("url");
+    input_gameId.value = getOption("id");
+    input_orientation.value = getOption("orientation");
 
     function start() {
+        if (!input_url.value || !input_gameId.value) {
+            alert("请设置runtime地址以及游戏id");
+
+            return;
+        }
+
+
         var url2 = "orientation=" + input_orientation.value;
-        url2 += "&url=" + input_url.value;
+        url2 += "&url=" + input_url.value + "&id="+input_gameId.value;
 
         var ua = navigator.userAgent.toLowerCase();
         if (ua.indexOf("liebao") >= 0) {
             window.location.href = "cm/entry.html?" + url2;
         }
         else if (ua.indexOf("qqbrowser") >= 0) {
-            window.location.href = "qq/entry.html?" + url2
+            var url = window.location.href;
+            var last = url.indexOf("runtime.html");
+            var first = url.indexOf("http") + 4;
+            var url = "x5gameplayer" + url.substring(first, last) +  "qq/entry.html?" + url2;
+            window.location.href = url;
         }
     }
 

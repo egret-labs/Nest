@@ -15,14 +15,16 @@
     nest.app.sendToDesktop 发送到桌面
 
 3、测试方法：
-    h5 http://10.0.4.160/Egret/Nest/launcher/index.html?platinfo=open_22_9166
-
-    猎豹/ http://10.0.4.160/Egret/Nest/test/runtime.html?url=http://10.0.4.160/Egret/Nest/test/publishJson.html
-    url为游戏提供的runtime地址（返回的json数据的地址）
+    h5：
+        http://10.0.4.160/Egret/Nest/launcher/index.html?platinfo=open_22_9166
 
 
-    qq测试  x5gameplayer://10.0.4.160/Egret/Nest/test/runtime.html?url=http://10.0.4.160/Egret/Nest/test/publishJson.html
-    url为游戏提供的runtime地址（返回的json数据的地址）
+    runtime:
+        http://runtime.egret-labs.org/nest/runtime.html?url=http://10.0.11.177/Egret/Nest/test/publishJson.html&id=88&orientation=portrait
+
+        url：为 游戏提供的runtime地址（返回的json数据的地址）
+        id：测试游戏的gameId
+        orientation：横竖屏设置 portrait 竖屏  landscape横屏
 
 
 4、具体调用可以参考Main.ts
