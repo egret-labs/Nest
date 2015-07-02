@@ -19,7 +19,7 @@
         http://10.0.4.160/Egret/Nest/launcher/index.html?platinfo=open_22_9166
 
 
-    runtime:
+    runtime:（目前只支持qq\猎豹，且必须先确保游戏已经在对应的平台上配置过游戏信息，非h5信息）
         http://runtime.egret-labs.org/nest/runtime.html?url=http://10.0.11.177/Egret/Nest/test/publishJson.html&id=88&orientation=portrait
 
         url：为 游戏提供的runtime地址（返回的json数据的地址）
