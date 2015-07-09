@@ -84,7 +84,7 @@ module nest.user {
      * @callback-param   { result : 0 };
      */
     export function logout(loginInfo:LoginInfo,callback:Function) {
-        var nestVersion = egret_native.getOption("egret.runtime.nest");
+        var nestVersion:any = egret_native.getOption("egret.runtime.nest");
         if (nestVersion >= 4){
             var data = {module: "user", action: "logout",param:loginInfo};
             callRuntime(data, callback);
