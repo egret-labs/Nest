@@ -65,7 +65,6 @@ class Main extends egret.DisplayObjectContainer {
         this.resultText.x = 100;
         this.resultText.y = 400;
 
-        this.createButton("保存桌面信息", this.testInitDesktop, this);
         this.createButton("检查支持", this.testSupport, this);
         this.createButton("检查登录类型", this.testLoginSupport, this);
         this.createButton("检测是否登录", this.testCheckLogin, this);
@@ -100,15 +99,6 @@ class Main extends egret.DisplayObjectContainer {
 
             self.print(data);
         })
-    }
-
-    //初始化浏览器快捷登陆需要的信息
-    private testInitDesktop():void {
-        nest.app.initDesktop({
-            Title: "Egret测试桌面",
-            DetailUrl: "",
-            PicUrl: "https://avatars2.githubusercontent.com/u/6657668?v=3&s=200"
-        });
     }
 
     //检测功能支持
