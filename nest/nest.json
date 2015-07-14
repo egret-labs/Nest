@@ -1,12 +1,12 @@
 {
   "name": "nest",
   "dependence": ["core"],
-  "source":"src",
+  "source":"nest",
   "file_list" : [
-    "CMPAY_EGRET.js",
-    "CMPAY_EGRET.d.ts",
+    "cm/CMPAY_EGRET.js",
+    "cm/CMPAY_EGRET.d.ts",
     "Nest.ts",
-    "NestForCM.ts",
+    "cm/NestForCM.ts",
     "egret_sdk_bridge.js",
     "h5/NestForH5.ts",
     "h5/EgretH5Sdk.d.ts"
