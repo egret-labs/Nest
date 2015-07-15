@@ -43,12 +43,39 @@ class Main extends egret.DisplayObjectContainer {
     private onAddToStage(event:egret.Event) {
         this.removeEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
 
-        this.createGameScene();
+        
+        egret.Injector.mapClass("egret.gui.IAssetAdapter", AssetAdapter);
+        egret.gui.Theme.load("resource/theme.thm");
+        
+        RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
+        RES.loadConfig("resource/resource.json", "resource/");
+//        this.createGameScene();
+        
+        
+       
 
 
         console.log("cm old option " + egret.getOption("egret.runtime.spid"));
         console.log("cm old yjtx " + egret.getOption("yjtx"));
         console.log("cm old channel " + egret.getOption("channelTag"));
+    }
+    
+    /**
+    * 配置文件加载完成,开始预加载preload资源组。
+    * Loading of configuration file is complete, start to pre-load the preload resource group
+    */
+    private onConfigComplete(event:RES.ResourceEvent):void {
+        RES.removeEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
+        RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
+        RES.loadGroup("preload");
+    }
+    
+    
+    private onResourceLoadComplete(event:RES.ResourceEvent):void {
+        if (event.groupName == "preload") {
+            RES.removeEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
+            this.createGameScene();               
+        }
     }
 
     /**
@@ -56,6 +83,17 @@ class Main extends egret.DisplayObjectContainer {
      * Create a game scene
      */
     private createGameScene():void {
+        
+        var uistage: egret.gui.UIStage = new egret.gui.UIStage();
+        this.addChild(uistage);
+                            
+                            
+        var loginView: LoginView = new LoginView();
+        uistage.addElement(loginView);
+        
+        
+        
+        return;
         this.container = new egret.DisplayObjectContainer();
         this.addChild(this.container);
         this.resultText = new egret.TextField();
