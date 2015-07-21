@@ -102,13 +102,21 @@ module  nest.cm {
         });
     }
 
-    export function loginAfter(postdata, callback):void {
+    export function loginAfter(postdata, callback, isNew:boolean):void {
+
+        var sendData = {};
+        sendData["access_token"] = postdata["access_token"];
+        sendData["openid"] = postdata["openid"];
         var url:string = "http://api.egret-labs.org/games/www/game.php/";
         url += appId + "_" + spId;
-        postdata["runtime"] = 1;
-        postdata["showGame"] = 1;
+        sendData["runtime"] = 1;
+        sendData["showGame"] = 1;
+        if (isNew) {
+            sendData["newLiebaoApi"] = 1;
+        }
 
-        setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
+        //需要发送 runtime=1  showGame=1  access_token=  openid=
+        setProxy(url, sendData, egret.URLRequestMethod.GET, function (resultData) {
             callback(resultData);
         });
     }
@@ -186,8 +194,23 @@ module nest.cm.user {
                     egret.localStorage.setItem("deviceid", resultData["deviceid"]);
                 }
 
-                nest.cm.loginAfter(resultData, checkAfter);
+                nest.cm.loginAfter(resultData, checkAfter, false);
             }
+        }
+
+        function loginHandler1(resultData) {
+            console.log("cm old loginHandler1");
+            console.log(JSON.stringify(resultData, null, 4));
+
+            var sendData = {};
+            sendData["access_token"] = resultData["cp"]["token"];
+            sendData["openid"] = resultData["user"]["openid"];
+
+            //保存设备id
+            egret.localStorage.setItem("cm_token", sendData["access_token"]);
+
+            console.log("cm old loginHandler2");
+            nest.cm.loginAfter(sendData, checkAfter, true);
         }
 
         function checkBefore(resultData) {
@@ -205,14 +228,31 @@ module nest.cm.user {
                     "PicUrl": tempData["picUrl"]
                 });
 
-                nest.cm.callRuntime({
-                    module: "user",
-                    action: "checkLogin",
-                    param: loginInfo,
-                    postData: postData
-                }, loginHandler);
-
-
+                CMGAME_EGRET.checkIsGameSDK(function (isGameSDK, verGameSDK) {
+                    if (isGameSDK) {
+                        console.log("cm old checkIsGameSDK1");
+                        var obj = {
+                            clientId: tempData["client_id"],
+                            clientSecret: tempData["client_secret"],
+                            redirectUri: tempData["redirect_uri"]
+                        };
+                        //保存设备id
+                        if (egret.localStorage.getItem("cm_token")) {
+                            //obj["token"] = egret.localStorage.getItem("cm_token");
+                        }
+                        console.log(JSON.stringify(obj, null, 4));
+                        console.log("cm old checkIsGameSDK2");
+                        CMGAME_EGRET.dispatchGameLoginData(obj, loginHandler1);
+                    }
+                    else {
+                        nest.cm.callRuntime({
+                            module: "user",
+                            action: "checkLogin",
+                            param: loginInfo,
+                            postData: postData
+                        }, loginHandler);
+                    }
+                });
             }
         }
 
