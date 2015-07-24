@@ -179,6 +179,12 @@ module nest.iap {
         ext:string;
 
     }
+    
+    export interface PayCallbackInfo {
+                
+        result: number;
+                
+        }
 
 }
 
@@ -224,6 +230,12 @@ module nest.share {
 
         url:string;
 
+    }
+    
+    export interface ShareCallbackInfo {
+        
+        
+        result: number;
     }
 }
 

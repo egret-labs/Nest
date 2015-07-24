@@ -10,7 +10,7 @@ class LoginView extends egret.gui.SkinnableComponent {
     
     public constructor() {
         super();
-        this.skinName = skins.LoginSkin;
+        this.skinName = skins.LoginViewSkin;
 	}
 	
 	
@@ -59,14 +59,15 @@ class LoginView extends egret.gui.SkinnableComponent {
 	private onGetUserInfoCallback(data:any){
         console.log(data);
         this.info_txt.text = "正在进入游戏...";
+        this.dispatchEvent(new GameEvent(GameEvent.LOGIN_SUCCESS));
 	}
 	
 	private getUserInfo(data:nest.user.LoginCallbackInfo,onGetUserInfoCallback:Function){
     	
     	  //为了保证安全性，这段代码请务必放在服务器端实现
         this.info_txt.text = "正在获取用户信息...";
-        var appId: number = 323;
-        var appkey: string = "woBQUXxYqALA2xvjA9W3b";
+        var appId: number = 336;
+        var appkey: string = "r83RydQxkjhjOsqFVs2OD";
         var token = data.token;
         var requestParams:any = {
             action: "user.getInfo",

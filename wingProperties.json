@@ -1,5 +1,12 @@
 {
 	"close":false,
+	"publishSetting":
+	{
+		"compile":false,
+		"password":"",
+		"runtime":"native",
+		"version":"v1234"
+	},
 	"resourcePlugin":
 	{
 		"configs":[

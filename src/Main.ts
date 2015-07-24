@@ -49,15 +49,7 @@ class Main extends egret.DisplayObjectContainer {
         
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
         RES.loadConfig("resource/resource.json", "resource/");
-//        this.createGameScene();
-        
-        
        
-
-
-        console.log("cm old option " + egret.getOption("egret.runtime.spid"));
-        console.log("cm old yjtx " + egret.getOption("yjtx"));
-        console.log("cm old channel " + egret.getOption("channelTag"));
     }
     
     /**
@@ -86,12 +78,12 @@ class Main extends egret.DisplayObjectContainer {
         
         var uistage: egret.gui.UIStage = new egret.gui.UIStage();
         this.addChild(uistage);
-                            
-                            
-        var loginView: LoginView = new LoginView();
-        uistage.addElement(loginView);
         
+        uistage.addEventListener(GameEvent.LOGIN_SUCCESS,this.onLoginSuccess,this);
+                            
         
+        utils.init(uistage);
+        utils.changeView(new LoginView());
         
         return;
         this.container = new egret.DisplayObjectContainer();
@@ -114,6 +106,10 @@ class Main extends egret.DisplayObjectContainer {
         this.createButton("好友列表", this.testFriends, this);
         this.createButton("发送到桌面", this.testSendToDesktop, this);
         this.createButton("打开游戏论坛", this.testOpenBBS, this);
+    }
+    
+    private onLoginSuccess(e:GameEvent):void{
+        utils.changeView(new GameView());
     }
 
     private createButton(label:string, callback:Function, thisObject:any):egret.DisplayObject {
@@ -246,6 +242,24 @@ class Main extends egret.DisplayObjectContainer {
             self.print(data);
         })
     }
+}
+
+module utils {
+    
+    
+    var _stage: egret.gui.UIStage;
+    
+    export function init(stage:egret.gui.UIStage){
+        _stage = stage;
+    }
+    
+    export function changeView(view:egret.gui.UIComponent){
+        _stage.removeAllElements();
+        _stage.addElement(view);
+    }
+    
+    
+    
 }
 
 
