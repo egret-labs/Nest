@@ -78,6 +78,10 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
         EgretH5Sdk.login(egretH5SdkCallback, null, loginInfo.loginType);
     };
 
+    nest.user.logout = function (loginInfo:nest.user.LoginInfo, callback:Function) {
+
+    };
+
     nest.iap.pay = function (orderInfo:nest.iap.PayInfo, callback:Function) {
         if (nest.h5.uid) {
             orderInfo["appId"] = nest.h5.appid;
