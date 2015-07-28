@@ -36,7 +36,7 @@ class GameView extends egret.gui.SkinnableComponent{
 	private onPayButtonTapHandler(e:egret.TouchEvent):void{
 
         var payInfo: nest.iap.PayInfo = {
-            goodsId:"1",
+            goodsId:"testpay2",
             goodsNumber:"1",
             serverId:"1",
             ext:"1"

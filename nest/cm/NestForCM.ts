@@ -411,7 +411,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         console.log("cm old u r in cm");
-        var appId = 126;//开发平台的id
+        var appId = 351;//开发平台的id
 
         var spId;
         if (appId == 85 || appId == 88) {
