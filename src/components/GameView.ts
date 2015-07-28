@@ -9,7 +9,8 @@ class GameView extends egret.gui.SkinnableComponent{
     public payButton: egret.gui.Button;
     
     public shareButton: egret.gui.Button;
-    
+    public logoutButton: egret.gui.Button;
+
 	public constructor() {
         super();
         this.skinName = skins.GameViewSkin;
@@ -20,20 +21,30 @@ class GameView extends egret.gui.SkinnableComponent{
         
         this.payButton.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onPayButtonTapHandler,this);
         this.shareButton.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onShareButtonTapHandler,this);
+        this.logoutButton.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onLogoutButtonTapHandler,this);
 	}
 	
+	private onLogoutButtonTapHandler(e:egret.TouchEvent):void{
+
+        var loginInfo: nest.user.LoginInfo = {};
+
+        nest.user.logout(loginInfo, function (data) {
+            alert(data);
+        });
+	}
+
 	private onPayButtonTapHandler(e:egret.TouchEvent):void{
-    	
+
         var payInfo: nest.iap.PayInfo = {
             goodsId:"1",
             goodsNumber:"1",
             serverId:"1",
             ext:"1"
         };
-     
+
         nest.iap.pay(payInfo,this.onPayHandler.bind(this));
 	}
-	
+
 	private onPayHandler(payInfo:nest.iap.PayCallbackInfo):void{
         console.log(payInfo);
 	}

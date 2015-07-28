@@ -7,6 +7,7 @@ var CMPAY_EGRET = (function(){
         isReady: false,
         fire: empty,
         purchase: empty,
+        getVersion: empty,
         type: 'egret_runtime'
     };
     var readyListeners = [];
@@ -234,12 +235,14 @@ var CMPAY_EGRET = (function(){
             if(option.method && option.method.toLowerCase() === 'post'){
                 urlreq.method = egret.URLRequestMethod.POST;
             }
+            var postData = '';
             if(option.data){
                 if(typeof option.data === 'string'){
-                    urlreq.data = new egret.URLVariables(option.data);
+                    postData = option.data;
                 }else{
-                    urlreq.data = new egret.URLVariables(param(option.data));
+                    postData = param(option.data);
                 }
+                urlreq.data = new egret.URLVariables(postData);
             }
             urlreq.url = option.url;
             urlloader.dataFormat = egret.URLLoaderDataFormat.TEXT;
@@ -247,16 +250,47 @@ var CMPAY_EGRET = (function(){
                 console.log('tttt:netreq:complete:' + urlloader.data);
                 fn(urlloader.data);
             });
-            console.log('tttt:netreq:' + urlreq.url);
+            console.log('tttt:netreq:' + urlreq.url + ':' + postData);
             urlloader.load( urlreq );
         }
+        function placeOrderProxy(option, fn){
+            console.log('ssss:placeOrderProxy:' + JSON.stringify(option));
+            var token = option.data && option.data.access_token;
+            if(!token){
+                fn(false, -1, '{"msg":"Token not provided."}');
+            }else{
+                if(token.length === 32 || token.slice(0,3) === 'sdk'){
+                    var p = {
+                        token: token,
+                        method: option.pay_method,
+                        dev: option.debug ? 1 : null
+                    };
+                    var _d = option.data;
+                    for(var i in _d){
+                        if(_d.hasOwnProperty(i) && i !== 'access_token'){
+                            p[i] = _d[i];
+                        }
+                    }
+                    ajax({
+                        method: 'POST',
+                        url: 'http://gclogin.liebao.cn/api/native/order/pay',
+                        data: p
+                    }, fn);
+                }else{
+                    ajax({
+                        method: 'POST',
+                        url: 'http://gc.liebao.cn/pay/topay.php',
+                        data: {
+                            method: option.pay_method,
+                            args: param(option.data),
+                            dev: option.debug ? 1 : null
+                        }
+                    }, fn);
+                }
+            }
+        }
         function placeOrder(option, fn){
-            var server = option.debug ? 'http://xpaydev.ksmobile.com' : 'http://xpay.ksmobile.com';
-            ajax({
-                method: 'POST',
-                url: server + '/1/api/wsjpay/sdk/order',
-                data: option.data
-            }, function(responseText){
+            placeOrderProxy(option, function(responseText){
                 var response;
                 var success = false;
                 var msg = 'Unkown error';
@@ -325,14 +359,8 @@ var CMPAY_EGRET = (function(){
         cmpay.purchase = function(option){
             console.log('ssss:purchase:' + JSON.stringify(option));
             placeOrder({
-                data: {
-                    access_token: option.access_token,
-                    client_id : option.client_id,
-                    product_id: option.product_id,
-                    unit: option.unit,
-                    payload : option.payload,
-                    notify_url: option.notify_url
-                },
+                pay_method: 'wsjpay/sdk',
+                data: option,
                 debug: typeof option.debug !== 'undefined' ? option.debug : isDebug
             },function(success, code, msg, response){
                 cmpay.fire('cmpay_order_placed', {
@@ -375,7 +403,7 @@ var CMPAY_EGRET = (function(){
     var version = false;
     cmpay.getVersion = function () {
         return version;
-    }
+    };
 
     var to = egret.setTimeout(function(){
         if(version === false){

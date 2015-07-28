@@ -34,7 +34,7 @@ class LoginView extends egret.gui.SkinnableComponent {
 	private onCheckLoginCallback(data:nest.user.LoginCallbackInfo):void {
 	    
     	if (!data.token){
-            this.info_txt.text = "正在登录...";
+            this.info_txt.text += "\n正在登录...";
             var loginInfo: nest.user.LoginInfo = {};
             nest.user.login(loginInfo,this.onLoginCallback.bind(this));
     	}
@@ -46,26 +46,26 @@ class LoginView extends egret.gui.SkinnableComponent {
 	
 	private onLoginCallback(data:nest.user.LoginCallbackInfo):void{
 	    
-        if (data.result == 0){          
+        if (data.result == 0){
             this.getUserInfo(data,this.onGetUserInfoCallback);    
         }
         else{
             //登录失败
-            this.info_txt.text = "正在获取用户信息...";
+            this.info_txt.text += "\n正在获取用户信息...";
         }
     	
 	}
 	
 	private onGetUserInfoCallback(data:any){
         console.log(data);
-        this.info_txt.text = "正在进入游戏...";
+        this.info_txt.text+= "\n正在进入游戏...";
         this.dispatchEvent(new GameEvent(GameEvent.LOGIN_SUCCESS));
 	}
 	
 	private getUserInfo(data:nest.user.LoginCallbackInfo,onGetUserInfoCallback:Function){
     	
     	  //为了保证安全性，这段代码请务必放在服务器端实现
-        this.info_txt.text = "正在获取用户信息...";
+        this.info_txt.text += "\n正在获取用户信息...";
         var appId: number = 336;
         var appkey: string = "r83RydQxkjhjOsqFVs2OD";
         var token = data.token;

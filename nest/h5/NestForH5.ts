@@ -79,7 +79,12 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
     };
 
     nest.user.logout = function (loginInfo:nest.user.LoginInfo, callback:Function) {
-
+        var egretH5SdkCallback = function (data) {
+            var status = data.status;
+            var result = status == 1 ? 0 : 1;
+            callback.call(null, {"result":result});
+        };
+        EgretH5Sdk.logout(egretH5SdkCallback, null);
     };
 
     nest.iap.pay = function (orderInfo:nest.iap.PayInfo, callback:Function) {

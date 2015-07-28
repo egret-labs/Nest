@@ -181,7 +181,7 @@ module nest.cm.user {
 
         function checkAfter(resultData) {
             egretInfo = {egretUserId: resultData["data"]["id"]};
-
+            resultData["data"]["result"] = resultData["status"];
             callback(resultData["data"]);
         }
 
@@ -195,6 +195,9 @@ module nest.cm.user {
                 }
 
                 nest.cm.loginAfter(resultData, checkAfter, false);
+            }
+            else {
+                callback({"result": 1});
             }
         }
 
@@ -245,6 +248,7 @@ module nest.cm.user {
                         CMGAME_EGRET.dispatchGameLoginData(obj, loginHandler1);
                     }
                     else {
+                        console.log("cm old checkIsGameSDK2");
                         nest.cm.callRuntime({
                             module: "user",
                             action: "checkLogin",
@@ -254,11 +258,12 @@ module nest.cm.user {
                     }
                 });
             }
+            else {
+                callback({"result": 1});
+            }
         }
 
         nest.cm.loginBefore(checkBefore);
-
-
     }
 
     /**
