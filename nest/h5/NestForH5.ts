@@ -91,7 +91,9 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
         if (nest.h5.uid) {
             orderInfo["appId"] = nest.h5.appid;
             orderInfo["uId"] = nest.h5.uid;
-            EgretH5Sdk.pay(orderInfo, callback, null);
+            EgretH5Sdk.pay(orderInfo,function(data) {
+                callback(data);
+                }, this);
         }
     };
 
