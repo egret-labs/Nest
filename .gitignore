@@ -3,3 +3,6 @@
 libs/*
 bin-debug/*
 release/
+runtime.json
+
+qq.html

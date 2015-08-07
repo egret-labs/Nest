@@ -28,6 +28,37 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 
+
+
+
+
+module nest.core {
+    
+    export function startup(info:StartupInfo,callback:Function){
+        callback({"result":0});
+    }
+    
+    
+    export function callCustomMethod(customInfo:any,callback:Function){
+        var data = {module: "core", action: "callCustomMethod",param:customInfo};
+        callRuntime(data, callback);
+    }
+    
+    
+    export interface StartupInfo {
+        
+        egretAppId: string;
+        
+    }
+    
+    
+    
+}
+
+
+
+
+
 /**
  * 登录功能
  *
@@ -60,6 +91,7 @@ module nest.user {
     export function checkLogin(loginInfo:LoginInfo, callback:Function) {
 
         var data = {module: "user", action: "checkLogin", param: loginInfo};
+        
         callRuntime(data, callback);
     }
 
