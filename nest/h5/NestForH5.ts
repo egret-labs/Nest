@@ -118,7 +118,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
             var loginCallbackInfo = {"status": status, "result": status};
             callback.call(null, loginCallbackInfo);
         };
-        EgretH5Sdk.share(nest.h5.appid, nest.h5.uid, shareInfo.description, egretH5SdkCallback, null);
+        EgretH5Sdk.share(nest.h5.appid, nest.h5.uid, shareInfo, egretH5SdkCallback, null);
     };
 
     nest.social.isSupport = function (callback:Function) {
