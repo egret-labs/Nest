@@ -28,35 +28,27 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-
 module nest.core {
-    
-    export function startup(info:StartupInfo,callback:Function){
-        callback({"result":0});
+
+    export function startup(info:StartupInfo, callback:Function) {
+        callback({"result": 0});
     }
-    
-    
-    export function callCustomMethod(customInfo:any,callback:Function){
-        var data = {module: "core", action: "callCustomMethod",param:customInfo};
+
+
+    export function callCustomMethod(customInfo:any, callback:Function) {
+        var data = {module: "core", action: "callCustomMethod", param: customInfo};
         callRuntime(data, callback);
     }
-    
-    
+
+
     export interface StartupInfo {
-        
+
         egretAppId: string;
-        
+
     }
-    
-    
-    
+
+
 }
-
-
-
 
 
 /**
@@ -91,7 +83,7 @@ module nest.user {
     export function checkLogin(loginInfo:LoginInfo, callback:Function) {
 
         var data = {module: "user", action: "checkLogin", param: loginInfo};
-        
+
         callRuntime(data, callback);
     }
 
@@ -104,7 +96,7 @@ module nest.user {
     export function login(loginInfo:LoginInfo, callback:Function) {
 
         var data = {module: "user", action: "login", param: loginInfo};
-        callRuntime(data, callback ,true);
+        callRuntime(data, callback, true);
 
     }
 
@@ -115,14 +107,14 @@ module nest.user {
      * @param callback
      * @callback-param   { result : 0 };
      */
-    export function logout(loginInfo:LoginInfo,callback:Function) {
+    export function logout(loginInfo:LoginInfo, callback:Function) {
         var nestVersion:any = egret_native.getOption("egret.runtime.nest");
-        if (nestVersion >= 4){
-            var data = {module: "user", action: "logout",param:loginInfo};
+        if (nestVersion >= 4) {
+            var data = {module: "user", action: "logout", param: loginInfo};
             callRuntime(data, callback);
         }
-        else{
-            callback({"result":0});
+        else {
+            callback({"result": 0});
         }
     }
 
@@ -211,12 +203,12 @@ module nest.iap {
         ext:string;
 
     }
-    
+
     export interface PayCallbackInfo {
-                
+
         result: number;
-                
-        }
+
+    }
 
 }
 
@@ -242,8 +234,8 @@ module nest.share {
      */
     export function share(shareInfo:ShareInfo, callback:Function) {
 
-        var data = {module: "share", action: "share", "param": shareInfo};
-        callRuntime(data, callback,true);
+        var data = {module: "share", action: "share", param: shareInfo};
+        callRuntime(data, callback, true);
 
     }
 
@@ -263,10 +255,10 @@ module nest.share {
         url:string;
 
     }
-    
+
     export interface ShareCallbackInfo {
-        
-        
+
+
         result: number;
     }
 }
@@ -279,12 +271,12 @@ module nest.social {
     }
 
     export function getFriends(socialInfo, callback:Function) {
-        var data = {module: "social", action: "getFriends"};
+        var data = {module: "social", action: "getFriends", param: socialInfo};
         callRuntime(data, callback);
     }
 
     export function openBBS(socialInfo, callback:Function) {
-        var data = {module: "social", action: "openBBS"};
+        var data = {module: "social", action: "openBBS", param: socialInfo};
         callRuntime(data, callback);
     }
 }
@@ -312,7 +304,7 @@ module nest.app {
      * @param callback
      */
     export function attention(appInfo:any, callback:Function) {
-        var data = {module: "app", action: "attention"};
+        var data = {module: "app", action: "attention", param: appInfo};
         callRuntime(data, callback);
     }
 
@@ -321,8 +313,8 @@ module nest.app {
      * @param appInfo
      * @param callback
      */
-    export function exitGame(appInfo:any, callback:Function){
-        var data = {module: "app", action: "exitGame"};
+    export function exitGame(appInfo:any, callback:Function) {
+        var data = {module: "app", action: "exitGame", param: appInfo};
         callRuntime(data, callback);
     }
 
@@ -333,7 +325,7 @@ module nest.app {
      * @param callback-param result 0表示添加桌面成功，-1表示添加失败
      */
     export function sendToDesktop(appInfo:any, callback:Function) {
-        var data = {module: "app", action: "sendToDesktop"};
+        var data = {module: "app", action: "sendToDesktop", param: appInfo};
         callRuntime(data, callback);
     }
 
@@ -351,10 +343,10 @@ module nest {
         param?:Object;
     }
 
-    export function callRuntime(data:NestData, callback,parallel:boolean = false) {
+    export function callRuntime(data:NestData, callback, parallel:boolean = false) {
 
         var tag = "nest";
-        if (parallel){
+        if (parallel) {
 
             egret.ExternalInterface.addCallback(tag, function (data) {
                 console.log(data);
@@ -363,7 +355,7 @@ module nest {
             });
             egret.ExternalInterface.call(tag, JSON.stringify(data));
         }
-        else{
+        else {
             externalArr.push({"data": data, "callback": callback});
             _getData();
 
