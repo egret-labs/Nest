@@ -8,6 +8,8 @@ class LoginView extends egret.gui.SkinnableComponent {
     
     public info_txt: egret.gui.Label;
     
+    public login_button: egret.gui.Button;
+    
     public constructor() {
         super();
         this.skinName = skins.LoginViewSkin;
@@ -15,18 +17,22 @@ class LoginView extends egret.gui.SkinnableComponent {
 	
 	
 	public createChildren(){
-        super.createChildren();
-        
-        
+        super.createChildren();  
+        this.login_button.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onTouchTapHandler,this);   
+	}
+	
+	private onTouchTapHandler(e:egret.TouchEvent):void{
         this.checkLogin();
-        
-       
-        
 	}
 	
 	private checkLogin():void{
         this.info_txt.text = "正在检查是否已登录...";
-        var loginInfo: nest.user.LoginInfo = {};
+//        var loginInfo: nest.user.LoginInfo = {};
+        
+        var loginInfo: any = {}
+        
+        
+        
         nest.user.checkLogin(loginInfo,this.onCheckLoginCallback.bind(this));
 	}
 	

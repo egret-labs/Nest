@@ -58,7 +58,7 @@ class GameView extends egret.gui.SkinnableComponent{
                         title: "分享标题",
                         description: "分享内容",
                         img_title: "图片标题",
-                        img_url: "图片URL",
+                        img_url: "file:///sdcard/QQBrowser/",
                         url: "分享URL"
                     };
                 nest.share.share(shareInfo,this.onShareCompleteHandler.bind(self));
