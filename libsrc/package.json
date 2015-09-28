@@ -1,0 +1,22 @@
+{
+	"name": "egret",
+	"version": "2.5.0",
+	"modules": [
+		{
+			"name": "nest",
+			"description": "nest",
+			"files": [
+			  "cm/CMPAY_EGRET.js",
+			  "cm/CMPAY_EGRET.d.ts",
+			  "cm/CMGAME_EGRET.js",
+			  "cm/CMGAME_EGRET.d.ts",
+			  "Nest.ts",
+			  "cm/NestForCM.ts",
+			  "egret_sdk_bridge.js",
+			  "h5/NestForH5.ts",
+			  "h5/EgretH5Sdk.d.ts"
+			],
+			"root": "src"
+		}
+	]
+}
