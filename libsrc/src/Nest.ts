@@ -129,6 +129,15 @@ module nest.user {
         callRuntime(data, callback);
     }
 
+    /**
+     * 获取用户信息，目前只有qq浏览器支持
+     * @param callback
+     */
+    export function getInfo(callback:Function) {
+        var data = {module: "user", action: "getInfo"};
+        callRuntime(data, callback);
+    }
+
 
     /**
      * 登录接口传递参数

@@ -43,7 +43,8 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
             "status": 0,
             "result": 0,
             "loginType": loginType,
-            "token": undefined
+            "token": undefined,
+            "getInfo": 0
         };
         callback.call(null, loginCallbackInfo);
     };

@@ -162,7 +162,8 @@ module nest.qqhall.user {
             "result": status,
             "checkLogin": 0,
             "login": 1,
-            "logout": 0
+            "logout": 0,
+            "getInfo": 0
         };
         callback.call(null, loginCallbackInfo);
     }
