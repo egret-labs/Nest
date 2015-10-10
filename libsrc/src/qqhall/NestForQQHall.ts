@@ -299,7 +299,7 @@ module nest.qqhall.social {
     }
 }
 
-if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
+if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
     if (parseInt(egret.getOption("egret.runtime.spid")) == 10835) {
         console.log("NestForQQHall::init");
         var appId = 230;//开放平台的游戏id，需要手动修改下
