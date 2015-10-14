@@ -1,12 +1,14 @@
-<!DOCTYPE HTML>
 <html>
 <head>
-    <title>猎豹Nest测试</title>
+    <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <link rel="stylesheet" type="text/css" href=""/>
 </head>
 <body>
+aaa
 <script type="text/javascript">
+
     (function (f, o) {
         'callShare more statScore getRank showAd getClientInfo'.replace(/\S+/g, function (a) {
             o[a] = f
@@ -17,16 +19,19 @@
         }
     })(function () {
     }, LBShare = {});
-    document.write('<script src="http://www.liebao.cn/game/js/g_share.js"><\/script>');
+    document.write('<script src="http://www.liebao.cn/game/js/g_share.js"><\/script>')
 
+    window.onload = startEgretRuntime;
     function startEgretRuntime() {
+        alert(1)
         LBShare.getClientInfo(function (d) {
+            alert(2)
             var a = "11";
             var b = {
-                        id: getOption("id"),
+                        id: "helloworld",
                         version: a,
-                        screenOrientation: getOption("orientation"),
-                        runtimeURL: getOption("url")
+                        screenOrientation: "portrait",
+                        runtimeURL: "http://10.0.4.106/Egret/Nest/release/android/yjtx5/game_code_yjtx5.zip"
                     },
                     c = navigator.userAgent,
                     e = {
@@ -43,27 +48,8 @@
         });
     }
 
-    function getOption(key) {
-        if (window.hasOwnProperty("location")) {
-            var search = location.search;
-            if (search == "") {
-                return "";
-            }
-            search = search.slice(1);
-            var searchArr = search.split("&");
-            var length = searchArr.length;
-            for (var i = 0; i < length; i++) {
-                var str = searchArr[i];
-                var arr = str.split("=");
-                if (arr[0] == key) {
-                    return arr[1];
-                }
-            }
-        }
-        return "";
-    }
 
-    window.onload = startEgretRuntime;
 </script>
+
 </body>
 </html>
