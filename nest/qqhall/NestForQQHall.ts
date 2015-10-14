@@ -122,6 +122,7 @@ module nest.qqhall {
                             "token": undefined
                         };
                         loginCallback.call(null, loginCallbackInfo);
+                        loginCallback = null;
                         return;
                     }
                     //登录失败，尝试重新登陆
@@ -155,6 +156,7 @@ module nest.qqhall {
                         var data = resultData.data;
                         userId = data.id;
                         loginCallback.call(null, data);
+                        loginCallback = null;
                     });
                 }
                 break;
@@ -173,11 +175,15 @@ module nest.qqhall {
                             break;
                     }
                     payCallback.call(null, {result: result, status: result});
+                    payCallback = null;
                 }
                 break;
             case share_callback_type:
-                var result = info.errorid;
-                payCallback.call(null, {result: result, status: result});
+                if(shareCallback) {
+                    var result = info.errorid;
+                    shareCallback.call(null, {result: result, status: result});
+                    shareCallback = null;
+                }
                 break;
         }
     });
