@@ -148,7 +148,7 @@ module nest.qqhall {
                 break;
             case share_callback_type:
                 var result = info.errorid;
-                payCallback.call(null, {result: result, status: result});
+                shareCallback.call(null, {result: result, status: result});
                 break;
         }
     });
