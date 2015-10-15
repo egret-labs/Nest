@@ -60,6 +60,9 @@ module nest.qqhall {
             "id": userId,
             "appId": appId,
             "time": Date.now(),
+            "openid": OpenId,
+            "openkey": OpenKey,
+            "paytoken": payToken,
             "runtime": 1
         };
         for (var k in orderInfo) {
