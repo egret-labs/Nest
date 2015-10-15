@@ -88,6 +88,9 @@ module nest.qqhall {
             "action": "pay.buy",
             "id": userId,
             "appId": appId,
+            "openid": OpenId,
+            "openkey": OpenKey,
+            "paytoken": payToken,
             "time": Date.now(),
             "runtime": 1
         };
