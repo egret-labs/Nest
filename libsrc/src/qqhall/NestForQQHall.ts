@@ -58,7 +58,7 @@ module nest.qqhall {
         var postdata = {
             "action": "pay.buy",
             "id": userId,
-            "appId": appId,
+            "appId": core.appId,
             "time": Date.now(),
             "openid": OpenId,
             "openkey": OpenKey,
@@ -116,7 +116,7 @@ module nest.qqhall {
 
                     var loginInfo:string = "登录成功";
                     callHall({msgType: login_back_call_type, msgVersion: version, errorID: 0, loginInfoStr: loginInfo});
-                    var api = "http://api.gz.1251278653.clb.myqcloud.com/games/www/game.php/" + appId + "_" + spid;
+                    var api = "http://api.gz.1251278653.clb.myqcloud.com/games/www/game.php/" + core.appId + "_" + spid;
 
                     var sendData = {};
                     sendData["openkey"] = OpenKey;
@@ -311,7 +311,6 @@ module nest.qqhall.social {
 if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
     if (parseInt(egret.getOption("egret.runtime.spid")) == 10835) {
         console.log("NestForQQHall::init");
-        var appId = 230;//开放平台的游戏id，需要手动修改下
 
         nest.user.isSupport = nest.qqhall.user.isSupport;
         nest.user.checkLogin = nest.qqhall.user.checkLogin;

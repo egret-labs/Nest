@@ -35,6 +35,15 @@ module  nest.cm {
         egretUserId:string;
     }
 
+    export function getSpid():number {
+        if (core.appId == 85 || core.appId == 88) {
+            return 10044;
+        }
+        else {
+            return 18287;
+        }
+    }
+
     export function callRuntime(data:NestData, callback) {
         var deviceId;
         if (deviceId = egret.localStorage.getItem("deviceid")) {
@@ -94,7 +103,7 @@ module  nest.cm {
     export function loginBefore(callback):void {
         var postdata = {};
         var url:string = "http://api.egret-labs.org/games/www/getAppInfo.php/";
-        url += appId + "_" + spId;
+        url += core.appId + "_" + getSpid();
         postdata["debug"] = 1;
 
         setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
@@ -108,7 +117,7 @@ module  nest.cm {
         sendData["access_token"] = postdata["access_token"];
         sendData["openid"] = postdata["openid"];
         var url:string = "http://api.egret-labs.org/games/www/game.php/";
-        url += appId + "_" + spId;
+        url += core.appId + "_" + getSpid();
         sendData["runtime"] = 1;
         sendData["showGame"] = 1;
         if (isNew) {
@@ -127,7 +136,7 @@ module  nest.cm {
         var postdata = {
             "action": "pay.buy",
             "id": egretInfo.egretUserId,
-            "appId": appId,
+            "appId": core.appId,
             "time": Date.now(),
             "runtime": 1
         };
@@ -411,18 +420,8 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         console.log("cm old u r in cm");
-        var appId = 351;//开发平台的id
-
-        var spId;
-        if (appId == 85 || appId == 88) {
-            spId = 10044;
-        }
-        else {
-            spId = 18287;
-        }
         var egretInfo:nest.cm.EgretData;
 
-        //egret_native["setOption"]("egret.runtime.spid", spId);
         egret_native["setOption"]("channelTag", "liebao");
         CMPAY_DEBUG = false;
         nest.user.checkLogin = nest.cm.user.checkLogin;

@@ -1,8 +1,17 @@
 declare module nest.core {
+    var appId: number;
+    /**
+     * 启动Nest
+     * @param info 启动参数
+     * @param callback 启动完成回调
+     */
     function startup(info: StartupInfo, callback: Function): void;
     function callCustomMethod(customInfo: any, callback: Function): void;
     interface StartupInfo {
-        egretAppId: string;
+        /**
+         * egret 平台分配的 AppId
+         */
+        egretAppId: number;
     }
 }
 /**
@@ -54,6 +63,11 @@ declare module nest.user {
      * @callback-param  @see nest.user.LoginCallbackInfo
      */
     function isSupport(callback: Function): void;
+    /**
+     * 获取用户信息，目前只有qq浏览器支持
+     * @param callback
+     */
+    function getInfo(callback: Function): void;
     /**
      * 登录接口传递参数
      *
@@ -185,6 +199,7 @@ declare module nest.cm {
     interface EgretData {
         egretUserId: string;
     }
+    function getSpid(): number;
     function callRuntime(data: NestData, callback: any): void;
     function loginBefore(callback: any): void;
     function loginAfter(postdata: any, callback: any, isNew: boolean): void;
@@ -239,5 +254,65 @@ declare module nest.cm.app {
 }
 declare module nest.h5 {
     var uid: number;
-    var appid: number;
+}
+declare class NestForQQHall {
+}
+declare module nest.qqhall {
+    var login_call_type: number;
+    var login_back_call_type: number;
+    var pay_call_type: number;
+    var share_call_type: number;
+    var login_callback_type: number;
+    var pay_callback_type: number;
+    var share_callback_type: number;
+    var loginCallback: Function;
+    var payCallback: Function;
+    var shareCallback: Function;
+    var version: string;
+    var loginNum: number;
+    var spid: number;
+    var gameType: any;
+    var gameVersion: any;
+    var OpenId: any;
+    var OpenKey: any;
+    var enterType: any;
+    var enterId: any;
+    var payToken: any;
+    var userId: any;
+    function payBefore(orderInfo: nest.iap.PayInfo, callback: any): void;
+    function callHall(data: any): void;
+}
+declare module nest.qqhall.user {
+    function isSupport(callback: Function): void;
+    function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
+    function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+}
+declare module nest.qqhall.iap {
+    function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+}
+declare module nest.qqhall.app {
+    function isSupport(callback: Function): void;
+    function exitGame(callback: Function): void;
+    function attention(appInfo: any, callback: Function): void;
+    function sendToDesktop(appInfo: any, callback: Function): void;
+}
+declare module nest.qqhall.share {
+    /**
+     * 是否支持分享
+     * @param callback
+     * @callback-param {status:0, share:0}  share 1支持 0不支持
+     */
+    function isSupport(callback: Function): void;
+    /**
+     * 分享
+     * @param shareInfo
+     * @param callback
+     * @callback-param result 0 表示分享成功，-1表示用户取消
+     */
+    function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
+}
+declare module nest.qqhall.social {
+    function isSupport(callback: Function): void;
+    function getFriends(socialInfo: any, callback: Function): void;
+    function openBBS(socialInfo: any, callback: Function): void;
 }

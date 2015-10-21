@@ -29,7 +29,6 @@
 
 module nest.h5 {
     export var uid:number = undefined;
-    export var appid:number = parseInt(egret.getOption("appId")) || 86;
 }
 if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
     nest.user.isSupport = function (callback:Function) {
@@ -96,7 +95,7 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
 
     nest.iap.pay = function (orderInfo:nest.iap.PayInfo, callback:Function) {
         if (nest.h5.uid) {
-            orderInfo["appId"] = nest.h5.appid;
+            orderInfo["appId"] = nest.core.appId;
             orderInfo["uId"] = nest.h5.uid;
             EgretH5Sdk.pay(orderInfo,function(data) {
                 callback(data);
@@ -110,7 +109,7 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
             var loginCallbackInfo = {"share": status};
             callback.call(null, loginCallbackInfo);
         };
-        EgretH5Sdk.isOpenShare(nest.h5.appid, nest.h5.uid, egretH5SdkCallback, null);
+        EgretH5Sdk.isOpenShare(nest.core.appId, nest.h5.uid, egretH5SdkCallback, null);
     };
 
     nest.share.share = function (shareInfo:nest.share.ShareInfo, callback:Function) {
@@ -125,7 +124,7 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
             var loginCallbackInfo = {"status": status, "result": status};
             callback.call(null, loginCallbackInfo);
         };
-        EgretH5Sdk.share(nest.h5.appid, nest.h5.uid, shareInfo, egretH5SdkCallback, null);
+        EgretH5Sdk.share(nest.core.appId, nest.h5.uid, shareInfo, egretH5SdkCallback, null);
     };
 
     nest.social.isSupport = function (callback:Function) {
@@ -147,11 +146,11 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
             var loginCallbackInfo = {"attention": status};
             callback.call(null, loginCallbackInfo);
         };
-        EgretH5Sdk.isOpenAttention(nest.h5.appid, nest.h5.uid, egretH5SdkCallback, null);
+        EgretH5Sdk.isOpenAttention(nest.core.appId, nest.h5.uid, egretH5SdkCallback, null);
     };
 
     nest.app.attention = function (appInfo:any, callback:Function) {
-        EgretH5Sdk.attention(nest.h5.appid, nest.h5.uid);
+        EgretH5Sdk.attention(nest.core.appId, nest.h5.uid);
         callback.call(null, {"result": 0});
     };
 
