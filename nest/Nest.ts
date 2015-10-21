@@ -30,7 +30,17 @@
 
 module nest.core {
 
+    export var appId:number = parseInt(egret.getOption("appId"));
+
+    /**
+     * 启动Nest
+     * @param info 启动参数
+     * @param callback 启动完成回调
+     */
     export function startup(info:StartupInfo, callback:Function) {
+        if(info.egretAppId != null) {
+            appId = info.egretAppId;
+        }
         callback({"result": 0});
     }
 
@@ -43,7 +53,10 @@ module nest.core {
 
     export interface StartupInfo {
 
-        egretAppId: string;
+        /**
+         * egret 平台分配的游戏 AppId
+         */
+        egretAppId: number;
 
     }
 
