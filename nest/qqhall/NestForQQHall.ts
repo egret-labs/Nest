@@ -165,7 +165,7 @@ module nest.qqhall {
                 break;
             case pay_callback_type:
                 if (payCallback) {
-                    var result = info.payState;
+                    var result = -1;//因为没有支付，返回失败
                     var errorMsg;//todo
                     switch (info.payState) {
                         case -1://未知问题
