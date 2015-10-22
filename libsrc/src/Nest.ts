@@ -88,7 +88,7 @@ module nest.user {
 
     /**
      * 检测是否已登录
-     * @param loginInfo 请传递一个null
+     * @param loginInfo 请传递一个{}
      * @param callback
      * @callback-param  @see nest.user.LoginCallbackInfo
      */
@@ -115,7 +115,7 @@ module nest.user {
 
     /**
      * 登出接口
-     * @param loginInfo 可以传递null
+     * @param loginInfo 可以传递{}
      * @param callback
      * @callback-param   { result : 0 };
      */
