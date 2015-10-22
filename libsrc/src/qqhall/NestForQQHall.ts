@@ -136,7 +136,7 @@ module nest.qqhall {
                 break;
             case pay_callback_type:
                 if (payCallback) {
-                    var result = info.payState;
+                    var result = -1;//没有扣款，所以返回给游戏端支付失败
                     var errorMsg;//todo
                     switch (info.payState) {
                         case -1://未知问题
