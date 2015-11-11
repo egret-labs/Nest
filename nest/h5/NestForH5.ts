@@ -32,11 +32,18 @@ module nest.h5 {
 }
 if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
     nest.user.isSupport = function (callback:Function) {
+        var channelTag = egret.getOption("channelTag");
+        var loginType = [];
+        if(channelTag == "QQBrowser") {
+            loginType.push("qq");
+            loginType.push("wx");
+        }
         var loginCallbackInfo:nest.user.LoginCallbackInfo = {
             "status": 0,
             "result": 0,
-            "loginType": [],
-            "token": undefined
+            "loginType": loginType,
+            "token": undefined,
+            "getInfo": 0
         };
         callback.call(null, loginCallbackInfo);
     };
