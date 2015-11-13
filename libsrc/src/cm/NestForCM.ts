@@ -35,13 +35,30 @@ module  nest.cm {
         egretUserId:string;
     }
 
+    export interface NestData {
+
+        module:string;
+
+        action:string;
+
+        param?:any;
+
+        postData?:any;
+    }
+
+    export var spid:number = null;
+
     export function getSpid():number {
-        if (core.appId == 85 || core.appId == 88) {
-            return 10044;
+        if(spid == null) {
+            if (core.appId == 85 || core.appId == 88) {
+                spid = 10044;
+            }
+            else {
+                spid = 18287;
+            }
+            egret_native["setOption"]("egret.runtime.spid", spid);
         }
-        else {
-            return 18287;
-        }
+        return spid;
     }
 
     export function callRuntime(data:NestData, callback) {

@@ -674,7 +674,7 @@ var nest;
     (function (user) {
         /**
          * 检测是否已登录
-         * @param loginInfo 请传递一个null
+         * @param loginInfo 请传递一个{}
          * @param callback
          * @callback-param  @see nest.user.LoginCallbackInfo
          */
@@ -696,7 +696,7 @@ var nest;
         user.login = login;
         /**
          * 登出接口
-         * @param loginInfo 可以传递null
+         * @param loginInfo 可以传递{}
          * @param callback
          * @callback-param   { result : 0 };
          */
@@ -751,7 +751,7 @@ var nest;
 var nest;
 (function (nest) {
     var share;
-    (function (_share) {
+    (function (share_1) {
         /**
          * 是否支持分享
          * @param callback
@@ -761,7 +761,7 @@ var nest;
             var data = { module: "share", action: "isSupport" };
             nest.callRuntime(data, callback);
         }
-        _share.isSupport = isSupport;
+        share_1.isSupport = isSupport;
         /**
          * 分享
          * @param shareInfo
@@ -772,7 +772,7 @@ var nest;
             var data = { module: "share", action: "share", param: shareInfo };
             nest.callRuntime(data, callback, true);
         }
-        _share.share = share;
+        share_1.share = share;
     })(share = nest.share || (nest.share = {}));
 })(nest || (nest = {}));
 var nest;
@@ -919,13 +919,18 @@ var nest;
 (function (nest) {
     var cm;
     (function (cm) {
+        cm.spid = null;
         function getSpid() {
-            if (nest.core.appId == 85 || nest.core.appId == 88) {
-                return 10044;
+            if (cm.spid == null) {
+                if (nest.core.appId == 85 || nest.core.appId == 88) {
+                    cm.spid = 10044;
+                }
+                else {
+                    cm.spid = 18287;
+                }
+                egret_native["setOption"]("egret.runtime.spid", cm.spid);
             }
-            else {
-                return 18287;
-            }
+            return cm.spid;
         }
         cm.getSpid = getSpid;
         function callRuntime(data, callback) {
@@ -1287,7 +1292,8 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
     console.log(egret_native.getOption("egret.runtime.spid"));
     console.log(egret_native.getOption("egret.runtime.nest"));
     console.log("cm old 22222 ");
-    if (egret_native.getOption("egret.runtime.spid") == 10044 || (!egret_native.getOption("egret.runtime.nest"))) {
+    if (egret_native.getOption("egret.runtime.spid") == 10044
+        || (!egret_native.getOption("egret.runtime.nest"))) {
         console.log("cm old u r in cm");
         var egretInfo;
         egret_native["setOption"]("channelTag", "liebao");
@@ -1492,6 +1498,34 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
     };
 }
 
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
 var NestForQQHall = (function () {
     function NestForQQHall() {
     }
@@ -1516,14 +1550,6 @@ var nest;
         qqhall.version = "V1.0.0";
         qqhall.loginNum = 0;
         qqhall.spid = 10835;
-        qqhall.gameType;
-        qqhall.gameVersion;
-        qqhall.OpenId;
-        qqhall.OpenKey;
-        qqhall.enterType;
-        qqhall.enterId;
-        qqhall.payToken;
-        qqhall.userId;
         function setProxy(url, postData, method, callback) {
             var postdata = "";
             for (var key in postData) {
@@ -1624,20 +1650,20 @@ var nest;
                     break;
                 case qqhall.pay_callback_type:
                     if (qqhall.payCallback) {
-                        var result = info.payState;
+                        var result = -1;
                         var errorMsg; //todo
                         switch (info.payState) {
-                            case -1:
+                            case -1: //未知问题
+                            case 1: //用户取消
+                            case 2:
+                                qqhall.payOrderInfo = null;
+                                qqhall.payCallback.call(null, { result: result, status: result });
+                                qqhall.payCallback = null;
                                 break;
                             case 0:
-                                break;
-                            case 1:
-                                break;
-                            case 2:
+                                qqhall.iap.repay();
                                 break;
                         }
-                        qqhall.payCallback.call(null, { result: result, status: result });
-                        qqhall.payCallback = null;
                     }
                     break;
                 case qqhall.share_callback_type:
@@ -1699,6 +1725,10 @@ var nest;
         var iap;
         (function (iap) {
             function pay(orderInfo, callback) {
+                if (qqhall.payOrderInfo) {
+                    return;
+                }
+                qqhall.payOrderInfo = orderInfo;
                 qqhall.payBefore(orderInfo, function (data) {
                     data = data.data;
                     if (data["status"] == 0) {
@@ -1718,6 +1748,23 @@ var nest;
                 });
             }
             iap.pay = pay;
+            /**
+             * 大厅充值成功后，再次调用付费接口
+             */
+            function repay() {
+                if (qqhall.payOrderInfo) {
+                    var orderInfo = qqhall.payOrderInfo;
+                    var callback = qqhall.payCallback;
+                    qqhall.payBefore(orderInfo, function (data) {
+                        data = data.data;
+                        var result = data["status"];
+                        callback.call(null, { result: result, status: result });
+                    });
+                    qqhall.payOrderInfo = null;
+                    qqhall.payCallback = null;
+                }
+            }
+            iap.repay = repay;
         })(iap = qqhall.iap || (qqhall.iap = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
@@ -1763,7 +1810,7 @@ var nest;
     var qqhall;
     (function (qqhall) {
         var share;
-        (function (_share) {
+        (function (share_1) {
             /**
              * 是否支持分享
              * @param callback
@@ -1778,7 +1825,7 @@ var nest;
                 };
                 callback.call(null, loginCallbackInfo);
             }
-            _share.isSupport = isSupport;
+            share_1.isSupport = isSupport;
             /**
              * 分享
              * @param shareInfo
@@ -1796,7 +1843,7 @@ var nest;
                     targetUrl: shareInfo.url
                 });
             }
-            _share.share = share;
+            share_1.share = share;
         })(share = qqhall.share || (qqhall.share = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
@@ -1828,7 +1875,7 @@ var nest;
 })(nest || (nest = {}));
 if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
     if (parseInt(egret.getOption("egret.runtime.spid")) == 10835) {
-        console.log("NestForQQHall::init");
+        //console.log("NestForQQHall::init");
         nest.user.isSupport = nest.qqhall.user.isSupport;
         nest.user.checkLogin = nest.qqhall.user.checkLogin;
         nest.user.login = nest.qqhall.user.login;
@@ -1844,7 +1891,6 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
         nest.social.openBBS = nest.qqhall.social.openBBS;
     }
     else {
-        console.log("not QQHall");
     }
 }
 

@@ -191,7 +191,10 @@ module nest.user {
          */
         token:string;
 
-
+        /**
+         * 是否支持获取用户信息
+         */
+        getInfo?:number;
     }
 
 
@@ -361,7 +364,7 @@ module nest {
 
         action:string;
 
-        param?:Object;
+        param?:any;
     }
 
     export function callRuntime(data:NestData, callback, parallel:boolean = false) {

@@ -38,7 +38,7 @@ declare module nest.core {
 declare module nest.user {
     /**
      * 检测是否已登录
-     * @param loginInfo 请传递一个null
+     * @param loginInfo 请传递一个{}
      * @param callback
      * @callback-param  @see nest.user.LoginCallbackInfo
      */
@@ -52,7 +52,7 @@ declare module nest.user {
     function login(loginInfo: LoginInfo, callback: Function): void;
     /**
      * 登出接口
-     * @param loginInfo 可以传递null
+     * @param loginInfo 可以传递{}
      * @param callback
      * @callback-param   { result : 0 };
      */
@@ -100,6 +100,10 @@ declare module nest.user {
          * 用户 token 信息，如果checkLogin函数中没有token则表示用户尚未登录
          */
         token: string;
+        /**
+         * 是否支持获取用户信息
+         */
+        getInfo?: number;
     }
 }
 declare module nest.iap {
@@ -188,7 +192,7 @@ declare module nest {
     interface NestData {
         module: string;
         action: string;
-        param?: Object;
+        param?: any;
     }
     function callRuntime(data: NestData, callback: any, parallel?: boolean): void;
 }
@@ -199,6 +203,13 @@ declare module nest.cm {
     interface EgretData {
         egretUserId: string;
     }
+    interface NestData {
+        module: string;
+        action: string;
+        param?: any;
+        postData?: any;
+    }
+    var spid: number;
     function getSpid(): number;
     function callRuntime(data: NestData, callback: any): void;
     function loginBefore(callback: any): void;
@@ -279,6 +290,7 @@ declare module nest.qqhall {
     var enterId: any;
     var payToken: any;
     var userId: any;
+    var payOrderInfo: any;
     function payBefore(orderInfo: nest.iap.PayInfo, callback: any): void;
     function callHall(data: any): void;
 }
@@ -289,6 +301,10 @@ declare module nest.qqhall.user {
 }
 declare module nest.qqhall.iap {
     function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+    /**
+     * 大厅充值成功后，再次调用付费接口
+     */
+    function repay(): void;
 }
 declare module nest.qqhall.app {
     function isSupport(callback: Function): void;
