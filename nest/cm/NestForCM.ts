@@ -35,13 +35,19 @@ module  nest.cm {
         egretUserId:string;
     }
 
+    export var spid:number = null;
+
     export function getSpid():number {
-        if (core.appId == 85 || core.appId == 88) {
-            return 10044;
+        if(spid == null) {
+            if (core.appId == 85 || core.appId == 88) {
+                spid = 10044;
+            }
+            else {
+                spid = 18287;
+            }
+            egret_native["setOption"]("egret.runtime.spid", spid);
         }
-        else {
-            return 18287;
-        }
+        return spid;
     }
 
     export function callRuntime(data:NestData, callback) {
@@ -422,7 +428,6 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
         console.log("cm old u r in cm");
         var egretInfo:nest.cm.EgretData;
 
-        //egret_native["setOption"]("egret.runtime.spid", spId);
         egret_native["setOption"]("channelTag", "liebao");
         CMPAY_DEBUG = false;
         nest.user.checkLogin = nest.cm.user.checkLogin;
