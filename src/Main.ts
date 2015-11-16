@@ -30,9 +30,8 @@
 class Main extends egret.DisplayObjectContainer {
 
 
-
     public constructor() {
-        
+
         super();
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
     }
@@ -40,30 +39,30 @@ class Main extends egret.DisplayObjectContainer {
     private onAddToStage(event:egret.Event) {
         this.removeEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
 
-        
+
         egret.Injector.mapClass("egret.gui.IAssetAdapter", AssetAdapter);
         egret.gui.Theme.load("resource/theme.thm");
-        
+
         RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
         RES.loadConfig("resource/resource.json", "resource/");
-       
+
     }
-    
+
     /**
-    * 配置文件加载完成,开始预加载preload资源组。
-    * Loading of configuration file is complete, start to pre-load the preload resource group
-    */
+     * 配置文件加载完成,开始预加载preload资源组。
+     * Loading of configuration file is complete, start to pre-load the preload resource group
+     */
     private onConfigComplete(event:RES.ResourceEvent):void {
         RES.removeEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
         RES.loadGroup("preload");
     }
-    
-    
+
+
     private onResourceLoadComplete(event:RES.ResourceEvent):void {
         if (event.groupName == "preload") {
             RES.removeEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
-            this.createGameScene();               
+            this.createGameScene();
         }
     }
 
@@ -72,39 +71,40 @@ class Main extends egret.DisplayObjectContainer {
      * Create a game scene
      */
     private createGameScene():void {
-        
-        var uistage: egret.gui.UIStage = new egret.gui.UIStage();
+
+        var uistage:egret.gui.UIStage = new egret.gui.UIStage();
         this.addChild(uistage);
-        
-        uistage.addEventListener(GameEvent.LOGIN_SUCCESS,this.onLoginSuccess,this);
-                            
-        
+
+        uistage.addEventListener(GameEvent.LOGIN_SUCCESS, this.onLoginSuccess, this);
+
+
         utils.init(uistage);
-        utils.changeView(new LoginView());
+        nest.core.startup({egretAppId: 230}, function () {
+            utils.changeView(new LoginView());
+        });
 
     }
-    
-    private onLoginSuccess(e:GameEvent):void{
+
+    private onLoginSuccess(e:GameEvent):void {
         utils.changeView(new GameView());
     }
 }
 
 module utils {
-    
-    
-    var _stage: egret.gui.UIStage;
-    
-    export function init(stage:egret.gui.UIStage){
+
+
+    var _stage:egret.gui.UIStage;
+
+    export function init(stage:egret.gui.UIStage) {
         _stage = stage;
     }
-    
-    export function changeView(view:egret.gui.UIComponent){
+
+    export function changeView(view:egret.gui.UIComponent) {
         _stage.removeAllElements();
         _stage.addElement(view);
     }
-    
-    
-    
+
+
 }
 
 

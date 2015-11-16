@@ -31,5 +31,5 @@
 
 
 注意
-1、必须手动修改NestForCM.ts里 appId的值。 var appId = 351;//开发平台的id
+1、请先使用nest.core.startup初始化Nest
 2、runtime目前只支持android系统。
