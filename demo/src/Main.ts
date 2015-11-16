@@ -80,8 +80,9 @@ class Main extends egret.DisplayObjectContainer {
                             
         
         utils.init(uistage);
-        utils.changeView(new LoginView());
-
+        nest.core.startup({egretAppId:230}, function (){
+            utils.changeView(new LoginView());
+        });
     }
     
     private onLoginSuccess(e:GameEvent):void{

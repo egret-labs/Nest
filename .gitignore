@@ -6,3 +6,6 @@ release/
 runtime.json
 
 qq.html
+
+demo/bin-debug/*
+demo/libs/*
