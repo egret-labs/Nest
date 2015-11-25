@@ -34,7 +34,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
     nest.user.isSupport = function (callback:Function) {
         var channelTag = egret.getOption("channelTag");
         var loginType = [];
-        if(channelTag == "QQBrowser") {
+        if (channelTag == "QQBrowser") {
             loginType.push("qq");
             loginType.push("wx");
         }
@@ -88,7 +88,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
         var egretH5SdkCallback = function (data) {
             var status = data.status;
             var result = status == 1 ? 0 : 1;
-            callback.call(null, {"result":result});
+            callback.call(null, {"result": result});
         };
         EgretH5Sdk.logout(egretH5SdkCallback, null);
     };
@@ -97,9 +97,9 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
         if (nest.h5.uid) {
             orderInfo["appId"] = nest.core.appId;
             orderInfo["uId"] = nest.h5.uid;
-            EgretH5Sdk.pay(orderInfo,function(data) {
+            EgretH5Sdk.pay(orderInfo, function (data) {
                 callback(data);
-                }, this);
+            }, this);
         }
     };
 
@@ -129,7 +129,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
 
     nest.social.isSupport = function (callback:Function) {
         //todo
-        callback.call(null,{"result": 0, "getFriends":0, "openBBS":0});
+        callback.call(null, {"result": 0, "getFriends": 0, "openBBS": 0});
     };
 
     nest.social.getFriends = function (data, callback:Function) {
@@ -143,8 +143,8 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
     nest.app.isSupport = function (callback:Function) {
         var egretH5SdkCallback = function (data) {
             var status = data.status;
-            var loginCallbackInfo = {"attention": status};
-            callback.call(null, loginCallbackInfo);
+            var callbackInfo = {"attention": status, getInfo: 1};
+            callback.call(null, callbackInfo);
         };
         EgretH5Sdk.isOpenAttention(nest.core.appId, nest.h5.uid, egretH5SdkCallback, null);
     };
@@ -156,5 +156,14 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_HTML5) {
 
     nest.app.sendToDesktop = function (appInfo:any, callback:Function) {
         callback.call(null, {"result": -1});
+    };
+
+    nest.app.getInfo = function (appInfo:any, callback:Function) {
+        var egretH5SdkCallback = function (data) {
+            var callbackInfo = {result:0, "contact": data.contact};
+            callback.call(null, callbackInfo);
+        };
+
+        EgretH5Sdk.getCustomInfo(nest.core.appId, nest.h5.uid, egretH5SdkCallback, null);
     };
 }

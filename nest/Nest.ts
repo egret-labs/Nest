@@ -351,6 +351,24 @@ module nest.app {
         callRuntime(data, callback);
     }
 
+    /**
+     * 获取渠道信息
+     * @param appInfo 获取信息参数,没有请传递{}
+     * @param callback 回调
+     * 回调参数:
+     * {
+	 * "result": , //result为0说明成功
+	 * "contact": , //可用联系方式数组[]
+	 *   "qq": //qq联系方式数组[],如果没有响应联系方式将没有该字段
+	 *   "qqgroup": //qq群联系方式数组[],如果没有响应联系方式将没有该字段
+	 *   "weixin": //微信联系方式数组[],如果没有响应联系方式将没有该字段
+	 *   "email": //email联系方式数组[],如果没有响应联系方式将没有该字段
+	 * }
+     */
+    export function getInfo(appInfo:any, callback:Function) {
+        var data = {module: "app", action: "getInfo", param: appInfo};
+        callRuntime(data, callback);
+    }
 }
 
 module nest {
