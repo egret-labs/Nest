@@ -34,6 +34,7 @@ declare class EgretH5Sdk
     static pay(para:any, fun:Function, thisObj:any);
     static attention(appId:any, id:any);
     static isOpenAttention(appId:any, id:any, callbackFun:Function, callbackFunClass:any);
+    static getCustomInfo(appId:any, id:any, callbackFun:Function, callbackFunClass:any);
 
     static isOpenShare(appId:any, id:any, callbackFun:Function, callbackFunClass:any);
     static share(appId:any, id:any, shareTxt:any, callbackFun:Function, callbackFunClass:any);

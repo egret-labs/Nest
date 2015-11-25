@@ -187,6 +187,21 @@ declare module nest.app {
      * @param callback-param result 0表示添加桌面成功，-1表示添加失败
      */
     function sendToDesktop(appInfo: any, callback: Function): void;
+    /**
+     * 获取渠道信息
+     * @param appInfo 获取信息参数,没有请传递{}
+     * @param callback 回调
+     * 回调参数:
+     * {
+     * "result": , //result为0说明成功
+     * "contact": , //可用联系方式数组[]
+     *   "qq": //qq联系方式数组[],如果没有响应联系方式将没有该字段
+     *   "qqgroup": //qq群联系方式数组[],如果没有响应联系方式将没有该字段
+     *   "weixin": //微信联系方式数组[],如果没有响应联系方式将没有该字段
+     *   "email": //email联系方式数组[],如果没有响应联系方式将没有该字段
+     * }
+     */
+    function getInfo(appInfo: any, callback: Function): void;
 }
 declare module nest {
     interface NestData {

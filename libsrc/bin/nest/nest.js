@@ -841,6 +841,25 @@ var nest;
             nest.callRuntime(data, callback);
         }
         app.sendToDesktop = sendToDesktop;
+        /**
+         * 获取渠道信息
+         * @param appInfo 获取信息参数,没有请传递{}
+         * @param callback 回调
+         * 回调参数:
+         * {
+         * "result": , //result为0说明成功
+         * "contact": , //可用联系方式数组[]
+         *   "qq": //qq联系方式数组[],如果没有响应联系方式将没有该字段
+         *   "qqgroup": //qq群联系方式数组[],如果没有响应联系方式将没有该字段
+         *   "weixin": //微信联系方式数组[],如果没有响应联系方式将没有该字段
+         *   "email": //email联系方式数组[],如果没有响应联系方式将没有该字段
+         * }
+         */
+        function getInfo(appInfo, callback) {
+            var data = { module: "app", action: "getInfo", param: appInfo };
+            nest.callRuntime(data, callback);
+        }
+        app.getInfo = getInfo;
     })(app = nest.app || (nest.app = {}));
 })(nest || (nest = {}));
 var nest;
@@ -1495,6 +1514,13 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
     };
     nest.app.sendToDesktop = function (appInfo, callback) {
         callback.call(null, { "result": -1 });
+    };
+    nest.app.getInfo = function (appInfo, callback) {
+        var egretH5SdkCallback = function (data) {
+            var callbackInfo = { result: 0, "contact": data.contact };
+            callback.call(null, callbackInfo);
+        };
+        EgretH5Sdk.getCustomInfo(nest.core.appId, nest.h5.uid, egretH5SdkCallback, null);
     };
 }
 

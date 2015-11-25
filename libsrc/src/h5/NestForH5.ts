@@ -157,4 +157,13 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
     nest.app.sendToDesktop = function (appInfo:any, callback:Function) {
         callback.call(null, {"result": -1});
     };
+
+    nest.app.getInfo = function (appInfo:any, callback:Function) {
+        var egretH5SdkCallback = function (data) {
+            var callbackInfo = {result:0, "contact": data.contact};
+            callback.call(null, callbackInfo);
+        };
+
+        EgretH5Sdk.getCustomInfo(nest.core.appId, nest.h5.uid, egretH5SdkCallback, null);
+    };
 }
