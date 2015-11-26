@@ -121,9 +121,7 @@ module nest.qqhall {
                     if (loginNum >= 3) {
                         //彻底登陆失败
                         var loginCallbackInfo:nest.user.LoginCallbackInfo = {
-                            "status": -1,
                             "result": -1,
-                            "loginType": undefined,
                             "token": undefined
                         };
                         loginCallback.call(null, loginCallbackInfo);

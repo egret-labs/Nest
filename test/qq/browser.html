@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+
+<script src="http://jsapi.qq.com/get?api=x5gameplayer.*" type="text/javascript"></script>
+<script>
+
+
+	window.onerror = function () {
+		alert(arguments[0])
+	}
+
+
+	var html5Url = "";
+
+	var qqId = 3;
+	var qqHashId = 6586234489;
+
+	var info1 = {
+		"engineName": "egret",
+		"localDebug": "false",
+		"orientation": getOption("orientation"),
+		"gameName": "Egret Demo",
+		"gameId": qqId,
+		"gameIconUrl": "http://res.imtt.qq.com/game_list/128x128.png",
+		"gameUrl": "http://gm01.cs0309.imtt.qq.com//h5Detail.html?gameId=" + qqHashId,
+		"runUrl":html5Url,
+		"ext": JSON.stringify({
+            "gameId": getOption("id"),
+            "zipUrl": getOption("url")
+		})
+	};
+	browser.x5gameplayer.run(info1);
+
+	function onButtonClick(){
+		var href = location.href;
+		href = href.replace("http://","x5gameplayer://");
+		location.href = href;
+	}
+
+
+
+    function getOption(key) {
+        if (window.hasOwnProperty("location")) {
+            var search = location.search;
+            if (search == "") {
+                return "";
+            }
+            search = search.slice(1);
+            var searchArr = search.split("&");
+            var length = searchArr.length;
+            for (var i = 0; i < length; i++) {
+                var str = searchArr[i];
+                var arr = str.split("=");
+                if (arr[0] == key) {
+                    return arr[1];
+                }
+            }
+        }
+        return "";
+    }
+</script>
+<button onclick="onButtonClick()"><p style="font-size:60px">点我</p></button>
+
+</body>
+</html>

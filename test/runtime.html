@@ -50,8 +50,14 @@ runtime地址：<input id="input_url" value=""/>
             var url = window.location.href;
             var last = url.indexOf("runtime.html");
             var first = url.indexOf("http") + 4;
-            var url = "x5gameplayer" + url.substring(first, last) +  "qq/entry.html?" + url2;
+            var url = "x5gameplayer" + url.substring(first, last) +  "qq/browser.html?" + url2;
             window.location.href = url;
+
+            // var url = window.location.href;
+            // var last = url.indexOf("runtime.html");
+            // var first = url.indexOf("http") + 4;
+            // var url = "x5gameplayer" + url.substring(first, last) +  "qq/entry.html?" + url2;
+            // window.location.href = url;
         }
     }
 

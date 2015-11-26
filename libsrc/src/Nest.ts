@@ -30,6 +30,25 @@
 
 module nest.core {
 
+    export interface StartupInfo {
+        /**
+         * egret 平台分配的 AppId
+         */
+        egretAppId: number;
+
+    }
+
+    export interface ResultCallbackInfo {
+        /**
+         * 回调参数是否正确，0 正确，其他 错误
+         */
+        result:number;
+    }
+
+    /**
+     * @private
+     * @type {number}
+     */
     export var appId:number = parseInt(egret.getOption("appId"));
 
     /**
@@ -37,7 +56,7 @@ module nest.core {
      * @param info 启动参数
      * @param callback 启动完成回调
      */
-    export function startup(info:StartupInfo, callback:Function) {
+    export function startup(info:StartupInfo, callback:(resultInfo:ResultCallbackInfo)=>any) {
         if(info.egretAppId != null) {
             appId = info.egretAppId;
         }
@@ -50,14 +69,6 @@ module nest.core {
         callRuntime(data, callback);
     }
 
-
-    export interface StartupInfo {
-        /**
-         * egret 平台分配的 AppId
-         */
-        egretAppId: number;
-
-    }
 
 
 }
@@ -92,7 +103,7 @@ module nest.user {
      * @param callback
      * @callback-param  @see nest.user.LoginCallbackInfo
      */
-    export function checkLogin(loginInfo:LoginInfo, callback:Function) {
+    export function checkLogin(loginInfo:LoginInfo, callback:(resultInfo:LoginCallbackInfo)=>any) {
 
         var data = {module: "user", action: "checkLogin", param: loginInfo};
 
@@ -105,7 +116,7 @@ module nest.user {
      * @param callback
      * @callback-param  @see nest.user.LoginCallbackInfo
      */
-    export function login(loginInfo:LoginInfo, callback:Function) {
+    export function login(loginInfo:LoginInfo, callback:(resultInfo:LoginCallbackInfo)=>any) {
 
         var data = {module: "user", action: "login", param: loginInfo};
         callRuntime(data, callback, true);
@@ -119,7 +130,7 @@ module nest.user {
      * @param callback
      * @callback-param   { result : 0 };
      */
-    export function logout(loginInfo:LoginInfo, callback:Function) {
+    export function logout(loginInfo:LoginInfo, callback:(resultInfo:core.ResultCallbackInfo)=>any) {
         var nestVersion:any = egret_native.getOption("egret.runtime.nest");
         if (nestVersion >= 4 || nestVersion == "custom") {
             var data = {module: "user", action: "logout", param: loginInfo};
@@ -136,7 +147,7 @@ module nest.user {
      * @param callback
      * @callback-param  @see nest.user.LoginCallbackInfo
      */
-    export function isSupport(callback:Function) {
+    export function isSupport(callback:(resultInfo:UserSupportCallbackInfo)=>any) {
         var data = {module: "user", action: "isSupport"};
         callRuntime(data, callback);
     }
@@ -145,7 +156,7 @@ module nest.user {
      * 获取用户信息，目前只有qq浏览器支持
      * @param callback
      */
-    export function getInfo(callback:Function) {
+    export function getInfo(callback:(resultInfo:Object)=>any) {
         var data = {module: "user", action: "getInfo"};
         callRuntime(data, callback);
     }
@@ -158,25 +169,22 @@ module nest.user {
     export interface LoginInfo {
 
         /**
-         * 登录类型：如 QQ登录，微信支付
+         * 登录类型：如 QQ登录，微信支付。如果没有，则不需要赋值
          */
         loginType?:string;
 
     }
 
-    export interface LoginCallbackInfo {
+    export interface LoginCallbackInfo extends core.ResultCallbackInfo {
 
         /**
-         * 状态值，0表示成功
-         * 该值未来可能会被废弃
+         * checkLogin , login 函数返回。
+         * 用户 token 信息，如果checkLogin函数中没有token则表示用户尚未登录
          */
-        status:number;
+        token:string;
+    }
 
-        /**
-         * 结果值，0表示成功
-         */
-        result:number;
-
+    export interface UserSupportCallbackInfo extends core.ResultCallbackInfo{
         /**
          * isSupport 函数返回。
          * 登录方式。
@@ -184,12 +192,6 @@ module nest.user {
          * 开发者应该主动判断登录方式，如果返回了 null ，则表示没有特殊登录方式
          */
         loginType:Array<string>
-
-        /**
-         * checkLogin , login 函数返回。
-         * 用户 token 信息，如果checkLogin函数中没有token则表示用户尚未登录
-         */
-        token:string;
 
         /**
          * 是否支持获取用户信息
@@ -208,32 +210,26 @@ module nest.iap {
      * @param orderInfo
      * @param callback
      */
-    export function pay(orderInfo:PayInfo, callback:Function) {
+    export function pay(orderInfo:PayInfo, callback:(result:PayCallbackInfo)=>any) {
 
         var data = {module: "iap", action: "pay", "param": orderInfo};
         callRuntime(data, callback);
-
     }
-
 
     export interface PayInfo {
-
+        //配置id
         goodsId:string;
-
+        //购买数量
         goodsNumber:string;
-
+        //哪个服
         serverId:string;
-
+        //透传参数
         ext:string;
-
     }
 
-    export interface PayCallbackInfo {
-
-        result: number;
-
+    export interface PayCallbackInfo extends core.ResultCallbackInfo {
+        ext?:string;
     }
-
 }
 
 
@@ -244,7 +240,7 @@ module nest.share {
      * @param callback
      * @callback-param {status:0, share:0}  share 1支持 0不支持
      */
-    export function isSupport(callback:Function) {
+    export function isSupport(callback:(resultInfo:ShareSupportCallbackInfo)=>any) {
         var data = {module: "share", action: "isSupport"};
         callRuntime(data, callback);
     }
@@ -256,7 +252,7 @@ module nest.share {
      * @param callback
      * @callback-param result 0 表示分享成功，-1表示用户取消
      */
-    export function share(shareInfo:ShareInfo, callback:Function) {
+    export function share(shareInfo:ShareInfo, callback:(resultInfo:ShareCallbackInfo)=>any) {
 
         var data = {module: "share", action: "share", param: shareInfo};
         callRuntime(data, callback, true);
@@ -280,16 +276,18 @@ module nest.share {
 
     }
 
-    export interface ShareCallbackInfo {
+    export interface ShareCallbackInfo extends core.ResultCallbackInfo{
+    }
 
-
-        result: number;
+    export interface ShareSupportCallbackInfo extends core.ResultCallbackInfo{
+        status:number;
+        share:number;
     }
 }
 
 
 module nest.social {
-    export function isSupport(callback:Function) {
+    export function isSupport(callback:(resultInfo:SocialSupportCallbackInfo)=>any) {
         var data = {module: "social", action: "isSupport"};
         callRuntime(data, callback);
     }
@@ -299,25 +297,25 @@ module nest.social {
         callRuntime(data, callback);
     }
 
-    export function openBBS(socialInfo, callback:Function) {
+    export function openBBS(socialInfo, callback:(resultInfo:core.ResultCallbackInfo)=>any) {
         var data = {module: "social", action: "openBBS", param: socialInfo};
         callRuntime(data, callback);
+    }
+
+    export interface SocialSupportCallbackInfo extends core.ResultCallbackInfo {
+        status:number;
+        getFriends?:number;
+        openBBS?:number;
     }
 }
 
 module nest.app {
-    export interface IDesktopInfo {
-        Title:string;           // 桌面图标标题，不要超过五个中文字
-        DetailUrl:string;      // 桌面图标对应的页面url
-        PicUrl: string; //120*120
-    }
-
     /**
      * 是否支持特定功能
      * @param callback
      * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"} attention|sendToDesktop 1支持 0不支持
      */
-    export function isSupport(callback:Function) {
+    export function isSupport(callback:(resultInfo:SocialSupportCallbackInfo)=>any) {
         var data = {module: "app", action: "isSupport"};
         callRuntime(data, callback);
     }
@@ -327,7 +325,7 @@ module nest.app {
      * @param appInfo
      * @param callback
      */
-    export function attention(appInfo:any, callback:Function) {
+    export function attention(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>any) {
         var data = {module: "app", action: "attention", param: appInfo};
         callRuntime(data, callback);
     }
@@ -337,7 +335,7 @@ module nest.app {
      * @param appInfo
      * @param callback
      */
-    export function exitGame(appInfo:any, callback:Function) {
+    export function exitGame(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>any) {
         var data = {module: "app", action: "exitGame", param: appInfo};
         callRuntime(data, callback);
     }
@@ -348,7 +346,7 @@ module nest.app {
      * @param callback
      * @param callback-param result 0表示添加桌面成功，-1表示添加失败
      */
-    export function sendToDesktop(appInfo:any, callback:Function) {
+    export function sendToDesktop(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>any) {
         var data = {module: "app", action: "sendToDesktop", param: appInfo};
         callRuntime(data, callback);
     }
@@ -367,24 +365,48 @@ module nest.app {
 	 *   "email": //email联系方式数组[],如果没有响应联系方式将没有该字段
 	 * }
      */
-    export function getInfo(appInfo:any, callback:Function) {
+    export function getInfo(appInfo:any, callback:(resultInfo:InfoesCallbackInfo)=>any) {
         var data = {module: "app", action: "getInfo", param: appInfo};
         callRuntime(data, callback);
+    }
+
+    export interface SocialSupportCallbackInfo extends core.ResultCallbackInfo{
+        status:number;
+        attention?:number;
+        sendToDesktop?:number;
+        exitGame?:number;
+    }
+
+    export interface InfoesCallbackInfo extends core.ResultCallbackInfo {
+        contact:string;//可用联系方式
+        qq?:string[];//qq联系方式数组[],如果没有响应联系方式将没有该字段
+        qqgroup?:string[];//qq群联系方式数组[],如果没有响应联系方式将没有该字段
+        weixin?:string[];//微信联系方式数组[],如果没有响应联系方式将没有该字段
+        email?:string[];//email联系方式数组[],如果没有响应联系方式将没有该字段
     }
 }
 
 module nest {
     var externalArr:Array<any> = [];
 
+    /**
+     * @private
+     */
     export interface NestData {
 
         module:string;
 
         action:string;
 
-        param?:any;
+        param?:Object;
     }
 
+    /**
+     * @private
+     * @param data
+     * @param callback
+     * @param parallel
+     */
     export function callRuntime(data:NestData, callback, parallel:boolean = false) {
 
         var tag = "nest";

@@ -627,6 +627,10 @@ var nest;
 (function (nest) {
     var core;
     (function (core) {
+        /**
+         * @private
+         * @type {number}
+         */
         core.appId = parseInt(egret.getOption("appId"));
         /**
          * 启动Nest
@@ -844,11 +848,11 @@ var nest;
         /**
          * 获取渠道信息
          * @param appInfo 获取信息参数,没有请传递{}
-         * @param callback 回调
+         * @param callback 回调函数
          * 回调参数:
          * {
          * "result": , //result为0说明成功
-         * "contact": , //可用联系方式数组[]
+         * "contact": , //可用联系方式
          *   "qq": //qq联系方式数组[],如果没有响应联系方式将没有该字段
          *   "qqgroup": //qq群联系方式数组[],如果没有响应联系方式将没有该字段
          *   "weixin": //微信联系方式数组[],如果没有响应联系方式将没有该字段
@@ -865,6 +869,12 @@ var nest;
 var nest;
 (function (nest) {
     var externalArr = [];
+    /**
+     * @private
+     * @param data
+     * @param callback
+     * @param parallel
+     */
     function callRuntime(data, callback, parallel) {
         if (parallel === void 0) { parallel = false; }
         var tag = "nest";
@@ -933,12 +943,19 @@ var nest;
 //////////////////////////////////////////////////////////////////////////////////////
 /*
  * cm old solution
+ * @private
  */
 var nest;
 (function (nest) {
     var cm;
     (function (cm) {
+        /**
+         * @private
+         */
         cm.spid = null;
+        /**
+         * @private
+         */
         function getSpid() {
             if (cm.spid == null) {
                 if (nest.core.appId == 85 || nest.core.appId == 88) {
@@ -952,6 +969,9 @@ var nest;
             return cm.spid;
         }
         cm.getSpid = getSpid;
+        /**
+         * @private
+         */
         function callRuntime(data, callback) {
             var deviceId;
             if (deviceId = egret.localStorage.getItem("deviceid")) {
@@ -1002,6 +1022,9 @@ var nest;
             }
         }
         cm.callRuntime = callRuntime;
+        /**
+         * @private
+         */
         function loginBefore(callback) {
             var postdata = {};
             var url = "http://api.egret-labs.org/games/www/getAppInfo.php/";
@@ -1012,6 +1035,9 @@ var nest;
             });
         }
         cm.loginBefore = loginBefore;
+        /**
+         * @private
+         */
         function loginAfter(postdata, callback, isNew) {
             var sendData = {};
             sendData["access_token"] = postdata["access_token"];
@@ -1029,6 +1055,9 @@ var nest;
             });
         }
         cm.loginAfter = loginAfter;
+        /**
+         * @private
+         */
         function payBefore(orderInfo, callback) {
             var url = "http://api.egret-labs.org/games/api.php";
             var postdata = {
@@ -1077,12 +1106,18 @@ var nest;
         }
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
     (function (cm) {
         var user;
         (function (user) {
+            /**
+             * @private
+             */
             function checkLogin(loginInfo, callback) {
                 var postData = {};
                 function checkAfter(resultData) {
@@ -1121,7 +1156,7 @@ var nest;
                         postData["client_secret"] = tempData["client_secret"];
                         postData["redirect_uri"] = tempData["redirect_uri"];
                         //调用初始化桌面快捷方式
-                        nest.cm.app.initDesktop({
+                        nest.cm.app.$initDesktop({
                             "Title": tempData["title"],
                             "DetailUrl": tempData["detailUrl"],
                             "PicUrl": tempData["picUrl"]
@@ -1160,6 +1195,7 @@ var nest;
             }
             user.checkLogin = checkLogin;
             /**
+             * @private
              * 调用渠道登录接口
              * @param loginInfo
              * @param callback
@@ -1173,12 +1209,18 @@ var nest;
         })(user = cm.user || (cm.user = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
     (function (cm) {
         var iap;
         (function (iap) {
+            /**
+             * @private
+             */
             iap.isFirst = true;
             /**
              * 支付
@@ -1232,6 +1274,9 @@ var nest;
         })(iap = cm.iap || (cm.iap = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
@@ -1240,6 +1285,7 @@ var nest;
         (function (share) {
             /**
              * 是否支持分享
+             * @private
              * @param callback
              * @callback-param {status:0, share:0}
              */
@@ -1250,6 +1296,9 @@ var nest;
         })(share = cm.share || (cm.share = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
@@ -1258,19 +1307,21 @@ var nest;
         (function (app) {
             var desktopInfo;
             /**
+             * @private
              * 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
              * @param param
              */
-            function initDesktop(param) {
+            function $initDesktop(param) {
                 desktopInfo = param;
                 egret.ExternalInterface.call("save_shortcut_info", JSON.stringify({
                     token: String(Math.random()),
                     value: JSON.stringify(param)
                 }));
             }
-            app.initDesktop = initDesktop;
+            app.$initDesktop = $initDesktop;
             /**
              * 是否支持特定功能
+             * @private
              * @param callback
              * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
              */
@@ -1285,6 +1336,7 @@ var nest;
             app.isSupport = isSupport;
             /**
              * 发送到桌面
+             * @private
              * @param appInfo
              * @param callback
              * @param callback-param result 0表示添加桌面成功，-1表示添加失败
@@ -1409,10 +1461,8 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
             loginType.push("wx");
         }
         var loginCallbackInfo = {
-            "status": 0,
             "result": 0,
             "loginType": loginType,
-            "token": undefined,
             "getInfo": 0
         };
         callback.call(null, loginCallbackInfo);
@@ -1425,9 +1475,7 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
                 status = 0;
             }
             var loginCallbackInfo = {
-                "status": status,
                 "result": status,
-                "loginType": undefined,
                 "token": data.token
             };
             callback.call(null, loginCallbackInfo);
@@ -1442,9 +1490,7 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
                 status = 0;
             }
             var loginCallbackInfo = {
-                "status": status,
                 "result": status,
-                "loginType": undefined,
                 "token": data.token
             };
             callback.call(null, loginCallbackInfo);
@@ -1632,9 +1678,7 @@ var nest;
                         if (qqhall.loginNum >= 3) {
                             //彻底登陆失败
                             var loginCallbackInfo = {
-                                "status": -1,
                                 "result": -1,
-                                "loginType": undefined,
                                 "token": undefined
                             };
                             qqhall.loginCallback.call(null, loginCallbackInfo);

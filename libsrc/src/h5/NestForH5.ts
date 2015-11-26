@@ -34,15 +34,13 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
     nest.user.isSupport = function (callback:Function) {
         var channelTag = egret.getOption("channelTag");
         var loginType = [];
-        if(channelTag == "QQBrowser") {
+        if (channelTag == "QQBrowser") {
             loginType.push("qq");
             loginType.push("wx");
         }
-        var loginCallbackInfo:nest.user.LoginCallbackInfo = {
-            "status": 0,
+        var loginCallbackInfo:nest.user.UserSupportCallbackInfo = {
             "result": 0,
             "loginType": loginType,
-            "token": undefined,
             "getInfo": 0
         };
         callback.call(null, loginCallbackInfo);
@@ -56,9 +54,7 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
                 status = 0;
             }
             var loginCallbackInfo:nest.user.LoginCallbackInfo = {
-                "status": status,
                 "result": status,
-                "loginType": undefined,
                 "token": data.token
             };
             callback.call(null, loginCallbackInfo);
@@ -74,9 +70,7 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
                 status = 0;
             }
             var loginCallbackInfo:nest.user.LoginCallbackInfo = {
-                "status": status,
                 "result": status,
-                "loginType": undefined,
                 "token": data.token
             };
             callback.call(null, loginCallbackInfo);
@@ -88,7 +82,7 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
         var egretH5SdkCallback = function (data) {
             var status = data.status;
             var result = status == 1 ? 0 : 1;
-            callback.call(null, {"result":result});
+            callback.call(null, {"result": result});
         };
         EgretH5Sdk.logout(egretH5SdkCallback, null);
     };
@@ -97,9 +91,9 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
         if (nest.h5.uid) {
             orderInfo["appId"] = nest.core.appId;
             orderInfo["uId"] = nest.h5.uid;
-            EgretH5Sdk.pay(orderInfo,function(data) {
+            EgretH5Sdk.pay(orderInfo, function (data) {
                 callback(data);
-                }, this);
+            }, this);
         }
     };
 
@@ -129,7 +123,7 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
 
     nest.social.isSupport = function (callback:Function) {
         //todo
-        callback.call(null,{"result": 0, "getFriends":0, "openBBS":0});
+        callback.call(null, {"result": 0, "getFriends": 0, "openBBS": 0});
     };
 
     nest.social.getFriends = function (data, callback:Function) {
@@ -160,7 +154,7 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
 
     nest.app.getInfo = function (appInfo:any, callback:Function) {
         var egretH5SdkCallback = function (data) {
-            var callbackInfo = {result:0, "contact": data.contact};
+            var callbackInfo = {result: 0, "contact": data.contact};
             callback.call(null, callbackInfo);
         };
 
