@@ -629,13 +629,19 @@ var nest;
     (function (core) {
         /**
          * @private
-         * @type {number}
+         * 游戏在开放平台的id.使用nest.core.startup设置
          */
         core.appId = parseInt(egret.getOption("appId"));
         /**
          * 启动Nest
          * @param info 启动参数
          * @param callback 启动完成回调
+         * @example 以下代码设置appId为 88888,启动Nest
+         * <pre>
+         *     nest.core.startup({egretAppId:88888}, function (){
+         *         //do something
+         *     });
+         * </pre>
          */
         function startup(info, callback) {
             if (info.egretAppId != null) {
@@ -652,25 +658,19 @@ var nest;
     })(core = nest.core || (nest.core = {}));
 })(nest || (nest = {}));
 /**
- * 登录功能
+ * 登录功能逻辑：
+ * 1.初始化项目数据
+ * 2.在游戏中展示一张登录背景界面
+ * 3.调用 checkLogin 函数判断是否已经登录过，如果登录过，进入步骤7，否则进入步骤4
+ * 4.调用 isSupport 函数判断支持的登录类型，根据登录类型显示对应的登录图标
+ * 5.用户点击登录图标后，调用 login 函数打开登录面板进行登录
+ * 6.如果登录成功，进入步骤7
+ * 7.退出登录界面，进入游戏
  *
- * 逻辑：
- * 1.在游戏中展示一张登录背景界面
- * 2.调用 checkLogin 函数判断是否已经登录过，如果登录过，进入步骤6，否则进入步骤3
- * 3.调用 isSupport 函数判断支持的登录类型，根据登录类型显示对应的登录图标
- * 4.用户点击登录图标后，调用 login 函数打开登录面板进行登录
- * 5.如果登录成功，进入步骤6
- * 6.退出登录界面，进入游戏
- *
- *
- * 登出功能：
- *
- * 逻辑：
+ * 登出功能逻辑：
  * 1.在游戏中放置一个“退出游戏”或者“切换账号”的按钮
  * 2.用户点击“退出游戏”图标后，调用 logout 函数
- * 3.在登出成功后，返回到登录逻辑的步骤1
- *
- *
+ * 3.在登出成功后，返回到登录逻辑的步骤4
  */
 var nest;
 (function (nest) {
@@ -681,6 +681,18 @@ var nest;
          * @param loginInfo 请传递一个{}
          * @param callback
          * @callback-param  @see nest.user.LoginCallbackInfo
+         * @example 以下代码检测是否已经登录
+         * <pre>
+         *     nest.user.checkLogin({}, function (data){
+         *         if(data.result == 0) {
+         *             //已经登录,获取登陆token信息
+         *             var token = data.token;
+         *         }
+         *         else {
+         *             //没有登录,之后需要用nest.uset.isSupport接口获取loginType并根据loginType显示登录界面
+         *         }
+         *     });
+         * </pre>
          */
         function checkLogin(loginInfo, callback) {
             var data = { module: "user", action: "checkLogin", param: loginInfo };
@@ -692,6 +704,18 @@ var nest;
          * @param loginInfo
          * @param callback
          * @callback-param  @see nest.user.LoginCallbackInfo
+         * @example 以下代码调用渠道登录接口
+         * <pre>
+         *     nest.user.login({}, function (data){
+         *         if(data.result == 0) {
+         *             //登陆成功,获取用户token
+         *             var token = data.token;
+         *         }
+         *         else {
+         *             //登录失败,需要重新登录
+         *         }
+         *     });
+         * </pre>
          */
         function login(loginInfo, callback) {
             var data = { module: "user", action: "login", param: loginInfo };
@@ -700,9 +724,21 @@ var nest;
         user.login = login;
         /**
          * 登出接口
-         * @param loginInfo 可以传递{}
-         * @param callback
+         * @param loginInfo 登出参数,没有可以传递{}
+         * @param callback 回调函数
          * @callback-param   { result : 0 };
+         * @example 以下代码调用渠道登出接口
+         * <pre>
+         *     nest.user.logout({}, function (data){
+         *         if(data.result == 0) {
+         *             //登出成功,需要显示登陆界面供玩家重新登录
+         *             //这里后续不需要继续调用nest.user.checkLogin
+         *         }
+         *         else {
+         *             //登出失败,可能相应渠道不支持登出
+         *         }
+         *     });
+         * </pre>
          */
         function logout(loginInfo, callback) {
             var nestVersion = egret_native.getOption("egret.runtime.nest");
@@ -718,7 +754,18 @@ var nest;
         /**
          * 检测支持何种登录方式
          * @param callback
-         * @callback-param  @see nest.user.LoginCallbackInfo
+         * @callback-param  @see nest.user.UserSupportCallbackInfo
+         * @example 以下代码进行检测支持何种登录方式
+         * <pre>
+         *     nest.user.logout({}, function (data){
+         *         if(data.result == 0) {
+         *             //获取渠道支持的登陆方式,并根据登录方式显示登陆界面
+         *             var loginType = data.loginType;
+         *             //获取渠道是否支持获得用户信息接口,如果支持可以使用nest.user.getInfo获取用户信息
+         *             var isSupportGetUserInfo = data.getInfo == 1;
+         *         }
+         *     });
+         * </pre>
          */
         function isSupport(callback) {
             var data = { module: "user", action: "isSupport" };
@@ -726,8 +773,24 @@ var nest;
         }
         user.isSupport = isSupport;
         /**
-         * 获取用户信息，目前只有qq浏览器支持
-         * @param callback
+         * 获取用户信息，目前只有qq浏览器runtime支持
+         * @param callback 回调函数
+         * @example 以下代码进行检测支持何种登录方式
+         * <pre>
+         *     nest.user.logout({}, function (data){
+         *         if(data.result == 0) {
+         *             var msg = data.msg;              //传回的提示信息
+         *             var nickName = data.nickName;     //昵称
+         *             var avatarUrl = data.avatarUrl;  //头像
+         *             var sex = data.sex;              //性别, 0未知，1男，2女
+         *             var city = data.city;            //城市
+         *             var language = data.language;    //语言
+         *             var isVip = data.isVip;          //是否vip, 1是，0不是
+         *             var province = data.province;    //省份
+         *             var country = data.country;      //国家
+         *         }
+         *     });
+         * </pre>
          */
         function getInfo(callback) {
             var data = { module: "user", action: "getInfo" };
@@ -742,8 +805,19 @@ var nest;
     (function (iap) {
         /**
          * 支付
-         * @param orderInfo
-         * @param callback
+         * @param orderInfo 支付信息
+         * @param callback 支付回调
+         * @example 以下代码进行支付
+         * <pre>
+         *     nest.iap.pay({goodsId:"1",goodsNumber:"1",serverId:"1",ext:"msg"}, function (data){
+         *         if(data.result == 0) {
+         *             //支付成功
+         *         }
+         *         else {
+         *             //支付失败
+         *         }
+         *     });
+         * </pre>
          */
         function pay(orderInfo, callback) {
             var data = { module: "iap", action: "pay", "param": orderInfo };
@@ -758,8 +832,16 @@ var nest;
     (function (share_1) {
         /**
          * 是否支持分享
-         * @param callback
-         * @callback-param {status:0, share:0}  share 1支持 0不支持
+         * @param callback 回调函数
+         * @example 以下代码获取是否支持分享
+         * <pre>
+         *     nest.share.isSupport(function (data){
+         *         if(data.result == 0) {
+         *             //获取是否支持分享
+         *             var share = data.share == 1;
+         *         }
+         *     });
+         * </pre>
          */
         function isSupport(callback) {
             var data = { module: "share", action: "isSupport" };
@@ -768,9 +850,21 @@ var nest;
         share_1.isSupport = isSupport;
         /**
          * 分享
-         * @param shareInfo
-         * @param callback
+         * @param shareInfo 分享参数
+         * @param callback 回调函数
          * @callback-param result 0 表示分享成功，-1表示用户取消
+         * @example 以下代码获取是否支持分享
+         * <pre>
+         *     var shareInfo = {title:"title", description:"description", img_title:"img_title", img_url:"http://www.example.com/example.jpg", url:"http://www.example.com"};;
+         *     nest.share.share(shareInfo, function (data) {
+         *         if(data.result == 0) {
+         *             //分享成功
+         *         }
+         *         else {
+         *             //分享失败
+         *         }
+         *     });
+         * </pre>
          */
         function share(shareInfo, callback) {
             var data = { module: "share", action: "share", param: shareInfo };
