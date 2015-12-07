@@ -1,7 +1,7 @@
 declare module nest.core {
     var appId: number;
     /**
-     * 启动Nest
+     * 启动Nest,请务必最先调用此函数
      * @param info 启动参数
      * @param callback 启动完成回调
      */
@@ -12,6 +12,11 @@ declare module nest.core {
          * egret 平台分配的 AppId
          */
         egretAppId: number;
+        /**
+         * 使用的 Nest 版本,默认为1
+         * 使用新版 Nest 接口请传2
+         */
+        version: number;
     }
 }
 /**
@@ -83,7 +88,7 @@ declare module nest.user {
          * 状态值，0表示成功
          * 该值未来可能会被废弃
          */
-        status: number;
+        status?: number;
         /**
          * 结果值，0表示成功
          */
@@ -190,11 +195,11 @@ declare module nest.app {
     /**
      * 获取渠道信息
      * @param appInfo 获取信息参数,没有请传递{}
-     * @param callback 回调
+     * @param callback 回调函数
      * 回调参数:
      * {
      * "result": , //result为0说明成功
-     * "contact": , //可用联系方式数组[]
+     * "contact": , //可用联系方式
      *   "qq": //qq联系方式数组[],如果没有响应联系方式将没有该字段
      *   "qqgroup": //qq群联系方式数组[],如果没有响应联系方式将没有该字段
      *   "weixin": //微信联系方式数组[],如果没有响应联系方式将没有该字段
@@ -280,6 +285,59 @@ declare module nest.cm.app {
 }
 declare module nest.h5 {
     var uid: number;
+    function changeMethod(version: string): void;
+    module user {
+        function isSupport(callback: Function): void;
+        function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
+    }
+    module iap {
+        function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+    }
+    module share {
+        function isSupport(callback: Function): void;
+        function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
+    }
+    module social {
+        function isSupport(callback: Function): void;
+        function getFriends(data: any, callback: Function): void;
+        function openBBS(data: any, callback: Function): void;
+    }
+    module app {
+        function isSupport(callback: Function): void;
+        function attention(appInfo: any, callback: Function): void;
+        function sendToDesktop(appInfo: any, callback: Function): void;
+        function getInfo(appInfo: any, callback: Function): void;
+    }
+}
+declare module nest.h5_2 {
+    module user {
+        function isSupport(callback: Function): void;
+        function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function getInfo(loginInfo: nest.user.LoginInfo, callback: Function): void;
+    }
+    module iap {
+        function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+    }
+    module share {
+        function isSupport(callback: Function): void;
+        function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
+    }
+    module social {
+        function isSupport(callback: Function): void;
+        function getFriends(data: any, callback: Function): void;
+        function openBBS(data: any, callback: Function): void;
+    }
+    module app {
+        function isSupport(callback: Function): void;
+        function attention(appInfo: any, callback: Function): void;
+        function sendToDesktop(appInfo: any, callback: Function): void;
+        function exitGame(appInfo: any, callback: Function): void;
+        function getInfo(appInfo: any, callback: Function): void;
+    }
 }
 declare class NestForQQHall {
 }

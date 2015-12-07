@@ -33,7 +33,7 @@ module nest.core {
     export var appId:number = parseInt(egret.getOption("appId"));
 
     /**
-     * 启动Nest
+     * 启动Nest,请务必最先调用此函数
      * @param info 启动参数
      * @param callback 启动完成回调
      */
@@ -41,7 +41,12 @@ module nest.core {
         if(info.egretAppId != null) {
             appId = info.egretAppId;
         }
-        callback({"result": 0});
+        if(info.version == 2) {
+
+        }
+        else {
+            callback({"result": 0});
+        }
     }
 
 
@@ -56,7 +61,11 @@ module nest.core {
          * egret 平台分配的 AppId
          */
         egretAppId: number;
-
+        /**
+         * 使用的 Nest 版本,默认为1
+         * 使用新版 Nest 接口请传2
+         */
+        version:number;
     }
 
 
@@ -170,7 +179,7 @@ module nest.user {
          * 状态值，0表示成功
          * 该值未来可能会被废弃
          */
-        status:number;
+        status?:number;
 
         /**
          * 结果值，0表示成功
