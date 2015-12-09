@@ -86,7 +86,7 @@ declare module nest.user {
     interface LoginCallbackInfo {
         /**
          * 状态值，0表示成功
-         * 该值未来可能会被废弃
+         * 该值未来可能会被废弃,请使用result进行判断
          */
         status?: number;
         /**
@@ -132,9 +132,16 @@ declare module nest.share {
     /**
      * 是否支持分享
      * @param callback
-     * @callback-param {status:0, share:0}  share 1支持 0不支持
+     * @callback-param {result:0, share:0}  share 1支持 0不支持
      */
     function isSupport(callback: Function): void;
+    /**
+     * 设置默认分享内容,以便某些渠道在游戏外点击分享按钮时显示分享内容
+     * @param shareInfo
+     * @param callback
+     * @callback-param result 0 表示成功，-2表示失败
+     */
+    function setDefaultData(shareInfo: ShareInfo, callback: Function): void;
     /**
      * 分享
      * @param shareInfo
@@ -170,7 +177,7 @@ declare module nest.app {
     /**
      * 是否支持特定功能
      * @param callback
-     * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"} attention|sendToDesktop 1支持 0不支持
+     * @callback-param  { result:"0" , attention :"1" , sendToDesktop : "1"} attention|sendToDesktop 1支持 0不支持
      */
     function isSupport(callback: Function): void;
     /**
@@ -324,6 +331,7 @@ declare module nest.h5_2 {
     }
     module share {
         function isSupport(callback: Function): void;
+        function setDefaultInfo(shareInfo: nest.share.ShareInfo, callback: Function): void;
         function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
     }
     module social {

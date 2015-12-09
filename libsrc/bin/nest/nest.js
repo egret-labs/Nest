@@ -759,13 +759,24 @@ var nest;
         /**
          * 是否支持分享
          * @param callback
-         * @callback-param {status:0, share:0}  share 1支持 0不支持
+         * @callback-param {result:0, share:0}  share 1支持 0不支持
          */
         function isSupport(callback) {
             var data = { module: "share", action: "isSupport" };
             nest.callRuntime(data, callback);
         }
         share_1.isSupport = isSupport;
+        /**
+         * 设置默认分享内容,以便某些渠道在游戏外点击分享按钮时显示分享内容
+         * @param shareInfo
+         * @param callback
+         * @callback-param result 0 表示成功，-2表示失败
+         */
+        function setDefaultData(shareInfo, callback) {
+            //var data = {module: "share", action: "setDefaultData", param: shareInfo};
+            //callRuntime(data, callback, true);
+        }
+        share_1.setDefaultData = setDefaultData;
         /**
          * 分享
          * @param shareInfo
@@ -807,7 +818,7 @@ var nest;
         /**
          * 是否支持特定功能
          * @param callback
-         * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"} attention|sendToDesktop 1支持 0不支持
+         * @callback-param  { result:"0" , attention :"1" , sendToDesktop : "1"} attention|sendToDesktop 1支持 0不支持
          */
         function isSupport(callback) {
             var data = { module: "app", action: "isSupport" };
@@ -1633,8 +1644,14 @@ var nest;
                 EgretH5Sdk.isSupportShare({}, callback);
             }
             share_2.isSupport = isSupport;
-            function share(shareInfo, callback) {
+            function setDefaultInfo(shareInfo, callback) {
+                shareInfo["imgUrl"] = shareInfo.img_url;
                 EgretH5Sdk.share(shareInfo, callback);
+            }
+            share_2.setDefaultInfo = setDefaultInfo;
+            function share(shareInfo, callback) {
+                shareInfo["imgUrl"] = shareInfo.img_url;
+                EgretH5Sdk.setShareDefaultData(shareInfo, callback);
             }
             share_2.share = share;
         })(share = h5_2.share || (h5_2.share = {}));
