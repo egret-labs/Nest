@@ -1413,6 +1413,14 @@ var nest;
     var h5;
     (function (h5) {
         h5.uid = undefined;
+        function isQQBrowser() {
+            var channelTag = egret.getOption("channelTag");
+            if (channelTag == "QQBrowser") {
+                return true;
+            }
+            return false;
+        }
+        h5.isQQBrowser = isQQBrowser;
         function changeMethod(version) {
             var arr = ["user", "iap", "share", "social", "app"];
             for (var i = 0; i < arr.length; i++) {
@@ -1431,7 +1439,23 @@ var nest;
                 if (info.version == 2) {
                     //新版api
                     changeMethod("h5_2");
-                    EgretH5Sdk.init({}, callback);
+                    //加载h5sdk
+                    //todo 换成正式地址
+                    var url = "http://beta.api.egret-labs.org/v2/misc/scripts/egreth5sdk.js";
+                    if (isQQBrowser()) {
+                        url = "http://api.gz.1251278653.clb.myqcloud.com/v2/misc/scripts/egreth5sdk.js";
+                    }
+                    var s = document.createElement('script');
+                    if (s.hasOwnProperty("async")) {
+                        s.async = false;
+                    }
+                    s.src = url;
+                    s.addEventListener('load', function () {
+                        s.parentNode.removeChild(s);
+                        this.removeEventListener('load', arguments.callee, false);
+                        EgretH5Sdk.init({}, callback);
+                    }, false);
+                    document.body.appendChild(s);
                 }
                 else {
                     //旧版api
@@ -1443,9 +1467,8 @@ var nest;
         var user;
         (function (user) {
             function isSupport(callback) {
-                var channelTag = egret.getOption("channelTag");
                 var loginType = [];
-                if (channelTag == "QQBrowser") {
+                if (isQQBrowser()) {
                     loginType.push("qq");
                     loginType.push("wx");
                 }
@@ -1599,9 +1622,8 @@ var nest;
         var user;
         (function (user) {
             function isSupport(callback) {
-                var channelTag = egret.getOption("channelTag");
                 var loginType = [];
-                if (channelTag == "QQBrowser") {
+                if (nest.h5.isQQBrowser()) {
                     loginType.push("qq");
                     loginType.push("wx");
                 }

@@ -30,11 +30,19 @@
 module nest.h5 {
     export var uid:number = undefined;
 
+    export function isQQBrowser():boolean {
+        var channelTag = egret.getOption("channelTag");
+        if (channelTag == "QQBrowser") {
+            return true;
+        }
+        return false;
+    }
+
     export function changeMethod(version:string):void {
         var arr = ["user", "iap", "share", "social", "app"];
-        for(var i = 0 ; i < arr.length ; i++){
+        for (var i = 0; i < arr.length; i++) {
             var module = arr[i];
-            for(var method in nest[module]) {
+            for (var method in nest[module]) {
                 nest[module][method] = nest[version][module][method];
             }
         }
@@ -48,7 +56,23 @@ module nest.h5 {
             if (info.version == 2) {
                 //新版api
                 changeMethod("h5_2");
-                EgretH5Sdk.init({}, callback);
+                //加载h5sdk
+                //todo 换成正式地址
+                var url = "http://beta.api.egret-labs.org/v2/misc/scripts/egreth5sdk.js";
+                if (isQQBrowser()) {
+                    url = "http://api.gz.1251278653.clb.myqcloud.com/v2/misc/scripts/egreth5sdk.js";
+                }
+                var s = document.createElement('script');
+                if (s.hasOwnProperty("async")) {
+                    s.async = false;
+                }
+                s.src = url;
+                s.addEventListener('load', function () {
+                    s.parentNode.removeChild(s);
+                    this.removeEventListener('load', arguments.callee, false);
+                    EgretH5Sdk.init({}, callback);
+                }, false);
+                document.body.appendChild(s);
             }
             else {
                 //旧版api
@@ -60,9 +84,8 @@ module nest.h5 {
 
     export module user {
         export function isSupport(callback:Function) {
-            var channelTag = egret.getOption("channelTag");
             var loginType = [];
-            if (channelTag == "QQBrowser") {
+            if (isQQBrowser()) {
                 loginType.push("qq");
                 loginType.push("wx");
             }
@@ -204,14 +227,12 @@ module nest.h5 {
 }
 
 
-
 //新版
 module nest.h5_2 {
     export module user {
         export function isSupport(callback:Function) {
-            var channelTag = egret.getOption("channelTag");
             var loginType = [];
-            if (channelTag == "QQBrowser") {
+            if (nest.h5.isQQBrowser()) {
                 loginType.push("qq");
                 loginType.push("wx");
             }

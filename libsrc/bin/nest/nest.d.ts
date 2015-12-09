@@ -292,6 +292,7 @@ declare module nest.cm.app {
 }
 declare module nest.h5 {
     var uid: number;
+    function isQQBrowser(): boolean;
     function changeMethod(version: string): void;
     module user {
         function isSupport(callback: Function): void;
