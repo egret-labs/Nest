@@ -273,14 +273,14 @@ module nest.h5_2 {
             EgretH5Sdk.isSupportShare({}, callback);
         }
 
-        export function setDefaultInfo(shareInfo:nest.share.ShareInfo, callback:Function) {
+        export function setDefaultData(shareInfo:nest.share.ShareInfo, callback:Function) {
             shareInfo["imgUrl"] = shareInfo.img_url;
-            EgretH5Sdk.share(shareInfo, callback);
+            EgretH5Sdk.setShareDefaultData(shareInfo, callback);
         }
 
         export function share(shareInfo:nest.share.ShareInfo, callback:Function) {
             shareInfo["imgUrl"] = shareInfo.img_url;
-            EgretH5Sdk.setShareDefaultData(shareInfo, callback);
+            EgretH5Sdk.share(shareInfo, callback);
         }
     }
 

@@ -332,7 +332,7 @@ declare module nest.h5_2 {
     }
     module share {
         function isSupport(callback: Function): void;
-        function setDefaultInfo(shareInfo: nest.share.ShareInfo, callback: Function): void;
+        function setDefaultData(shareInfo: nest.share.ShareInfo, callback: Function): void;
         function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
     }
     module social {

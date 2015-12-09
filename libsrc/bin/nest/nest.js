@@ -1666,14 +1666,14 @@ var nest;
                 EgretH5Sdk.isSupportShare({}, callback);
             }
             share_2.isSupport = isSupport;
-            function setDefaultInfo(shareInfo, callback) {
-                shareInfo["imgUrl"] = shareInfo.img_url;
-                EgretH5Sdk.share(shareInfo, callback);
-            }
-            share_2.setDefaultInfo = setDefaultInfo;
-            function share(shareInfo, callback) {
+            function setDefaultData(shareInfo, callback) {
                 shareInfo["imgUrl"] = shareInfo.img_url;
                 EgretH5Sdk.setShareDefaultData(shareInfo, callback);
+            }
+            share_2.setDefaultData = setDefaultData;
+            function share(shareInfo, callback) {
+                shareInfo["imgUrl"] = shareInfo.img_url;
+                EgretH5Sdk.share(shareInfo, callback);
             }
             share_2.share = share;
         })(share = h5_2.share || (h5_2.share = {}));
