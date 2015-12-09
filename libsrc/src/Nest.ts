@@ -177,7 +177,7 @@ module nest.user {
 
         /**
          * 状态值，0表示成功
-         * 该值未来可能会被废弃
+         * 该值未来可能会被废弃,请使用result进行判断
          */
         status?:number;
 
@@ -251,13 +251,23 @@ module nest.share {
     /**
      * 是否支持分享
      * @param callback
-     * @callback-param {status:0, share:0}  share 1支持 0不支持
+     * @callback-param {result:0, share:0}  share 1支持 0不支持
      */
     export function isSupport(callback:Function) {
         var data = {module: "share", action: "isSupport"};
         callRuntime(data, callback);
     }
 
+    /**
+     * 设置默认分享内容,以便某些渠道在游戏外点击分享按钮时显示分享内容
+     * @param shareInfo
+     * @param callback
+     * @callback-param result 0 表示成功，-2表示失败
+     */
+    export function setDefaultData(shareInfo:ShareInfo, callback:Function) {
+        //var data = {module: "share", action: "setDefaultData", param: shareInfo};
+        //callRuntime(data, callback, true);
+    }
 
     /**
      * 分享
@@ -266,10 +276,8 @@ module nest.share {
      * @callback-param result 0 表示分享成功，-1表示用户取消
      */
     export function share(shareInfo:ShareInfo, callback:Function) {
-
         var data = {module: "share", action: "share", param: shareInfo};
         callRuntime(data, callback, true);
-
     }
 
     /**
@@ -324,7 +332,7 @@ module nest.app {
     /**
      * 是否支持特定功能
      * @param callback
-     * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"} attention|sendToDesktop 1支持 0不支持
+     * @callback-param  { result:"0" , attention :"1" , sendToDesktop : "1"} attention|sendToDesktop 1支持 0不支持
      */
     export function isSupport(callback:Function) {
         var data = {module: "app", action: "isSupport"};

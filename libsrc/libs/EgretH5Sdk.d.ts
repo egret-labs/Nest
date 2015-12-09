@@ -43,5 +43,5 @@ declare class EgretH5Sdk
     static init(data:any, callbackFun:Function);
     static isSupportShare(data:any, callbackFun:Function);
     static isSupportAttention(data:any, callbackFun:Function);
-    static setShareDefaultText(data:any, callbackFun:Function);
+    static setShareDefaultData(data:any, callbackFun:Function);
 }
