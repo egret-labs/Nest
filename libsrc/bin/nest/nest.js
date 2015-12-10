@@ -1,4 +1,4 @@
-if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
+if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         var CMPAY_EGRET = (function () {
@@ -439,7 +439,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
         })();
     }
 }
-if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
+if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         var CMGAME_EGRET = (function () {
@@ -844,11 +844,11 @@ var nest;
         /**
          * 获取渠道信息
          * @param appInfo 获取信息参数,没有请传递{}
-         * @param callback 回调
+         * @param callback 回调函数
          * 回调参数:
          * {
          * "result": , //result为0说明成功
-         * "contact": , //可用联系方式数组[]
+         * "contact": , //可用联系方式
          *   "qq": //qq联系方式数组[],如果没有响应联系方式将没有该字段
          *   "qqgroup": //qq群联系方式数组[],如果没有响应联系方式将没有该字段
          *   "weixin": //微信联系方式数组[],如果没有响应联系方式将没有该字段
@@ -1306,7 +1306,7 @@ var nest;
         })(app = cm.app || (cm.app = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
-if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
+if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
     console.log("cm old 11111 ");
     console.log(egret_native.getOption("egret.runtime.spid"));
     console.log(egret_native.getOption("egret.runtime.nest"));
@@ -1555,10 +1555,10 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
 var NestForQQHall = (function () {
     function NestForQQHall() {
     }
-    var d = __define,c=NestForQQHall;p=c.prototype;
+    var d = __define,c=NestForQQHall,p=c.prototype;
     return NestForQQHall;
 })();
-egret.registerClass(NestForQQHall,"NestForQQHall");
+egret.registerClass(NestForQQHall,'NestForQQHall');
 var nest;
 (function (nest) {
     var qqhall;
