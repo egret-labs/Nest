@@ -1,4 +1,4 @@
-if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
+if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         var CMPAY_EGRET = (function () {
@@ -439,7 +439,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
         })();
     }
 }
-if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
+if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         var CMGAME_EGRET = (function () {
@@ -1321,7 +1321,7 @@ var nest;
         })(app = cm.app || (cm.app = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
-if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
+if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
     console.log("cm old 11111 ");
     console.log(egret_native.getOption("egret.runtime.spid"));
     console.log(egret_native.getOption("egret.runtime.nest"));
@@ -1754,10 +1754,10 @@ var nest;
 var NestForQQHall = (function () {
     function NestForQQHall() {
     }
-    var d = __define,c=NestForQQHall;p=c.prototype;
+    var d = __define,c=NestForQQHall,p=c.prototype;
     return NestForQQHall;
 })();
-egret.registerClass(NestForQQHall,"NestForQQHall");
+egret.registerClass(NestForQQHall,'NestForQQHall');
 var nest;
 (function (nest) {
     var qqhall;

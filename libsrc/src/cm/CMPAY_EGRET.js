@@ -1,4 +1,4 @@
-if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
+if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         var CMPAY_EGRET = (function () {
