@@ -281,7 +281,12 @@ module nest.h5_2 {
 
     export module share {
         export function isSupport(callback:Function) {
-            EgretH5Sdk.isSupportShare({}, callback);
+            var supportShareCallback = function (data) {
+                var status = data.result;
+                var loginCallbackInfo = {"share": status, "msg":data.msg};
+                callback.call(null, loginCallbackInfo);
+            };
+            EgretH5Sdk.isSupportShare({}, supportShareCallback);
         }
 
         export function setDefaultData(shareInfo:nest.share.ShareInfo, callback:Function) {
@@ -313,7 +318,7 @@ module nest.h5_2 {
         export function isSupport(callback:Function) {
             var egretH5SdkCallback = function (data) {
                 var status = data.result;
-                var loginCallbackInfo = {"attention": status, "getInfo": 1, "exitGame": 0, "sendToDesktop": 0};
+                var loginCallbackInfo = {"attention": status, "msg":data.msg, "getInfo": 1, "exitGame": 0, "sendToDesktop": 0};
                 callback.call(null, loginCallbackInfo);
             };
             EgretH5Sdk.isSupportAttention({}, egretH5SdkCallback);

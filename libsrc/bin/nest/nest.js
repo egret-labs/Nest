@@ -1538,7 +1538,12 @@ var nest;
         var share;
         (function (share_2) {
             function isSupport(callback) {
-                EgretH5Sdk.isSupportShare({}, callback);
+                var supportShareCallback = function (data) {
+                    var status = data.result;
+                    var loginCallbackInfo = { "share": status, "msg": data.msg };
+                    callback.call(null, loginCallbackInfo);
+                };
+                EgretH5Sdk.isSupportShare({}, supportShareCallback);
             }
             share_2.isSupport = isSupport;
             function setDefaultData(shareInfo, callback) {
@@ -1572,7 +1577,7 @@ var nest;
             function isSupport(callback) {
                 var egretH5SdkCallback = function (data) {
                     var status = data.result;
-                    var loginCallbackInfo = { "attention": status, "getInfo": 1, "exitGame": 0, "sendToDesktop": 0 };
+                    var loginCallbackInfo = { "attention": status, "msg": data.msg, "getInfo": 1, "exitGame": 0, "sendToDesktop": 0 };
                     callback.call(null, loginCallbackInfo);
                 };
                 EgretH5Sdk.isSupportAttention({}, egretH5SdkCallback);
