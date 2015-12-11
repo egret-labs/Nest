@@ -30,7 +30,7 @@
 /*
  * cm old solution
  */
-module  nest.cm {
+module nest.cm {
     export interface EgretData {
         egretUserId:string;
     }
@@ -50,7 +50,7 @@ module  nest.cm {
 
     export function getSpid():number {
         if(spid == null) {
-            if (core.appId == 85 || core.appId == 88) {
+            if (nest.runtime.core.appId == 85 || nest.runtime.core.appId == 88) {
                 spid = 10044;
             }
             else {
@@ -120,7 +120,7 @@ module  nest.cm {
     export function loginBefore(callback):void {
         var postdata = {};
         var url:string = "http://api.egret-labs.org/games/www/getAppInfo.php/";
-        url += core.appId + "_" + getSpid();
+        url += nest.runtime.core.appId + "_" + getSpid();
         postdata["debug"] = 1;
 
         setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
@@ -134,7 +134,7 @@ module  nest.cm {
         sendData["access_token"] = postdata["access_token"];
         sendData["openid"] = postdata["openid"];
         var url:string = "http://api.egret-labs.org/games/www/game.php/";
-        url += core.appId + "_" + getSpid();
+        url += nest.runtime.core.appId + "_" + getSpid();
         sendData["runtime"] = 1;
         sendData["showGame"] = 1;
         if (isNew) {
@@ -153,7 +153,7 @@ module  nest.cm {
         var postdata = {
             "action": "pay.buy",
             "id": egretInfo.egretUserId,
-            "appId": core.appId,
+            "appId": nest.runtime.core.appId,
             "time": Date.now(),
             "runtime": 1
         };
@@ -434,7 +434,7 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
     console.log(egret_native.getOption("egret.runtime.nest"));
     console.log("cm old 22222 ");
 
-    if (egret_native.getOption("egret.runtime.spid") == 10044
+    if (parseInt(egret_native.getOption("egret.runtime.spid")) == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         console.log("cm old u r in cm");
         var egretInfo:nest.cm.EgretData;

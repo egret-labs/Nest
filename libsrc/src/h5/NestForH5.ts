@@ -30,6 +30,8 @@
 module nest.h5 {
     export var uid:number = undefined;
 
+    export var appId:number = undefined;
+
     export function isQQBrowser():boolean {
         var channelTag = egret.getOption("channelTag");
         if (channelTag == "QQBrowser") {
@@ -42,16 +44,17 @@ module nest.h5 {
         var arr = ["user", "iap", "share", "social", "app"];
         for (var i = 0; i < arr.length; i++) {
             var module = arr[i];
-            for (var method in nest[module]) {
-                nest[module][method] = nest[version][module][method];
-            }
+            nest[module] = nest[version][module];
+            //for (var method in nest[module]) {
+            //    nest[module][method] = nest[version][module][method];
+            //}
         }
     }
 
-    if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
-        nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
+    export module core {
+        export function startup(info:nest.core.StartupInfo, callback:Function):void {
             if (info.egretAppId != null) {
-                nest.core.appId = info.egretAppId;
+                appId = info.egretAppId;
             }
             if (info.version == 2) {
                 //新版api
@@ -80,6 +83,14 @@ module nest.h5 {
                 callback({"result": 0});
             }
         }
+
+        export function callCustomMethod(info:any, callback:Function):void {
+
+        }
+    }
+
+    if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
+        nest.core = nest.h5.core;
     }
 
     export module user {
@@ -148,7 +159,7 @@ module nest.h5 {
     export module iap {
         export function pay(orderInfo:nest.iap.PayInfo, callback:Function) {
             if (nest.h5.uid) {
-                orderInfo["appId"] = nest.core.appId;
+                orderInfo["appId"] = appId;
                 orderInfo["uId"] = nest.h5.uid;
                 EgretH5Sdk.pay(orderInfo, function (data) {
                     callback(data);
@@ -164,7 +175,7 @@ module nest.h5 {
                 var loginCallbackInfo = {"share": status};
                 callback.call(null, loginCallbackInfo);
             };
-            EgretH5Sdk.isOpenShare(nest.core.appId, nest.h5.uid, egretH5SdkCallback, null);
+            EgretH5Sdk.isOpenShare(appId, nest.h5.uid, egretH5SdkCallback, null);
         }
 
         export function share(shareInfo:nest.share.ShareInfo, callback:Function) {
@@ -179,7 +190,7 @@ module nest.h5 {
                 var loginCallbackInfo = {"status": status, "result": status};
                 callback.call(null, loginCallbackInfo);
             };
-            EgretH5Sdk.share(nest.core.appId, nest.h5.uid, shareInfo, egretH5SdkCallback, null);
+            EgretH5Sdk.share(appId, nest.h5.uid, shareInfo, egretH5SdkCallback, null);
         }
     }
 
@@ -204,11 +215,11 @@ module nest.h5 {
                 var loginCallbackInfo = {"attention": status};
                 callback.call(null, loginCallbackInfo);
             };
-            EgretH5Sdk.isOpenAttention(nest.core.appId, nest.h5.uid, egretH5SdkCallback, null);
+            EgretH5Sdk.isOpenAttention(appId, nest.h5.uid, egretH5SdkCallback, null);
         }
 
         export function attention(appInfo:any, callback:Function) {
-            EgretH5Sdk.attention(nest.core.appId, nest.h5.uid);
+            EgretH5Sdk.attention(appId, nest.h5.uid);
             callback.call(null, {"result": 0});
         }
 
@@ -221,7 +232,7 @@ module nest.h5 {
                 var callbackInfo = {result: 0, "contact": data.contact};
                 callback.call(null, callbackInfo);
             };
-            EgretH5Sdk.getCustomInfo(nest.core.appId, nest.h5.uid, egretH5SdkCallback, null);
+            EgretH5Sdk.getCustomInfo(appId, nest.h5.uid, egretH5SdkCallback, null);
         }
     }
 }
