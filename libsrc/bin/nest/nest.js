@@ -724,6 +724,7 @@ var nest;
             }
             share_1.isSupport = isSupport;
             function setDefaultData(shareInfo, callback) {
+                callback.call(null, { "result": -2 });
             }
             share_1.setDefaultData = setDefaultData;
             function share(shareInfo, callback) {
@@ -773,10 +774,46 @@ var nest;
             }
             app.sendToDesktop = sendToDesktop;
             function getInfo(appInfo, callback) {
-                //todo
+                var baseUrl = "http://api.egret-labs.org/v2/";
+                if (isQQBrowser()) {
+                    baseUrl = "http://api.gz.1251278653.clb.myqcloud.com/v2/";
+                }
+                var url = baseUrl + "user/getCustomInfo";
+                url += "?appId=" + core.appId;
+                url += "&runtime=1";
+                url += "&egretChanId=" + getSpid();
+                var request = new egret.HttpRequest();
+                request.open(url);
+                request.addEventListener(egret.Event.COMPLETE, function () {
+                    var data = JSON.parse(request.response);
+                    var callbackData = data.data;
+                    callbackData.result = 0;
+                    if (data.code == 0) {
+                        callback.call(null, callbackData);
+                    }
+                    else {
+                        callback.call(null, { result: -2 });
+                    }
+                }, this);
+                request.addEventListener(egret.IOErrorEvent.IO_ERROR, function () {
+                    callback.call(null, { result: -2 });
+                }, this);
+                request.send();
             }
             app.getInfo = getInfo;
         })(app = runtime.app || (runtime.app = {}));
+        function isQQBrowser() {
+            if (getSpid() == 9392) {
+                return true;
+            }
+            return false;
+        }
+        runtime.isQQBrowser = isQQBrowser;
+        function getSpid() {
+            var spid = egret.getOption("egret.runtime.spid");
+            return parseInt(spid);
+        }
+        runtime.getSpid = getSpid;
         var externalArr = [];
         function callRuntime(data, callback, parallel) {
             if (parallel === void 0) { parallel = false; }
@@ -1308,8 +1345,7 @@ var nest;
                     //新版api
                     changeMethod("h5_2");
                     //加载h5sdk
-                    //todo 换成正式地址
-                    var url = "http://beta.api.egret-labs.org/v2/misc/scripts/egreth5sdk.js";
+                    var url = "http://api.egret-labs.org/v2/misc/scripts/egreth5sdk.js";
                     if (isQQBrowser()) {
                         url = "http://api.gz.1251278653.clb.myqcloud.com/v2/misc/scripts/egreth5sdk.js";
                     }

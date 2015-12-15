@@ -233,3 +233,173 @@ declare module nest {
         getInfo(appInfo: any, callback: Function): void;
     };
 }
+declare module nest.runtime {
+    module core {
+        var appId: number;
+        function startup(info: nest.core.StartupInfo, callback: Function): void;
+        function callCustomMethod(customInfo: any, callback: Function): void;
+    }
+    module user {
+        function isSupport(callback: Function): void;
+        function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function getInfo(callback: Function): void;
+    }
+    module iap {
+        function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+    }
+    module share {
+        function isSupport(callback: Function): void;
+        function setDefaultData(shareInfo: nest.share.ShareInfo, callback: Function): void;
+        function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
+    }
+    module social {
+        function isSupport(callback: Function): void;
+        function getFriends(socialInfo: any, callback: Function): void;
+        function openBBS(socialInfo: any, callback: Function): void;
+    }
+    module app {
+        function isSupport(callback: Function): void;
+        function attention(appInfo: any, callback: Function): void;
+        function exitGame(appInfo: any, callback: Function): void;
+        function sendToDesktop(appInfo: any, callback: Function): void;
+        function getInfo(appInfo: any, callback: Function): void;
+    }
+    function isQQBrowser(): boolean;
+    function getSpid(): number;
+    interface NestData {
+        module: string;
+        action: string;
+        param?: any;
+    }
+    function callRuntime(data: NestData, callback: any, parallel?: boolean): void;
+    function _getData(): void;
+}
+declare module nest.cm {
+    interface EgretData {
+        egretUserId: string;
+    }
+    interface NestData {
+        module: string;
+        action: string;
+        param?: any;
+        postData?: any;
+    }
+    var spid: number;
+    function getSpid(): number;
+    function callRuntime(data: NestData, callback: any): void;
+    function loginBefore(callback: any): void;
+    function loginAfter(postdata: any, callback: any, isNew: boolean): void;
+    function payBefore(orderInfo: nest.iap.PayInfo, callback: any): void;
+}
+declare module nest.cm.user {
+    function checkLogin(loginInfo: nest.user.LoginInfo, callback: any): void;
+    /**
+     * 调用渠道登录接口
+     * @param loginInfo
+     * @param callback
+     * @callback-param  @see nest.user.LoginCallbackInfo
+     */
+    function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+}
+declare module nest.cm.iap {
+    var isFirst: boolean;
+    /**
+     * 支付
+     * @param orderInfo
+     * @param callback
+     */
+    function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+}
+declare module nest.cm.share {
+    /**
+     * 是否支持分享
+     * @param callback
+     * @callback-param {status:0, share:0}
+     */
+    function isSupport(callback: Function): void;
+}
+declare module nest.cm.app {
+    /**
+     * 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
+     * @param param
+     */
+    function initDesktop(param: nest.app.IDesktopInfo): void;
+    /**
+     * 是否支持特定功能
+     * @param callback
+     * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
+     */
+    function isSupport(callback: Function): void;
+    /**
+     * 发送到桌面
+     * @param appInfo
+     * @param callback
+     * @param callback-param result 0表示添加桌面成功，-1表示添加失败
+     */
+    function sendToDesktop(appInfo: any, callback: Function): void;
+}
+declare module nest.h5 {
+    var uid: number;
+    var appId: number;
+    function isQQBrowser(): boolean;
+    function changeMethod(version: string): void;
+    module core {
+        function startup(info: nest.core.StartupInfo, callback: Function): void;
+        function callCustomMethod(info: any, callback: Function): void;
+    }
+    module user {
+        function isSupport(callback: Function): void;
+        function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
+    }
+    module iap {
+        function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+    }
+    module share {
+        function isSupport(callback: Function): void;
+        function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
+    }
+    module social {
+        function isSupport(callback: Function): void;
+        function getFriends(data: any, callback: Function): void;
+        function openBBS(data: any, callback: Function): void;
+    }
+    module app {
+        function isSupport(callback: Function): void;
+        function attention(appInfo: any, callback: Function): void;
+        function sendToDesktop(appInfo: any, callback: Function): void;
+        function getInfo(appInfo: any, callback: Function): void;
+    }
+}
+declare module nest.h5_2 {
+    module user {
+        function isSupport(callback: Function): void;
+        function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function getInfo(loginInfo: nest.user.LoginInfo, callback: Function): void;
+    }
+    module iap {
+        function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+    }
+    module share {
+        function isSupport(callback: Function): void;
+        function setDefaultData(shareInfo: nest.share.ShareInfo, callback: Function): void;
+        function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
+    }
+    module social {
+        function isSupport(callback: Function): void;
+        function getFriends(data: any, callback: Function): void;
+        function openBBS(data: any, callback: Function): void;
+    }
+    module app {
+        function isSupport(callback: Function): void;
+        function attention(appInfo: any, callback: Function): void;
+        function sendToDesktop(appInfo: any, callback: Function): void;
+        function exitGame(appInfo: any, callback: Function): void;
+        function getInfo(appInfo: any, callback: Function): void;
+    }
+}

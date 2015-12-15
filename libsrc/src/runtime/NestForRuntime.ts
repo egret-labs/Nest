@@ -32,7 +32,7 @@ module nest.runtime {
         export var appId:number;
 
         export function startup(info:nest.core.StartupInfo, callback:Function) {
-            if(info.egretAppId) {
+            if (info.egretAppId) {
                 appId = info.egretAppId;
             }
             callback({"result": 0});
@@ -91,6 +91,7 @@ module nest.runtime {
         }
 
         export function setDefaultData(shareInfo:nest.share.ShareInfo, callback:Function) {
+            callback.call(null, {"result": -2});
         }
 
         export function share(shareInfo:nest.share.ShareInfo, callback:Function) {
@@ -138,9 +139,44 @@ module nest.runtime {
         }
 
         export function getInfo(appInfo:any, callback:Function) {
-            //todo
-
+            var baseUrl = "http://api.egret-labs.org/v2/";
+            if (isQQBrowser()) {
+                baseUrl = "http://api.gz.1251278653.clb.myqcloud.com/v2/";
+            }
+            var url = baseUrl + "user/getCustomInfo";
+            url += "?appId=" + core.appId;
+            url += "&runtime=1";
+            url += "&egretChanId=" + getSpid();
+            var request = new egret.HttpRequest();
+            request.open(url);
+            request.addEventListener(egret.Event.COMPLETE, function () {
+                var data = JSON.parse(request.response);
+                var callbackData = data.data;
+                callbackData.result = 0;
+                if(data.code == 0) {
+                    callback.call(null, callbackData);
+                }
+                else {
+                    callback.call(null, {result: -2});
+                }
+            }, this);
+            request.addEventListener(egret.IOErrorEvent.IO_ERROR, function () {
+                callback.call(null, {result: -2});
+            }, this);
+            request.send();
         }
+    }
+
+    export function isQQBrowser():boolean {
+        if (getSpid() == 9392) {
+            return true;
+        }
+        return false;
+    }
+
+    export function getSpid():number {
+        var spid:string = egret.getOption("egret.runtime.spid");
+        return parseInt(spid);
     }
 
     var externalArr:Array<any> = [];

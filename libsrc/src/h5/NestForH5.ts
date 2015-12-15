@@ -45,9 +45,6 @@ module nest.h5 {
         for (var i = 0; i < arr.length; i++) {
             var module = arr[i];
             nest[module] = nest[version][module];
-            //for (var method in nest[module]) {
-            //    nest[module][method] = nest[version][module][method];
-            //}
         }
     }
 
@@ -59,9 +56,9 @@ module nest.h5 {
             if (info.version == 2) {
                 //新版api
                 changeMethod("h5_2");
+
                 //加载h5sdk
-                //todo 换成正式地址
-                var url = "http://beta.api.egret-labs.org/v2/misc/scripts/egreth5sdk.js";
+                var url = "http://api.egret-labs.org/v2/misc/scripts/egreth5sdk.js";
                 if (isQQBrowser()) {
                     url = "http://api.gz.1251278653.clb.myqcloud.com/v2/misc/scripts/egreth5sdk.js";
                 }
