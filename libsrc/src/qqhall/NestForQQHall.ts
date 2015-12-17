@@ -69,11 +69,11 @@ module nest.qqhall {
             postdata = postdata.substr(0, postdata.length - 1);
         }
 
-        console.log("qq hall send : " + url + "?" + postdata);
+        console.log("[Nest]qq hall send : " + url + "?" + postdata);
 
         var loader:egret.URLLoader = new egret.URLLoader();
         loader.addEventListener(egret.Event.COMPLETE, function () {
-            console.log("qq hall get data : " + loader.data);
+            console.log("[Nest]qq hall get data : " + loader.data);
             var jsonObj = JSON.parse(loader.data);
             callback(jsonObj);
         }, this);
@@ -84,12 +84,11 @@ module nest.qqhall {
     }
 
     export function payBefore(orderInfo:nest.iap.PayInfo, callback):void {
-        var url:string = "http://api.gz.1251278653.clb.myqcloud.com/games/api.php";
+        var url:string = nest.utils.$API_DOMAIN + "user/placeOrder";
 
         var postdata = {
-            "action": "pay.buy",
             "id": userId,
-            "appId": core.appId,
+            "appId": utils.$APP_ID,
             "time": Date.now(),
             "openid": OpenId,
             "openkey": OpenKey,
@@ -107,13 +106,11 @@ module nest.qqhall {
 
     export function callHall(data:any) {
         var msg:string = JSON.stringify(data);
-        console.log("NestForQQHall::HALL_EGRET_MSG_FROM " + msg);
         egret.ExternalInterface.call("HALL_EGRET_MSG_FROM", msg);
     }
 
     egret.ExternalInterface.addCallback("HALL_EGRET_MSG_TO", function (data:string) {
         var info:any = JSON.parse(data);
-        console.log("NestForQQHall::HALL_EGRET_MSG_TO " + info);
         switch (info.msgType) {
             case login_callback_type:
                 if (info["accessToken"] == null) {
@@ -121,9 +118,7 @@ module nest.qqhall {
                     if (loginNum >= 3) {
                         //彻底登陆失败
                         var loginCallbackInfo:nest.user.LoginCallbackInfo = {
-                            "status": -1,
                             "result": -1,
-                            "loginType": undefined,
                             "token": undefined
                         };
                         loginCallback.call(null, loginCallbackInfo);
@@ -147,7 +142,7 @@ module nest.qqhall {
 
                     var loginInfo:string = "登录成功";
                     callHall({msgType: login_back_call_type, msgVersion: version, errorID: 0, loginInfoStr: loginInfo});
-                    var api = "http://api.gz.1251278653.clb.myqcloud.com/games/www/game.php/" + core.appId + "_" + spid;
+                    var api = nest.utils.$API_DOMAIN + "game/" + spid + "/" + utils.$APP_ID;
 
                     var sendData = {};
                     sendData["openkey"] = OpenKey;
@@ -157,7 +152,6 @@ module nest.qqhall {
                     sendData["showGame"] = 1;
                     //需要发送 runtime=1 showGame=1 openkey= openid= paytoken=
                     setProxy(api, sendData, egret.URLRequestMethod.GET, function (resultData) {
-                        console.log("loginCallbackInfo:" + JSON.stringify(resultData));
                         var data = resultData.data;
                         userId = data.id;
                         loginCallback.call(null, data);
@@ -195,7 +189,6 @@ module nest.qqhall {
 }
 module nest.qqhall.user {
     export function isSupport(callback:Function) {
-        console.log("NestForQQHall::user.isSupport");
         var status = 0;
         var loginCallbackInfo = {
             "status": status,
@@ -209,7 +202,6 @@ module nest.qqhall.user {
     }
 
     export function checkLogin(loginInfo:nest.user.LoginInfo, callback:Function) {
-        console.log("NestForQQHall::checkLogin");
         var status = -1;
         var loginCallbackInfo = {
             "status": status,
@@ -221,7 +213,6 @@ module nest.qqhall.user {
     }
 
     export function login(loginInfo:nest.user.LoginInfo, callback:Function) {
-        console.log("NestForQQHall::login");
         loginCallback = callback;
         callHall({msgType: login_call_type, msgVersion: version});
     }
@@ -235,7 +226,7 @@ module nest.qqhall.iap {
         payOrderInfo = orderInfo;
         payBefore(orderInfo, function (data:any) {
             data = data.data;
-            if (data["status"] == 0) {//购买道具成功
+            if (data["code"] == 0) {//购买道具成功
                 callback.call(null, {result: 0, status: 0});
             }
             else {//失败，需要调用大厅充值
@@ -357,32 +348,5 @@ module nest.qqhall.social {
 
     export function openBBS(socialInfo, callback:Function) {
 
-    }
-}
-
-if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
-    if (parseInt(egret.getOption("egret.runtime.spid")) == 10835) {
-        //console.log("NestForQQHall::init");
-
-        nest.user.isSupport = nest.qqhall.user.isSupport;
-        nest.user.checkLogin = nest.qqhall.user.checkLogin;
-        nest.user.login = nest.qqhall.user.login;
-
-        nest.iap.pay = nest.qqhall.iap.pay;
-
-        nest.share.isSupport = nest.qqhall.share.isSupport;
-        nest.share.share = nest.qqhall.share.share;
-
-        nest.app.isSupport = nest.qqhall.app.isSupport;
-        nest.app.attention = nest.qqhall.app.attention;
-        nest.app.exitGame = nest.qqhall.app.exitGame;
-        nest.app.sendToDesktop = nest.qqhall.app.sendToDesktop;
-
-        nest.social.isSupport = nest.qqhall.social.isSupport;
-        nest.social.getFriends = nest.qqhall.social.getFriends;
-        nest.social.openBBS = nest.qqhall.social.openBBS;
-    }
-    else {
-        //console.log("not QQHall");
     }
 }

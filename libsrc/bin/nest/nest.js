@@ -1,3 +1,144 @@
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+/*
+ * @private
+ */
+var nest;
+(function (nest) {
+    var utils;
+    (function (utils) {
+        /*
+         * @private
+         */
+        utils.$DEBUG_LOG = false;
+        /*
+         * @private
+         */
+        function $changeMethod(version) {
+            //console.log("nest use module : " + version);
+            var arr = ["user", "iap", "share", "social", "app"];
+            for (var i = 0; i < arr.length; i++) {
+                var module = arr[i];
+                if (nest[version] && nest[version][module]) {
+                    nest[module] = nest[version][module];
+                    if (utils.$DEBUG_LOG) {
+                        for (var key in nest[module]) {
+                            var fun = nest[module][key];
+                            if (typeof fun == "function") {
+                                debugFunction(module, key);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        utils.$changeMethod = $changeMethod;
+        function debugFunction(module, key) {
+            var fun = nest[module][key];
+            var newFun;
+            if (key == "isSupport") {
+                newFun = function (callback) {
+                    egret.log("[Nest]调用接口nest." + module + "." + key);
+                    var debugCallback = function (data) {
+                        egret.log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                        callback.call(null, data);
+                    };
+                    fun.call(null, debugCallback);
+                };
+            }
+            else {
+                newFun = function (info, callback) {
+                    egret.log("[Nest]调用接口nest." + module + "." + key);
+                    var debugCallback = function (data) {
+                        egret.log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                        callback.call(null, data);
+                    };
+                    fun.call(null, info, debugCallback);
+                };
+            }
+            nest[module][key] = newFun;
+        }
+        /*
+         * @private
+         */
+        function $isRuntime() {
+            return egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE;
+        }
+        utils.$isRuntime = $isRuntime;
+        /*
+         * @private
+         */
+        function $getSpid() {
+            if (utils.$spid == undefined) {
+                utils.$spid = parseInt(egret.getOption("egret.runtime.spid"));
+            }
+            return utils.$spid;
+        }
+        utils.$getSpid = $getSpid;
+        /*
+         * @private
+         */
+        var $channelTag;
+        /*
+         * @private
+         */
+        function $getChannelTag() {
+            if ($channelTag == undefined) {
+                $channelTag = egret.getOption("channelTag");
+            }
+            return $channelTag;
+        }
+        utils.$getChannelTag = $getChannelTag;
+        /*
+         * @private
+         */
+        var $QQBrowser;
+        /*
+         * @private
+         */
+        function $isQQBrowser() {
+            if ($QQBrowser == undefined) {
+                $QQBrowser = $isTargetPlatform(9392);
+            }
+            return $QQBrowser;
+        }
+        utils.$isQQBrowser = $isQQBrowser;
+        /*
+         * @private
+         */
+        function $isTargetPlatform(target) {
+            return $getSpid() == target;
+        }
+        utils.$isTargetPlatform = $isTargetPlatform;
+    })(utils = nest.utils || (nest.utils = {}));
+})(nest || (nest = {}));
+
 if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
@@ -625,282 +766,209 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
 //////////////////////////////////////////////////////////////////////////////////////
 var nest;
 (function (nest) {
-    var core;
-    (function (core) {
-        core.appId = parseInt(egret.getOption("appId"));
-        /**
-         * 启动Nest
-         * @param info 启动参数
-         * @param callback 启动完成回调
-         */
-        function startup(info, callback) {
-            if (info.egretAppId != null) {
-                core.appId = info.egretAppId;
-            }
-            callback({ "result": 0 });
-        }
-        core.startup = startup;
-        function callCustomMethod(customInfo, callback) {
-            var data = { module: "core", action: "callCustomMethod", param: customInfo };
-            nest.callRuntime(data, callback);
-        }
-        core.callCustomMethod = callCustomMethod;
-    })(core = nest.core || (nest.core = {}));
 })(nest || (nest = {}));
-/**
- * 登录功能
- *
- * 逻辑：
- * 1.在游戏中展示一张登录背景界面
- * 2.调用 checkLogin 函数判断是否已经登录过，如果登录过，进入步骤6，否则进入步骤3
- * 3.调用 isSupport 函数判断支持的登录类型，根据登录类型显示对应的登录图标
- * 4.用户点击登录图标后，调用 login 函数打开登录面板进行登录
- * 5.如果登录成功，进入步骤6
- * 6.退出登录界面，进入游戏
- *
- *
- * 登出功能：
- *
- * 逻辑：
- * 1.在游戏中放置一个“退出游戏”或者“切换账号”的按钮
- * 2.用户点击“退出游戏”图标后，调用 logout 函数
- * 3.在登出成功后，返回到登录逻辑的步骤1
- *
- *
- */
+
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
 var nest;
 (function (nest) {
-    var user;
-    (function (user) {
-        /**
-         * 检测是否已登录
-         * @param loginInfo 请传递一个{}
-         * @param callback
-         * @callback-param  @see nest.user.LoginCallbackInfo
-         */
-        function checkLogin(loginInfo, callback) {
-            var data = { module: "user", action: "checkLogin", param: loginInfo };
-            nest.callRuntime(data, callback);
-        }
-        user.checkLogin = checkLogin;
-        /**
-         * 调用渠道登录接口
-         * @param loginInfo
-         * @param callback
-         * @callback-param  @see nest.user.LoginCallbackInfo
-         */
-        function login(loginInfo, callback) {
-            var data = { module: "user", action: "login", param: loginInfo };
-            nest.callRuntime(data, callback, true);
-        }
-        user.login = login;
-        /**
-         * 登出接口
-         * @param loginInfo 可以传递{}
-         * @param callback
-         * @callback-param   { result : 0 };
-         */
-        function logout(loginInfo, callback) {
-            var nestVersion = egret_native.getOption("egret.runtime.nest");
-            if (nestVersion >= 4 || nestVersion == "custom") {
-                var data = { module: "user", action: "logout", param: loginInfo };
-                nest.callRuntime(data, callback);
+    var runtime;
+    (function (runtime) {
+        var core;
+        (function (core) {
+            function callCustomMethod(customInfo, callback) {
+                var data = { module: "core", action: "callCustomMethod", param: customInfo };
+                callRuntime(data, callback);
+            }
+            core.callCustomMethod = callCustomMethod;
+        })(core = runtime.core || (runtime.core = {}));
+        var user;
+        (function (user) {
+            function isSupport(callback) {
+                var data = { module: "user", action: "isSupport" };
+                callRuntime(data, callback);
+            }
+            user.isSupport = isSupport;
+            function checkLogin(loginInfo, callback) {
+                var data = { module: "user", action: "checkLogin", param: loginInfo };
+                callRuntime(data, callback);
+            }
+            user.checkLogin = checkLogin;
+            function login(loginInfo, callback) {
+                var data = { module: "user", action: "login", param: loginInfo };
+                callRuntime(data, callback, true);
+            }
+            user.login = login;
+            function logout(loginInfo, callback) {
+                var nestVersion = egret.getOption("egret.runtime.nest");
+                if (nestVersion >= 4 || nestVersion == "custom") {
+                    var data = { module: "user", action: "logout", param: loginInfo };
+                    callRuntime(data, callback);
+                }
+                else {
+                    callback({ "result": 0 });
+                }
+            }
+            user.logout = logout;
+            function getInfo(callback) {
+                var data = { module: "user", action: "getInfo" };
+                callRuntime(data, callback);
+            }
+            user.getInfo = getInfo;
+        })(user = runtime.user || (runtime.user = {}));
+        var iap;
+        (function (iap) {
+            function pay(orderInfo, callback) {
+                var data = { module: "iap", action: "pay", "param": orderInfo };
+                callRuntime(data, callback);
+            }
+            iap.pay = pay;
+        })(iap = runtime.iap || (runtime.iap = {}));
+        var share;
+        (function (share_1) {
+            function isSupport(callback) {
+                var data = { module: "share", action: "isSupport" };
+                callRuntime(data, callback);
+            }
+            share_1.isSupport = isSupport;
+            function setDefaultData(shareInfo, callback) {
+                callback.call(null, { "result": -2 });
+            }
+            share_1.setDefaultData = setDefaultData;
+            function share(shareInfo, callback) {
+                var data = { module: "share", action: "share", param: shareInfo };
+                callRuntime(data, callback, true);
+            }
+            share_1.share = share;
+        })(share = runtime.share || (runtime.share = {}));
+        var social;
+        (function (social) {
+            function isSupport(callback) {
+                var data = { module: "social", action: "isSupport" };
+                callRuntime(data, callback);
+            }
+            social.isSupport = isSupport;
+            function getFriends(socialInfo, callback) {
+                var data = { module: "social", action: "getFriends", param: socialInfo };
+                callRuntime(data, callback);
+            }
+            social.getFriends = getFriends;
+            function openBBS(socialInfo, callback) {
+                var data = { module: "social", action: "openBBS", param: socialInfo };
+                callRuntime(data, callback);
+            }
+            social.openBBS = openBBS;
+        })(social = runtime.social || (runtime.social = {}));
+        var app;
+        (function (app) {
+            function isSupport(callback) {
+                var data = { module: "app", action: "isSupport" };
+                callRuntime(data, callback);
+            }
+            app.isSupport = isSupport;
+            function attention(appInfo, callback) {
+                var data = { module: "app", action: "attention", param: appInfo };
+                callRuntime(data, callback);
+            }
+            app.attention = attention;
+            function exitGame(appInfo, callback) {
+                var data = { module: "app", action: "exitGame", param: appInfo };
+                callRuntime(data, callback);
+            }
+            app.exitGame = exitGame;
+            function sendToDesktop(appInfo, callback) {
+                var data = { module: "app", action: "sendToDesktop", param: appInfo };
+                callRuntime(data, callback);
+            }
+            app.sendToDesktop = sendToDesktop;
+            function getInfo(appInfo, callback) {
+                var url = nest.utils.$API_DOMAIN + "user/getCustomInfo";
+                url += "?appId=" + nest.utils.$APP_ID;
+                url += "&runtime=1";
+                url += "&egretChanId=" + nest.utils.$getSpid();
+                var request = new egret.HttpRequest();
+                request.open(url);
+                request.addEventListener(egret.Event.COMPLETE, function () {
+                    var data = JSON.parse(request.response);
+                    var callbackData = data.data;
+                    callbackData.result = 0;
+                    if (data.code == 0) {
+                        callback.call(null, callbackData);
+                    }
+                    else {
+                        callback.call(null, { result: -2 });
+                    }
+                }, this);
+                request.addEventListener(egret.IOErrorEvent.IO_ERROR, function () {
+                    callback.call(null, { result: -2 });
+                }, this);
+                request.send();
+            }
+            app.getInfo = getInfo;
+        })(app = runtime.app || (runtime.app = {}));
+        var externalArr = [];
+        function callRuntime(data, callback, parallel) {
+            if (parallel === void 0) { parallel = false; }
+            var tag = "nest";
+            if (parallel) {
+                egret.ExternalInterface.addCallback(tag, function (data) {
+                    var obj = JSON.parse(data);
+                    callback(obj.data);
+                });
+                egret.ExternalInterface.call(tag, JSON.stringify(data));
             }
             else {
-                callback({ "result": 0 });
-            }
-        }
-        user.logout = logout;
-        /**
-         * 检测支持何种登录方式
-         * @param callback
-         * @callback-param  @see nest.user.LoginCallbackInfo
-         */
-        function isSupport(callback) {
-            var data = { module: "user", action: "isSupport" };
-            nest.callRuntime(data, callback);
-        }
-        user.isSupport = isSupport;
-        /**
-         * 获取用户信息，目前只有qq浏览器支持
-         * @param callback
-         */
-        function getInfo(callback) {
-            var data = { module: "user", action: "getInfo" };
-            nest.callRuntime(data, callback);
-        }
-        user.getInfo = getInfo;
-    })(user = nest.user || (nest.user = {}));
-})(nest || (nest = {}));
-var nest;
-(function (nest) {
-    var iap;
-    (function (iap) {
-        /**
-         * 支付
-         * @param orderInfo
-         * @param callback
-         */
-        function pay(orderInfo, callback) {
-            var data = { module: "iap", action: "pay", "param": orderInfo };
-            nest.callRuntime(data, callback);
-        }
-        iap.pay = pay;
-    })(iap = nest.iap || (nest.iap = {}));
-})(nest || (nest = {}));
-var nest;
-(function (nest) {
-    var share;
-    (function (share_1) {
-        /**
-         * 是否支持分享
-         * @param callback
-         * @callback-param {status:0, share:0}  share 1支持 0不支持
-         */
-        function isSupport(callback) {
-            var data = { module: "share", action: "isSupport" };
-            nest.callRuntime(data, callback);
-        }
-        share_1.isSupport = isSupport;
-        /**
-         * 分享
-         * @param shareInfo
-         * @param callback
-         * @callback-param result 0 表示分享成功，-1表示用户取消
-         */
-        function share(shareInfo, callback) {
-            var data = { module: "share", action: "share", param: shareInfo };
-            nest.callRuntime(data, callback, true);
-        }
-        share_1.share = share;
-    })(share = nest.share || (nest.share = {}));
-})(nest || (nest = {}));
-var nest;
-(function (nest) {
-    var social;
-    (function (social) {
-        function isSupport(callback) {
-            var data = { module: "social", action: "isSupport" };
-            nest.callRuntime(data, callback);
-        }
-        social.isSupport = isSupport;
-        function getFriends(socialInfo, callback) {
-            var data = { module: "social", action: "getFriends", param: socialInfo };
-            nest.callRuntime(data, callback);
-        }
-        social.getFriends = getFriends;
-        function openBBS(socialInfo, callback) {
-            var data = { module: "social", action: "openBBS", param: socialInfo };
-            nest.callRuntime(data, callback);
-        }
-        social.openBBS = openBBS;
-    })(social = nest.social || (nest.social = {}));
-})(nest || (nest = {}));
-var nest;
-(function (nest) {
-    var app;
-    (function (app) {
-        /**
-         * 是否支持特定功能
-         * @param callback
-         * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"} attention|sendToDesktop 1支持 0不支持
-         */
-        function isSupport(callback) {
-            var data = { module: "app", action: "isSupport" };
-            nest.callRuntime(data, callback);
-        }
-        app.isSupport = isSupport;
-        /**
-         * 关注
-         * @param appInfo
-         * @param callback
-         */
-        function attention(appInfo, callback) {
-            var data = { module: "app", action: "attention", param: appInfo };
-            nest.callRuntime(data, callback);
-        }
-        app.attention = attention;
-        /**
-         * 退出游戏，回到 App 界面
-         * @param appInfo
-         * @param callback
-         */
-        function exitGame(appInfo, callback) {
-            var data = { module: "app", action: "exitGame", param: appInfo };
-            nest.callRuntime(data, callback);
-        }
-        app.exitGame = exitGame;
-        /**
-         * 发送到桌面
-         * @param appInfo
-         * @param callback
-         * @param callback-param result 0表示添加桌面成功，-1表示添加失败
-         */
-        function sendToDesktop(appInfo, callback) {
-            var data = { module: "app", action: "sendToDesktop", param: appInfo };
-            nest.callRuntime(data, callback);
-        }
-        app.sendToDesktop = sendToDesktop;
-        /**
-         * 获取渠道信息
-         * @param appInfo 获取信息参数,没有请传递{}
-         * @param callback 回调函数
-         * 回调参数:
-         * {
-         * "result": , //result为0说明成功
-         * "contact": , //可用联系方式
-         *   "qq": //qq联系方式数组[],如果没有响应联系方式将没有该字段
-         *   "qqgroup": //qq群联系方式数组[],如果没有响应联系方式将没有该字段
-         *   "weixin": //微信联系方式数组[],如果没有响应联系方式将没有该字段
-         *   "email": //email联系方式数组[],如果没有响应联系方式将没有该字段
-         * }
-         */
-        function getInfo(appInfo, callback) {
-            var data = { module: "app", action: "getInfo", param: appInfo };
-            nest.callRuntime(data, callback);
-        }
-        app.getInfo = getInfo;
-    })(app = nest.app || (nest.app = {}));
-})(nest || (nest = {}));
-var nest;
-(function (nest) {
-    var externalArr = [];
-    function callRuntime(data, callback, parallel) {
-        if (parallel === void 0) { parallel = false; }
-        var tag = "nest";
-        if (parallel) {
-            egret.ExternalInterface.addCallback(tag, function (data) {
-                console.log(data);
-                var obj = JSON.parse(data);
-                callback(obj.data);
-            });
-            egret.ExternalInterface.call(tag, JSON.stringify(data));
-        }
-        else {
-            externalArr.push({ "data": data, "callback": callback });
-            _getData();
-        }
-    }
-    nest.callRuntime = callRuntime;
-    var isRunning = false;
-    function _getData() {
-        if (externalArr.length) {
-            if (isRunning) {
-                return;
-            }
-            isRunning = true;
-            var info = externalArr.shift();
-            var tag = "nest";
-            egret.ExternalInterface.addCallback(tag, function (data) {
-                console.log(data);
-                var obj = JSON.parse(data);
-                info["callback"](obj.data);
-                isRunning = false;
+                externalArr.push({ "data": data, "callback": callback });
                 _getData();
-            });
-            egret.ExternalInterface.call(tag, JSON.stringify(info["data"]));
+            }
         }
-    }
+        runtime.callRuntime = callRuntime;
+        var isRunning = false;
+        function _getData() {
+            if (externalArr.length) {
+                if (isRunning) {
+                    return;
+                }
+                isRunning = true;
+                var info = externalArr.shift();
+                var tag = "nest";
+                egret.ExternalInterface.addCallback(tag, function (data) {
+                    var obj = JSON.parse(data);
+                    info["callback"](obj.data);
+                    isRunning = false;
+                    _getData();
+                });
+                egret.ExternalInterface.call(tag, JSON.stringify(info["data"]));
+            }
+        }
+        runtime._getData = _getData;
+    })(runtime = nest.runtime || (nest.runtime = {}));
 })(nest || (nest = {}));
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -933,25 +1001,15 @@ var nest;
 //////////////////////////////////////////////////////////////////////////////////////
 /*
  * cm old solution
+ * @private
  */
 var nest;
 (function (nest) {
     var cm;
     (function (cm) {
-        cm.spid = null;
-        function getSpid() {
-            if (cm.spid == null) {
-                if (nest.core.appId == 85 || nest.core.appId == 88) {
-                    cm.spid = 10044;
-                }
-                else {
-                    cm.spid = 18287;
-                }
-                egret_native["setOption"]("egret.runtime.spid", cm.spid);
-            }
-            return cm.spid;
-        }
-        cm.getSpid = getSpid;
+        /*
+         * @private
+         */
         function callRuntime(data, callback) {
             var deviceId;
             if (deviceId = egret.localStorage.getItem("deviceid")) {
@@ -1002,22 +1060,28 @@ var nest;
             }
         }
         cm.callRuntime = callRuntime;
+        /*
+         * @private
+         */
         function loginBefore(callback) {
             var postdata = {};
-            var url = "http://api.egret-labs.org/games/www/getAppInfo.php/";
-            url += nest.core.appId + "_" + getSpid();
+            var url = nest.utils.$API_DOMAIN + "app/getInfo";
+            postdata["egretChanId"] = nest.utils.$getSpid();
+            postdata["egretGameId"] = nest.utils.$APP_ID;
             postdata["debug"] = 1;
             setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
                 callback(resultData);
             });
         }
         cm.loginBefore = loginBefore;
+        /*
+         * @private
+         */
         function loginAfter(postdata, callback, isNew) {
             var sendData = {};
             sendData["access_token"] = postdata["access_token"];
             sendData["openid"] = postdata["openid"];
-            var url = "http://api.egret-labs.org/games/www/game.php/";
-            url += nest.core.appId + "_" + getSpid();
+            var url = nest.utils.$API_DOMAIN + "game/" + nest.utils.$getSpid() + "/" + nest.utils.$APP_ID + "/";
             sendData["runtime"] = 1;
             sendData["showGame"] = 1;
             if (isNew) {
@@ -1029,12 +1093,14 @@ var nest;
             });
         }
         cm.loginAfter = loginAfter;
+        /*
+         * @private
+         */
         function payBefore(orderInfo, callback) {
-            var url = "http://api.egret-labs.org/games/api.php";
+            var url = nest.utils.$API_DOMAIN + "user/placeOrder";
             var postdata = {
-                "action": "pay.buy",
-                "id": egretInfo.egretUserId,
-                "appId": nest.core.appId,
+                "id": cm.user.egretInfo.egretUserId,
+                "appId": nest.utils.$APP_ID,
                 "time": Date.now(),
                 "runtime": 1
             };
@@ -1077,16 +1143,22 @@ var nest;
         }
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/*
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
     (function (cm) {
         var user;
         (function (user) {
+            /*
+             * @private
+             */
             function checkLogin(loginInfo, callback) {
                 var postData = {};
                 function checkAfter(resultData) {
-                    egretInfo = { egretUserId: resultData["data"]["id"] };
+                    user.egretInfo = { egretUserId: resultData["data"]["id"] };
                     resultData["data"]["result"] = resultData["status"];
                     callback(resultData["data"]);
                 }
@@ -1115,13 +1187,13 @@ var nest;
                     nest.cm.loginAfter(sendData, checkAfter, true);
                 }
                 function checkBefore(resultData) {
-                    if (resultData["status"] == 0) {
+                    if (resultData["code"] == 0) {
                         var tempData = resultData["data"];
                         postData["client_id"] = tempData["client_id"];
                         postData["client_secret"] = tempData["client_secret"];
                         postData["redirect_uri"] = tempData["redirect_uri"];
                         //调用初始化桌面快捷方式
-                        nest.cm.app.initDesktop({
+                        nest.cm.app.$initDesktop({
                             "Title": tempData["title"],
                             "DetailUrl": tempData["detailUrl"],
                             "PicUrl": tempData["picUrl"]
@@ -1160,6 +1232,7 @@ var nest;
             }
             user.checkLogin = checkLogin;
             /**
+             * @private
              * 调用渠道登录接口
              * @param loginInfo
              * @param callback
@@ -1173,13 +1246,16 @@ var nest;
         })(user = cm.user || (cm.user = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/*
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
     (function (cm) {
         var iap;
         (function (iap) {
-            iap.isFirst = true;
+            var isFirst = true;
             /**
              * 支付
              * @param orderInfo
@@ -1190,8 +1266,8 @@ var nest;
                 var cancInt = -1;
                 var failInt = -2;
                 cm.payBefore(orderInfo, function (data) {
-                    if (data["status"] == 0) {
-                        if (nest.cm.iap.isFirst) {
+                    if (data["code"] == 0) {
+                        if (isFirst) {
                             CMPAY_EGRET.on('cmpay_order_complete', function (msg) {
                                 console.log("cm old solution cmpay_order_complete  " + JSON.stringify(msg, null, 4));
                                 if (msg["success"] == true) {
@@ -1206,7 +1282,7 @@ var nest;
                                     }
                                 }
                             });
-                            nest.cm.iap.isFirst = false;
+                            isFirst = false;
                         }
                         var option = {
                             access_token: data["data"]["access_token"],
@@ -1232,6 +1308,9 @@ var nest;
         })(iap = cm.iap || (cm.iap = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/*
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
@@ -1240,6 +1319,7 @@ var nest;
         (function (share) {
             /**
              * 是否支持分享
+             * @priavte
              * @param callback
              * @callback-param {status:0, share:0}
              */
@@ -1250,6 +1330,9 @@ var nest;
         })(share = cm.share || (cm.share = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/*
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
@@ -1258,18 +1341,20 @@ var nest;
         (function (app) {
             var desktopInfo;
             /**
+             * @private
              * 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
              * @param param
              */
-            function initDesktop(param) {
+            function $initDesktop(param) {
                 desktopInfo = param;
                 egret.ExternalInterface.call("save_shortcut_info", JSON.stringify({
                     token: String(Math.random()),
                     value: JSON.stringify(param)
                 }));
             }
-            app.initDesktop = initDesktop;
+            app.$initDesktop = $initDesktop;
             /**
+             * @private
              * 是否支持特定功能
              * @param callback
              * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
@@ -1284,6 +1369,7 @@ var nest;
             }
             app.isSupport = isSupport;
             /**
+             * @private
              * 发送到桌面
              * @param appInfo
              * @param callback
@@ -1306,223 +1392,6 @@ var nest;
         })(app = cm.app || (cm.app = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
-if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
-    console.log("cm old 11111 ");
-    console.log(egret_native.getOption("egret.runtime.spid"));
-    console.log(egret_native.getOption("egret.runtime.nest"));
-    console.log("cm old 22222 ");
-    if (egret_native.getOption("egret.runtime.spid") == 10044
-        || (!egret_native.getOption("egret.runtime.nest"))) {
-        console.log("cm old u r in cm");
-        var egretInfo;
-        egret_native["setOption"]("channelTag", "liebao");
-        CMPAY_DEBUG = false;
-        nest.user.checkLogin = nest.cm.user.checkLogin;
-        nest.iap.pay = nest.cm.iap.pay;
-        nest.share.isSupport = nest.cm.share.isSupport;
-        nest.app.isSupport = nest.cm.app.isSupport;
-        nest.app.sendToDesktop = nest.cm.app.sendToDesktop;
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-2015, Egret Technology Inc.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-
-if (!("egret_native" in this)) {
-
-    nest.user.checkLogin = function (loginInfo, callback) {
-        EgretH5Sdk.checkLogin(callback, this);
-    }
-
-    nest.user.login = function (loginInfo, callback) {
-        EgretH5Sdk.login(callback, this);
-
-    }
-}
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-2015, Egret Technology Inc.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-var nest;
-(function (nest) {
-    var h5;
-    (function (h5) {
-        h5.uid = undefined;
-    })(h5 = nest.h5 || (nest.h5 = {}));
-})(nest || (nest = {}));
-if (egret.Capabilities.runtimeType == egret.RuntimeType.WEB) {
-    nest.user.isSupport = function (callback) {
-        var channelTag = egret.getOption("channelTag");
-        var loginType = [];
-        if (channelTag == "QQBrowser") {
-            loginType.push("qq");
-            loginType.push("wx");
-        }
-        var loginCallbackInfo = {
-            "status": 0,
-            "result": 0,
-            "loginType": loginType,
-            "token": undefined,
-            "getInfo": 0
-        };
-        callback.call(null, loginCallbackInfo);
-    };
-    nest.user.checkLogin = function (loginInfo, callback) {
-        var egretH5SdkCallback = function (data) {
-            nest.h5.uid = data.id;
-            var status = data.status;
-            if (nest.h5.uid) {
-                status = 0;
-            }
-            var loginCallbackInfo = {
-                "status": status,
-                "result": status,
-                "loginType": undefined,
-                "token": data.token
-            };
-            callback.call(null, loginCallbackInfo);
-        };
-        EgretH5Sdk.checkLogin(egretH5SdkCallback, null);
-    };
-    nest.user.login = function (loginInfo, callback) {
-        var egretH5SdkCallback = function (data) {
-            nest.h5.uid = data.id;
-            var status = data.status;
-            if (nest.h5.uid) {
-                status = 0;
-            }
-            var loginCallbackInfo = {
-                "status": status,
-                "result": status,
-                "loginType": undefined,
-                "token": data.token
-            };
-            callback.call(null, loginCallbackInfo);
-        };
-        EgretH5Sdk.login(egretH5SdkCallback, null, loginInfo.loginType);
-    };
-    nest.user.logout = function (loginInfo, callback) {
-        var egretH5SdkCallback = function (data) {
-            var status = data.status;
-            var result = status == 1 ? 0 : 1;
-            callback.call(null, { "result": result });
-        };
-        EgretH5Sdk.logout(egretH5SdkCallback, null);
-    };
-    nest.iap.pay = function (orderInfo, callback) {
-        if (nest.h5.uid) {
-            orderInfo["appId"] = nest.core.appId;
-            orderInfo["uId"] = nest.h5.uid;
-            EgretH5Sdk.pay(orderInfo, function (data) {
-                callback(data);
-            }, this);
-        }
-    };
-    nest.share.isSupport = function (callback) {
-        var egretH5SdkCallback = function (data) {
-            var status = data.status;
-            var loginCallbackInfo = { "share": status };
-            callback.call(null, loginCallbackInfo);
-        };
-        EgretH5Sdk.isOpenShare(nest.core.appId, nest.h5.uid, egretH5SdkCallback, null);
-    };
-    nest.share.share = function (shareInfo, callback) {
-        var egretH5SdkCallback = function (data) {
-            var status = data.status;
-            if (status == 0) {
-                status = -1;
-            }
-            else if (status == 1) {
-                status = 0;
-            }
-            var loginCallbackInfo = { "status": status, "result": status };
-            callback.call(null, loginCallbackInfo);
-        };
-        EgretH5Sdk.share(nest.core.appId, nest.h5.uid, shareInfo, egretH5SdkCallback, null);
-    };
-    nest.social.isSupport = function (callback) {
-        //todo
-        callback.call(null, { "result": 0, "getFriends": 0, "openBBS": 0 });
-    };
-    nest.social.getFriends = function (data, callback) {
-        //todo
-    };
-    nest.social.openBBS = function (data, callback) {
-        //todo
-    };
-    nest.app.isSupport = function (callback) {
-        var egretH5SdkCallback = function (data) {
-            var status = data.status;
-            var loginCallbackInfo = { "attention": status };
-            callback.call(null, loginCallbackInfo);
-        };
-        EgretH5Sdk.isOpenAttention(nest.core.appId, nest.h5.uid, egretH5SdkCallback, null);
-    };
-    nest.app.attention = function (appInfo, callback) {
-        EgretH5Sdk.attention(nest.core.appId, nest.h5.uid);
-        callback.call(null, { "result": 0 });
-    };
-    nest.app.sendToDesktop = function (appInfo, callback) {
-        callback.call(null, { "result": -1 });
-    };
-    nest.app.getInfo = function (appInfo, callback) {
-        var egretH5SdkCallback = function (data) {
-            var callbackInfo = { result: 0, "contact": data.contact };
-            callback.call(null, callbackInfo);
-        };
-        EgretH5Sdk.getCustomInfo(nest.core.appId, nest.h5.uid, egretH5SdkCallback, null);
-    };
-}
 
 //////////////////////////////////////////////////////////////////////////////////////
 //
@@ -1584,10 +1453,10 @@ var nest;
             if (postdata != "") {
                 postdata = postdata.substr(0, postdata.length - 1);
             }
-            console.log("qq hall send : " + url + "?" + postdata);
+            console.log("[Nest]qq hall send : " + url + "?" + postdata);
             var loader = new egret.URLLoader();
             loader.addEventListener(egret.Event.COMPLETE, function () {
-                console.log("qq hall get data : " + loader.data);
+                console.log("[Nest]qq hall get data : " + loader.data);
                 var jsonObj = JSON.parse(loader.data);
                 callback(jsonObj);
             }, this);
@@ -1597,11 +1466,10 @@ var nest;
             loader.load(request);
         }
         function payBefore(orderInfo, callback) {
-            var url = "http://api.gz.1251278653.clb.myqcloud.com/games/api.php";
+            var url = nest.utils.$API_DOMAIN + "user/placeOrder";
             var postdata = {
-                "action": "pay.buy",
                 "id": qqhall.userId,
-                "appId": nest.core.appId,
+                "appId": nest.utils.$APP_ID,
                 "time": Date.now(),
                 "openid": qqhall.OpenId,
                 "openkey": qqhall.OpenKey,
@@ -1618,13 +1486,11 @@ var nest;
         qqhall.payBefore = payBefore;
         function callHall(data) {
             var msg = JSON.stringify(data);
-            console.log("NestForQQHall::HALL_EGRET_MSG_FROM " + msg);
             egret.ExternalInterface.call("HALL_EGRET_MSG_FROM", msg);
         }
         qqhall.callHall = callHall;
         egret.ExternalInterface.addCallback("HALL_EGRET_MSG_TO", function (data) {
             var info = JSON.parse(data);
-            console.log("NestForQQHall::HALL_EGRET_MSG_TO " + info);
             switch (info.msgType) {
                 case qqhall.login_callback_type:
                     if (info["accessToken"] == null) {
@@ -1632,9 +1498,7 @@ var nest;
                         if (qqhall.loginNum >= 3) {
                             //彻底登陆失败
                             var loginCallbackInfo = {
-                                "status": -1,
                                 "result": -1,
-                                "loginType": undefined,
                                 "token": undefined
                             };
                             qqhall.loginCallback.call(null, loginCallbackInfo);
@@ -1657,7 +1521,7 @@ var nest;
                         qqhall.payToken = info["payToken"];
                         var loginInfo = "登录成功";
                         callHall({ msgType: qqhall.login_back_call_type, msgVersion: qqhall.version, errorID: 0, loginInfoStr: loginInfo });
-                        var api = "http://api.gz.1251278653.clb.myqcloud.com/games/www/game.php/" + nest.core.appId + "_" + qqhall.spid;
+                        var api = nest.utils.$API_DOMAIN + "game/" + qqhall.spid + "/" + nest.utils.$APP_ID;
                         var sendData = {};
                         sendData["openkey"] = qqhall.OpenKey;
                         sendData["openid"] = qqhall.OpenId;
@@ -1666,7 +1530,6 @@ var nest;
                         sendData["showGame"] = 1;
                         //需要发送 runtime=1 showGame=1 openkey= openid= paytoken=
                         setProxy(api, sendData, egret.URLRequestMethod.GET, function (resultData) {
-                            console.log("loginCallbackInfo:" + JSON.stringify(resultData));
                             var data = resultData.data;
                             qqhall.userId = data.id;
                             qqhall.loginCallback.call(null, data);
@@ -1710,7 +1573,6 @@ var nest;
         var user;
         (function (user) {
             function isSupport(callback) {
-                console.log("NestForQQHall::user.isSupport");
                 var status = 0;
                 var loginCallbackInfo = {
                     "status": status,
@@ -1724,7 +1586,6 @@ var nest;
             }
             user.isSupport = isSupport;
             function checkLogin(loginInfo, callback) {
-                console.log("NestForQQHall::checkLogin");
                 var status = -1;
                 var loginCallbackInfo = {
                     "status": status,
@@ -1736,7 +1597,6 @@ var nest;
             }
             user.checkLogin = checkLogin;
             function login(loginInfo, callback) {
-                console.log("NestForQQHall::login");
                 qqhall.loginCallback = callback;
                 qqhall.callHall({ msgType: qqhall.login_call_type, msgVersion: qqhall.version });
             }
@@ -1757,7 +1617,7 @@ var nest;
                 qqhall.payOrderInfo = orderInfo;
                 qqhall.payBefore(orderInfo, function (data) {
                     data = data.data;
-                    if (data["status"] == 0) {
+                    if (data["code"] == 0) {
                         callback.call(null, { result: 0, status: 0 });
                     }
                     else {
@@ -1899,24 +1759,388 @@ var nest;
         })(social = qqhall.social || (qqhall.social = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
-if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
-    if (parseInt(egret.getOption("egret.runtime.spid")) == 10835) {
-        //console.log("NestForQQHall::init");
-        nest.user.isSupport = nest.qqhall.user.isSupport;
-        nest.user.checkLogin = nest.qqhall.user.checkLogin;
-        nest.user.login = nest.qqhall.user.login;
-        nest.iap.pay = nest.qqhall.iap.pay;
-        nest.share.isSupport = nest.qqhall.share.isSupport;
-        nest.share.share = nest.qqhall.share.share;
-        nest.app.isSupport = nest.qqhall.app.isSupport;
-        nest.app.attention = nest.qqhall.app.attention;
-        nest.app.exitGame = nest.qqhall.app.exitGame;
-        nest.app.sendToDesktop = nest.qqhall.app.sendToDesktop;
-        nest.social.isSupport = nest.qqhall.social.isSupport;
-        nest.social.getFriends = nest.qqhall.social.getFriends;
-        nest.social.openBBS = nest.qqhall.social.openBBS;
+
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+var nest;
+(function (nest) {
+    var h5;
+    (function (h5) {
+        h5.uid = undefined;
+        var user;
+        (function (user) {
+            function isSupport(callback) {
+                var loginType = [];
+                if (nest.utils.$isQQBrowser()) {
+                    loginType.push("qq");
+                    loginType.push("wx");
+                }
+                var loginCallbackInfo = {
+                    "result": 0,
+                    "loginType": loginType,
+                    "getInfo": 0
+                };
+                callback.call(null, loginCallbackInfo);
+            }
+            user.isSupport = isSupport;
+            function checkLogin(loginInfo, callback) {
+                var egretH5SdkCallback = function (data) {
+                    nest.h5.uid = data.id;
+                    var status = data.status;
+                    if (nest.h5.uid) {
+                        status = 0;
+                    }
+                    var loginCallbackInfo = {
+                        "result": status,
+                        "token": data.token
+                    };
+                    callback.call(null, loginCallbackInfo);
+                };
+                EgretH5Sdk.checkLogin(egretH5SdkCallback, null);
+            }
+            user.checkLogin = checkLogin;
+            function login(loginInfo, callback) {
+                var egretH5SdkCallback = function (data) {
+                    nest.h5.uid = data.id;
+                    var status = data.status;
+                    if (nest.h5.uid) {
+                        status = 0;
+                    }
+                    var loginCallbackInfo = {
+                        "result": status,
+                        "token": data.token
+                    };
+                    callback.call(null, loginCallbackInfo);
+                };
+                EgretH5Sdk.login(egretH5SdkCallback, null, loginInfo.loginType);
+            }
+            user.login = login;
+            function logout(loginInfo, callback) {
+                var egretH5SdkCallback = function (data) {
+                    var status = data.status;
+                    var result = status == 1 ? 0 : 1;
+                    callback.call(null, { "result": result });
+                };
+                EgretH5Sdk.logout(egretH5SdkCallback, null);
+            }
+            user.logout = logout;
+        })(user = h5.user || (h5.user = {}));
+        var iap;
+        (function (iap) {
+            function pay(orderInfo, callback) {
+                if (nest.h5.uid) {
+                    orderInfo["appId"] = nest.utils.$APP_ID;
+                    orderInfo["uId"] = nest.h5.uid;
+                    EgretH5Sdk.pay(orderInfo, function (data) {
+                        callback(data);
+                    }, this);
+                }
+            }
+            iap.pay = pay;
+        })(iap = h5.iap || (h5.iap = {}));
+        var share;
+        (function (share_1) {
+            function isSupport(callback) {
+                var egretH5SdkCallback = function (data) {
+                    var status = data.status;
+                    var loginCallbackInfo = { "share": status };
+                    callback.call(null, loginCallbackInfo);
+                };
+                EgretH5Sdk.isOpenShare(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+            }
+            share_1.isSupport = isSupport;
+            function share(shareInfo, callback) {
+                var egretH5SdkCallback = function (data) {
+                    var status = data.status;
+                    if (status == 0) {
+                        status = -1;
+                    }
+                    else if (status == 1) {
+                        status = 0;
+                    }
+                    var loginCallbackInfo = { "status": status, "result": status };
+                    callback.call(null, loginCallbackInfo);
+                };
+                EgretH5Sdk.share(nest.utils.$APP_ID, nest.h5.uid, shareInfo, egretH5SdkCallback, null);
+            }
+            share_1.share = share;
+        })(share = h5.share || (h5.share = {}));
+        var social;
+        (function (social) {
+            function isSupport(callback) {
+                callback.call(null, { "result": 0, "getFriends": 0, "openBBS": 0 });
+            }
+            social.isSupport = isSupport;
+            function getFriends(data, callback) {
+                //
+            }
+            social.getFriends = getFriends;
+            function openBBS(data, callback) {
+                //
+            }
+            social.openBBS = openBBS;
+        })(social = h5.social || (h5.social = {}));
+        var app;
+        (function (app) {
+            function isSupport(callback) {
+                var egretH5SdkCallback = function (data) {
+                    var status = data.status;
+                    var loginCallbackInfo = { "attention": status };
+                    callback.call(null, loginCallbackInfo);
+                };
+                EgretH5Sdk.isOpenAttention(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+            }
+            app.isSupport = isSupport;
+            function attention(appInfo, callback) {
+                EgretH5Sdk.attention(nest.utils.$APP_ID, nest.h5.uid);
+                callback.call(null, { "result": 0 });
+            }
+            app.attention = attention;
+            function sendToDesktop(appInfo, callback) {
+                callback.call(null, { "result": -1 });
+            }
+            app.sendToDesktop = sendToDesktop;
+            function getInfo(appInfo, callback) {
+                var egretH5SdkCallback = function (data) {
+                    var callbackInfo = { result: 0, "contact": data.contact };
+                    callback.call(null, callbackInfo);
+                };
+                EgretH5Sdk.getCustomInfo(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+            }
+            app.getInfo = getInfo;
+        })(app = h5.app || (h5.app = {}));
+    })(h5 = nest.h5 || (nest.h5 = {}));
+})(nest || (nest = {}));
+//新版
+var nest;
+(function (nest) {
+    var h5_2;
+    (function (h5_2) {
+        var user;
+        (function (user) {
+            function isSupport(callback) {
+                var loginType = [];
+                if (nest.utils.$isQQBrowser()) {
+                    loginType.push("qq");
+                    loginType.push("wx");
+                }
+                var loginCallbackInfo = {
+                    "result": 0,
+                    "loginType": loginType,
+                    "getInfo": 0
+                };
+                callback.call(null, loginCallbackInfo);
+            }
+            user.isSupport = isSupport;
+            function checkLogin(loginInfo, callback) {
+                EgretH5Sdk.checkLogin(loginInfo, callback);
+            }
+            user.checkLogin = checkLogin;
+            function login(loginInfo, callback) {
+                EgretH5Sdk.login(loginInfo, callback);
+            }
+            user.login = login;
+            function logout(loginInfo, callback) {
+                EgretH5Sdk.logout(loginInfo, callback);
+            }
+            user.logout = logout;
+            function getInfo(loginInfo, callback) {
+                callback.call(null, { "result": -2 });
+            }
+            user.getInfo = getInfo;
+        })(user = h5_2.user || (h5_2.user = {}));
+        var iap;
+        (function (iap) {
+            function pay(orderInfo, callback) {
+                EgretH5Sdk.pay(orderInfo, callback);
+            }
+            iap.pay = pay;
+        })(iap = h5_2.iap || (h5_2.iap = {}));
+        var share;
+        (function (share_2) {
+            function isSupport(callback) {
+                var supportShareCallback = function (data) {
+                    var status = data.result;
+                    var shareCallbackInfo = { "share": status, "msg": data.msg };
+                    callback.call(null, shareCallbackInfo);
+                };
+                EgretH5Sdk.isSupportShare({}, supportShareCallback);
+            }
+            share_2.isSupport = isSupport;
+            function setDefaultData(shareInfo, callback) {
+                shareInfo["imgUrl"] = shareInfo.img_url;
+                EgretH5Sdk.setShareDefaultData(shareInfo, callback);
+            }
+            share_2.setDefaultData = setDefaultData;
+            function share(shareInfo, callback) {
+                shareInfo["imgUrl"] = shareInfo.img_url;
+                EgretH5Sdk.share(shareInfo, callback);
+            }
+            share_2.share = share;
+        })(share = h5_2.share || (h5_2.share = {}));
+        var social;
+        (function (social) {
+            function isSupport(callback) {
+                callback.call(null, { "result": 0, "getFriends": 0, "openBBS": 0 });
+            }
+            social.isSupport = isSupport;
+            function getFriends(data, callback) {
+                callback.call(null, { "result": -2 });
+            }
+            social.getFriends = getFriends;
+            function openBBS(data, callback) {
+                callback.call(null, { "result": -2 });
+            }
+            social.openBBS = openBBS;
+        })(social = h5_2.social || (h5_2.social = {}));
+        var app;
+        (function (app) {
+            function isSupport(callback) {
+                var egretH5SdkCallback = function (data) {
+                    var status = data.result;
+                    var loginCallbackInfo = { "attention": status, "getInfo": 1, "exitGame": 0, "sendToDesktop": 0 };
+                    callback.call(null, loginCallbackInfo);
+                };
+                EgretH5Sdk.isSupportAttention({}, egretH5SdkCallback);
+            }
+            app.isSupport = isSupport;
+            function attention(appInfo, callback) {
+                EgretH5Sdk.attention({}, callback);
+            }
+            app.attention = attention;
+            function sendToDesktop(appInfo, callback) {
+                callback.call(null, { "result": -2 });
+            }
+            app.sendToDesktop = sendToDesktop;
+            function exitGame(appInfo, callback) {
+                callback.call(null, { "result": -2 });
+            }
+            app.exitGame = exitGame;
+            function getInfo(appInfo, callback) {
+                EgretH5Sdk.getCustomInfo({}, callback);
+            }
+            app.getInfo = getInfo;
+        })(app = h5_2.app || (h5_2.app = {}));
+    })(h5_2 = nest.h5_2 || (nest.h5_2 = {}));
+})(nest || (nest = {}));
+
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+nest.core = nest.core || {};
+nest.core.startup = function (info, callback) {
+    var api = "http://api.egret-labs.org/v2/";
+    //qq渠道换为腾讯云
+    if (nest.utils.$isQQBrowser() || nest.utils.$isTargetPlatform(10080) || nest.utils.$isTargetPlatform(10835)) {
+        api = "http://api.gz.1251278653.clb.myqcloud.com/v2/";
+    }
+    nest.utils.$API_DOMAIN = api;
+    nest.utils.$APP_ID = info.egretAppId;
+    nest.utils.$DEBUG_LOG = info.debug;
+    if (nest.utils.$isRuntime()) {
+        nest.core.callCustomMethod = nest.runtime.core.callCustomMethod;
+        //猎豹
+        if (nest.utils.$isTargetPlatform(10044) || (!egret_native.getOption("egret.runtime.nest"))) {
+            egret_native["setOption"]("channelTag", "liebao");
+            CMPAY_DEBUG = false;
+            var spid;
+            if (nest.utils.$APP_ID == 85 || nest.utils.$APP_ID == 88) {
+                spid = 10044;
+            }
+            else {
+                spid = 18287;
+            }
+            egret_native["setOption"]("egret.runtime.spid", spid);
+            nest.utils.$spid = spid;
+            nest.utils.$changeMethod("cm");
+        }
+        else if (nest.utils.$isTargetPlatform(10835)) {
+            nest.utils.$changeMethod("qqhall");
+        }
+        else {
+            nest.utils.$changeMethod("runtime");
+        }
     }
     else {
+        if (info.version == 2) {
+            //新版api
+            nest.utils.$changeMethod("h5_2");
+            //加载h5sdk
+            var url = nest.utils.$API_DOMAIN + "misc/scripts/egreth5sdk.js";
+            var s = document.createElement('script');
+            if (s.hasOwnProperty("async")) {
+                s.async = false;
+            }
+            s.src = url;
+            s.addEventListener('load', function () {
+                s.parentNode.removeChild(s);
+                this.removeEventListener('load', arguments.callee, false);
+                EgretH5Sdk.init({}, callback);
+            }, false);
+            s.addEventListener('error', function () {
+                s.parentNode.removeChild(s);
+                this.removeEventListener('error', arguments.callee, false);
+                callback({ "result": -2 });
+            }, false);
+            document.body.appendChild(s);
+            return;
+        }
+        else {
+            //旧版api
+            nest.utils.$changeMethod("h5");
+        }
     }
-}
+    callback({ "result": 0 });
+};
 
