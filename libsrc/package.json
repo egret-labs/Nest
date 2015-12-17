@@ -6,12 +6,15 @@
 			"name": "nest",
 			"description": "nest",
 			"files": [
+				"utils/NestUtils.ts",
 				"cm/CMPAY_EGRET.js",
 				"cm/CMGAME_EGRET.js",
 			  	"Nest.ts",
 			  	"runtime/NestForRuntime.ts",
 				"cm/NestForCM.ts",
-				"h5/NestForH5.ts"
+				"qqhall/NestForQQHall.ts",
+				"h5/NestForH5.ts",
+				"utils/NestEntry.ts"
 			],
 			"root": "src"
 		}

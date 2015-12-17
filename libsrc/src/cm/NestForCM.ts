@@ -46,21 +46,6 @@ module nest.cm {
         postData?:any;
     }
 
-    export var spid:number = null;
-
-    export function getSpid():number {
-        if (spid == null) {
-            if (nest.runtime.core.appId == 85 || nest.runtime.core.appId == 88) {
-                spid = 10044;
-            }
-            else {
-                spid = 18287;
-            }
-            egret_native["setOption"]("egret.runtime.spid", spid);
-        }
-        return spid;
-    }
-
     export function callRuntime(data:NestData, callback) {
         var deviceId;
         if (deviceId = egret.localStorage.getItem("deviceid")) {
@@ -119,9 +104,9 @@ module nest.cm {
 
     export function loginBefore(callback):void {
         var postdata = {};
-        var url:string = "http://api.egret-labs.org/v2/app/getInfo";
-        postdata["egretChanId"] = getSpid();
-        postdata["egretGameId"] = nest.runtime.core.appId;
+        var url:string = nest.utils.API_DOMAIN + "app/getInfo";
+        postdata["egretChanId"] = utils.getSpid();
+        postdata["egretGameId"] = utils.APP_ID;
         postdata["debug"] = 1;
 
         setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
@@ -134,7 +119,7 @@ module nest.cm {
         var sendData = {};
         sendData["access_token"] = postdata["access_token"];
         sendData["openid"] = postdata["openid"];
-        var url:string = "http://api.egret-labs.org/v2/game/" + getSpid() + "/" + nest.runtime.core.appId + "/";
+        var url:string = nest.utils.API_DOMAIN + "game/" + utils.getSpid() + "/" + utils.APP_ID + "/";
         sendData["runtime"] = 1;
         sendData["showGame"] = 1;
         if (isNew) {
@@ -148,11 +133,11 @@ module nest.cm {
     }
 
     export function payBefore(orderInfo:nest.iap.PayInfo, callback):void {
-        var url:string = "http://api.egret-labs.org/v2/user/placeOrder";
+        var url:string = nest.utils.API_DOMAIN + "user/placeOrder";
 
         var postdata = {
-            "id": egretInfo.egretUserId,
-            "appId": nest.runtime.core.appId,
+            "id": user.egretInfo.egretUserId,
+            "appId": utils.APP_ID,
             "time": Date.now(),
             "runtime": 1
         };
@@ -200,6 +185,8 @@ module nest.cm {
 }
 
 module nest.cm.user {
+    export var egretInfo:any;
+
     export function checkLogin(loginInfo:nest.user.LoginInfo, callback) {
 
         var postData = {};
@@ -304,7 +291,7 @@ module nest.cm.user {
 }
 module nest.cm.iap {
 
-    export var isFirst:boolean = true;
+    var isFirst:boolean = true;
 
     /**
      * 支付
@@ -318,7 +305,7 @@ module nest.cm.iap {
 
         payBefore(orderInfo, function (data) {
             if (data["code"] == 0) {//成功
-                if (nest.cm.iap.isFirst) {
+                if (isFirst) {
                     CMPAY_EGRET.on('cmpay_order_complete', function (msg) {
                         console.log("cm old solution cmpay_order_complete  " + JSON.stringify(msg, null, 4));
                         if (msg["success"] == true) {
@@ -333,7 +320,7 @@ module nest.cm.iap {
                             }
                         }
                     });
-                    nest.cm.iap.isFirst = false;
+                    isFirst = false;
                 }
 
                 var option = {
@@ -424,30 +411,5 @@ module nest.cm.app {
         else {
             callback({result: -1});
         }
-    }
-}
-
-if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
-    console.log("cm old 11111 ");
-    console.log(egret_native.getOption("egret.runtime.spid"));
-    console.log(egret_native.getOption("egret.runtime.nest"));
-    console.log("cm old 22222 ");
-
-    if (parseInt(egret_native.getOption("egret.runtime.spid")) == 10044
-        || (!egret_native.getOption("egret.runtime.nest"))) {
-        console.log("cm old u r in cm");
-        var egretInfo:nest.cm.EgretData;
-
-        egret_native["setOption"]("channelTag", "liebao");
-        CMPAY_DEBUG = false;
-        nest.core.startup = function (info, callback) {
-            nest.runtime.core.appId = info.egretAppId;
-            callback.call(null, {result: 0})
-        };
-        nest.user.checkLogin = nest.cm.user.checkLogin;
-        nest.iap.pay = nest.cm.iap.pay;
-        nest.share.isSupport = nest.cm.share.isSupport;
-        nest.app.isSupport = nest.cm.app.isSupport;
-        nest.app.sendToDesktop = nest.cm.app.sendToDesktop;
     }
 }

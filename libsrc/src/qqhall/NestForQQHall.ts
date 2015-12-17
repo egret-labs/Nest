@@ -84,11 +84,11 @@ module nest.qqhall {
     }
 
     export function payBefore(orderInfo:nest.iap.PayInfo, callback):void {
-        var url:string = "http://api.gz.1251278653.clb.myqcloud.com/v2/user/placeOrder";
+        var url:string = nest.utils.API_DOMAIN + "user/placeOrder";
 
         var postdata = {
             "id": userId,
-            "appId": core.appId,
+            "appId": utils.APP_ID,
             "time": Date.now(),
             "openid": OpenId,
             "openkey": OpenKey,
@@ -146,7 +146,7 @@ module nest.qqhall {
 
                     var loginInfo:string = "登录成功";
                     callHall({msgType: login_back_call_type, msgVersion: version, errorID: 0, loginInfoStr: loginInfo});
-                    var api = "http://api.gz.1251278653.clb.myqcloud.com/v2/game/" + spid + "/" + core.appId;
+                    var api = nest.utils.API_DOMAIN + "game/" + spid + "/" + utils.APP_ID;
 
                     var sendData = {};
                     sendData["openkey"] = OpenKey;
@@ -356,32 +356,5 @@ module nest.qqhall.social {
 
     export function openBBS(socialInfo, callback:Function) {
 
-    }
-}
-
-if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
-    if (parseInt(egret.getOption("egret.runtime.spid")) == 10835) {
-        //console.log("NestForQQHall::init");
-
-        nest.user.isSupport = nest.qqhall.user.isSupport;
-        nest.user.checkLogin = nest.qqhall.user.checkLogin;
-        nest.user.login = nest.qqhall.user.login;
-
-        nest.iap.pay = nest.qqhall.iap.pay;
-
-        nest.share.isSupport = nest.qqhall.share.isSupport;
-        nest.share.share = nest.qqhall.share.share;
-
-        nest.app.isSupport = nest.qqhall.app.isSupport;
-        nest.app.attention = nest.qqhall.app.attention;
-        nest.app.exitGame = nest.qqhall.app.exitGame;
-        nest.app.sendToDesktop = nest.qqhall.app.sendToDesktop;
-
-        nest.social.isSupport = nest.qqhall.social.isSupport;
-        nest.social.getFriends = nest.qqhall.social.getFriends;
-        nest.social.openBBS = nest.qqhall.social.openBBS;
-    }
-    else {
-        //console.log("not QQHall");
     }
 }

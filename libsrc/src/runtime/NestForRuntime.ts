@@ -29,15 +29,6 @@
 
 module nest.runtime {
     export module core {
-        export var appId:number;
-
-        export function startup(info:nest.core.StartupInfo, callback:Function) {
-            if (info.egretAppId) {
-                appId = info.egretAppId;
-            }
-            callback({"result": 0});
-        }
-
         export function callCustomMethod(customInfo:any, callback:Function) {
             var data = {module: "core", action: "callCustomMethod", param: customInfo};
             callRuntime(data, callback);
@@ -139,14 +130,10 @@ module nest.runtime {
         }
 
         export function getInfo(appInfo:any, callback:Function) {
-            var baseUrl = "http://api.egret-labs.org/v2/";
-            if (isQQBrowser()) {
-                baseUrl = "http://api.gz.1251278653.clb.myqcloud.com/v2/";
-            }
-            var url = baseUrl + "user/getCustomInfo";
-            url += "?appId=" + core.appId;
+            var url = nest.utils.API_DOMAIN + "user/getCustomInfo";
+            url += "?appId=" + utils.APP_ID;
             url += "&runtime=1";
-            url += "&egretChanId=" + getSpid();
+            url += "&egretChanId=" + utils.getSpid();
             var request = new egret.HttpRequest();
             request.open(url);
             request.addEventListener(egret.Event.COMPLETE, function () {
@@ -165,18 +152,6 @@ module nest.runtime {
             }, this);
             request.send();
         }
-    }
-
-    export function isQQBrowser():boolean {
-        if (getSpid() == 9392) {
-            return true;
-        }
-        return false;
-    }
-
-    export function getSpid():number {
-        var spid:string = egret.getOption("egret.runtime.spid");
-        return parseInt(spid);
     }
 
     var externalArr:Array<any> = [];
@@ -233,13 +208,4 @@ module nest.runtime {
             egret.ExternalInterface.call(tag, JSON.stringify(info["data"]));
         }
     }
-}
-
-if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
-    nest.core = nest.runtime.core;
-    nest.user = nest.runtime.user;
-    nest.share = nest.runtime.share;
-    nest.iap = nest.runtime.iap;
-    nest.social = nest.runtime.social;
-    nest.app = nest.runtime.app;
 }
