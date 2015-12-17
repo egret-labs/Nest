@@ -92,7 +92,7 @@ class LoginView extends egret.gui.SkinnableComponent {
                         
             var urlLoader: egret.URLLoader = new egret.URLLoader();
             var request: egret.URLRequest = new egret.URLRequest();            
-            request.url = "http://api.egret-labs.org/games/api.php";
+            request.url = "http://api.egret-labs.org/v2/user/getInfo";
                         
             var variable: egret.URLVariables = new egret.URLVariables();        
             variable.variables = requestParams;

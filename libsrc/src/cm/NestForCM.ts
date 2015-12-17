@@ -49,7 +49,7 @@ module nest.cm {
     export var spid:number = null;
 
     export function getSpid():number {
-        if(spid == null) {
+        if (spid == null) {
             if (nest.runtime.core.appId == 85 || nest.runtime.core.appId == 88) {
                 spid = 10044;
             }
@@ -119,8 +119,9 @@ module nest.cm {
 
     export function loginBefore(callback):void {
         var postdata = {};
-        var url:string = "http://api.egret-labs.org/games/www/getAppInfo.php/";
-        url += nest.runtime.core.appId + "_" + getSpid();
+        var url:string = "http://api.egret-labs.org/v2/app/getInfo";
+        postdata["egretChanId"] = getSpid();
+        postdata["egretGameId"] = nest.runtime.core.appId;
         postdata["debug"] = 1;
 
         setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
@@ -133,8 +134,7 @@ module nest.cm {
         var sendData = {};
         sendData["access_token"] = postdata["access_token"];
         sendData["openid"] = postdata["openid"];
-        var url:string = "http://api.egret-labs.org/games/www/game.php/";
-        url += nest.runtime.core.appId + "_" + getSpid();
+        var url:string = "http://api.egret-labs.org/v2/game/" + getSpid() + "/" + nest.runtime.core.appId + "/";
         sendData["runtime"] = 1;
         sendData["showGame"] = 1;
         if (isNew) {
@@ -148,10 +148,9 @@ module nest.cm {
     }
 
     export function payBefore(orderInfo:nest.iap.PayInfo, callback):void {
-        var url:string = "http://api.egret-labs.org/games/api.php";
+        var url:string = "http://api.egret-labs.org/v2/user/placeOrder";
 
         var postdata = {
-            "action": "pay.buy",
             "id": egretInfo.egretUserId,
             "appId": nest.runtime.core.appId,
             "time": Date.now(),
@@ -243,7 +242,7 @@ module nest.cm.user {
         }
 
         function checkBefore(resultData) {
-            if (resultData["status"] == 0) {
+            if (resultData["code"] == 0) {
 
                 var tempData = resultData["data"];
                 postData["client_id"] = tempData["client_id"];
@@ -318,7 +317,7 @@ module nest.cm.iap {
         var failInt = -2;
 
         payBefore(orderInfo, function (data) {
-            if (data["status"] == 0) {//成功
+            if (data["code"] == 0) {//成功
                 if (nest.cm.iap.isFirst) {
                     CMPAY_EGRET.on('cmpay_order_complete', function (msg) {
                         console.log("cm old solution cmpay_order_complete  " + JSON.stringify(msg, null, 4));
@@ -441,6 +440,10 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
 
         egret_native["setOption"]("channelTag", "liebao");
         CMPAY_DEBUG = false;
+        nest.core.startup = function (info, callback) {
+            nest.runtime.core.appId = info.egretAppId;
+            callback.call(null, {result: 0})
+        };
         nest.user.checkLogin = nest.cm.user.checkLogin;
         nest.iap.pay = nest.cm.iap.pay;
         nest.share.isSupport = nest.cm.share.isSupport;

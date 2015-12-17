@@ -59,6 +59,7 @@ module nest.h5 {
 
                 //加载h5sdk
                 var url = "http://api.egret-labs.org/v2/misc/scripts/egreth5sdk.js";
+                //todo 玩吧10080 大厅10835
                 if (isQQBrowser()) {
                     url = "http://api.gz.1251278653.clb.myqcloud.com/v2/misc/scripts/egreth5sdk.js";
                 }

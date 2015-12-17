@@ -84,10 +84,9 @@ module nest.qqhall {
     }
 
     export function payBefore(orderInfo:nest.iap.PayInfo, callback):void {
-        var url:string = "http://api.gz.1251278653.clb.myqcloud.com/games/api.php";
+        var url:string = "http://api.gz.1251278653.clb.myqcloud.com/v2/user/placeOrder";
 
         var postdata = {
-            "action": "pay.buy",
             "id": userId,
             "appId": core.appId,
             "time": Date.now(),
@@ -147,7 +146,7 @@ module nest.qqhall {
 
                     var loginInfo:string = "登录成功";
                     callHall({msgType: login_back_call_type, msgVersion: version, errorID: 0, loginInfoStr: loginInfo});
-                    var api = "http://api.gz.1251278653.clb.myqcloud.com/games/www/game.php/" + core.appId + "_" + spid;
+                    var api = "http://api.gz.1251278653.clb.myqcloud.com/v2/game/" + spid + "/" + core.appId;
 
                     var sendData = {};
                     sendData["openkey"] = OpenKey;
@@ -235,7 +234,7 @@ module nest.qqhall.iap {
         payOrderInfo = orderInfo;
         payBefore(orderInfo, function (data:any) {
             data = data.data;
-            if (data["status"] == 0) {//购买道具成功
+            if (data["code"] == 0) {//购买道具成功
                 callback.call(null, {result: 0, status: 0});
             }
             else {//失败，需要调用大厅充值
