@@ -32,16 +32,51 @@ module nest.utils {
 
     export var APP_ID:number;
 
+    export var DEBUG:boolean = false;
+
     export function changeMethod(version:string):void {
         console.log("nest use module : " + version);
-        //todo 可以在这里有debug模式,统一加日志输出
         var arr = ["user", "iap", "share", "social", "app"];
         for (var i = 0; i < arr.length; i++) {
             var module = arr[i];
-            if(nest[version] && nest[version][module]) {
+            if (nest[version] && nest[version][module]) {
                 nest[module] = nest[version][module];
+                if (DEBUG) {
+                    for (var key in nest[module]) {
+                        var fun = nest[module][key];
+                        if (typeof fun == "function") {
+                            debugFunction(module, key);
+                        }
+                    }
+                }
             }
         }
+    }
+
+    function debugFunction(module:string, key:string) {
+        var fun = nest[module][key];
+        var newFun:Function;
+        if (key == "isSupport") {
+            newFun = function (callback:Function) {
+                egret.log("调用接口nest." + module + "." + key);
+                var debugCallback = function (data) {
+                    egret.log("获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                    callback.call(null, data);
+                };
+                fun.call(null, debugCallback);
+            };
+        }
+        else {
+            newFun = function (info:any, callback:Function) {
+                egret.log("调用接口nest." + module + "." + key);
+                var debugCallback = function (data) {
+                    egret.log("获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                    callback.call(null, data);
+                };
+                fun.call(null, info, debugCallback);
+            };
+        }
+        nest[module][key] = newFun;
     }
 
     export function isRuntime():boolean {

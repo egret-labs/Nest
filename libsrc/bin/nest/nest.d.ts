@@ -1,6 +1,7 @@
 declare module nest.utils {
     var API_DOMAIN: string;
     var APP_ID: number;
+    var DEBUG: boolean;
     function changeMethod(version: string): void;
     function isRuntime(): boolean;
     var $spid: number;
@@ -21,6 +22,10 @@ declare module nest {
              * 使用新版 Nest 接口请传2
              */
             version: number;
+            /**
+             * 是否是debug模式,debug模式在调用各个接口均有日志输出
+             */
+            debug?: boolean;
         }
     }
     interface core {

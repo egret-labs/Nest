@@ -38,6 +38,8 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
 
     nest.utils.APP_ID = info.egretAppId;
 
+    nest.utils.DEBUG = true//info.debug;
+
     if (nest.utils.isRuntime()) {
         nest.core.callCustomMethod = nest.runtime.core.callCustomMethod;
         //猎豹

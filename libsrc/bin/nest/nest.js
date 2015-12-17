@@ -30,18 +30,51 @@ var nest;
 (function (nest) {
     var utils;
     (function (utils) {
+        utils.DEBUG = false;
         function changeMethod(version) {
             console.log("nest use module : " + version);
-            //todo 可以在这里有debug模式,统一加日志输出
             var arr = ["user", "iap", "share", "social", "app"];
             for (var i = 0; i < arr.length; i++) {
                 var module = arr[i];
                 if (nest[version] && nest[version][module]) {
                     nest[module] = nest[version][module];
+                    if (utils.DEBUG) {
+                        for (var key in nest[module]) {
+                            var fun = nest[module][key];
+                            if (typeof fun == "function") {
+                                debugFunction(module, key);
+                            }
+                        }
+                    }
                 }
             }
         }
         utils.changeMethod = changeMethod;
+        function debugFunction(module, key) {
+            var fun = nest[module][key];
+            var newFun;
+            if (key == "isSupport") {
+                newFun = function (callback) {
+                    egret.log("调用接口nest." + module + "." + key);
+                    var debugCallback = function (data) {
+                        egret.log("获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                        callback.call(null, data);
+                    };
+                    fun.call(null, debugCallback);
+                };
+            }
+            else {
+                newFun = function (info, callback) {
+                    egret.log("调用接口nest." + module + "." + key);
+                    var debugCallback = function (data) {
+                        egret.log("获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                        callback.call(null, data);
+                    };
+                    fun.call(null, info, debugCallback);
+                };
+            }
+            nest[module][key] = newFun;
+        }
         function isRuntime() {
             return egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE;
         }
@@ -2008,6 +2041,7 @@ nest.core.startup = function (info, callback) {
     }
     nest.utils.API_DOMAIN = api;
     nest.utils.APP_ID = info.egretAppId;
+    nest.utils.DEBUG = true; //info.debug;
     if (nest.utils.isRuntime()) {
         nest.core.callCustomMethod = nest.runtime.core.callCustomMethod;
         //猎豹
