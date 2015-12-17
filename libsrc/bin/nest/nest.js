@@ -41,7 +41,7 @@ var nest;
          * @private
          */
         function $changeMethod(version) {
-            //console.log("nest use module : " + version);
+            //console.log("[Nest]use module : " + version);
             var arr = ["user", "iap", "share", "social", "app"];
             for (var i = 0; i < arr.length; i++) {
                 var module = arr[i];

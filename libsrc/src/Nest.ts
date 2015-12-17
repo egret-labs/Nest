@@ -45,7 +45,7 @@ module nest {
              * 使用的 Nest 版本,默认为1
              * 使用新版 Nest 接口请传2
              */
-            version:number;
+            version?:number;
             /**
              * 是否是debug模式,debug模式在调用各个接口均有日志输出
              */
