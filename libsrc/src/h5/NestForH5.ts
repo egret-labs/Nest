@@ -33,15 +33,13 @@ module nest.h5 {
     export module user {
         export function isSupport(callback:Function) {
             var loginType = [];
-            if (utils.isQQBrowser()) {
+            if (utils.$isQQBrowser()) {
                 loginType.push("qq");
                 loginType.push("wx");
             }
-            var loginCallbackInfo:nest.user.LoginCallbackInfo = {
-                "status": 0,
+            var loginCallbackInfo:nest.user.UserSupportCallbackInfo = {
                 "result": 0,
                 "loginType": loginType,
-                "token": undefined,
                 "getInfo": 0
             };
             callback.call(null, loginCallbackInfo);
@@ -55,9 +53,7 @@ module nest.h5 {
                     status = 0;
                 }
                 var loginCallbackInfo:nest.user.LoginCallbackInfo = {
-                    "status": status,
                     "result": status,
-                    "loginType": undefined,
                     "token": data.token
                 };
                 callback.call(null, loginCallbackInfo);
@@ -73,9 +69,7 @@ module nest.h5 {
                     status = 0;
                 }
                 var loginCallbackInfo:nest.user.LoginCallbackInfo = {
-                    "status": status,
                     "result": status,
-                    "loginType": undefined,
                     "token": data.token
                 };
                 callback.call(null, loginCallbackInfo);
@@ -96,7 +90,7 @@ module nest.h5 {
     export module iap {
         export function pay(orderInfo:nest.iap.PayInfo, callback:Function) {
             if (nest.h5.uid) {
-                orderInfo["appId"] = nest.utils.APP_ID;
+                orderInfo["appId"] = nest.utils.$APP_ID;
                 orderInfo["uId"] = nest.h5.uid;
                 EgretH5Sdk.pay(orderInfo, function (data) {
                     callback(data);
@@ -112,7 +106,7 @@ module nest.h5 {
                 var loginCallbackInfo = {"share": status};
                 callback.call(null, loginCallbackInfo);
             };
-            EgretH5Sdk.isOpenShare(nest.utils.APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+            EgretH5Sdk.isOpenShare(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
         }
 
         export function share(shareInfo:nest.share.ShareInfo, callback:Function) {
@@ -127,7 +121,7 @@ module nest.h5 {
                 var loginCallbackInfo = {"status": status, "result": status};
                 callback.call(null, loginCallbackInfo);
             };
-            EgretH5Sdk.share(nest.utils.APP_ID, nest.h5.uid, shareInfo, egretH5SdkCallback, null);
+            EgretH5Sdk.share(nest.utils.$APP_ID, nest.h5.uid, shareInfo, egretH5SdkCallback, null);
         }
     }
 
@@ -152,11 +146,11 @@ module nest.h5 {
                 var loginCallbackInfo = {"attention": status};
                 callback.call(null, loginCallbackInfo);
             };
-            EgretH5Sdk.isOpenAttention(nest.utils.APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+            EgretH5Sdk.isOpenAttention(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
         }
 
         export function attention(appInfo:any, callback:Function) {
-            EgretH5Sdk.attention(nest.utils.APP_ID, nest.h5.uid);
+            EgretH5Sdk.attention(nest.utils.$APP_ID, nest.h5.uid);
             callback.call(null, {"result": 0});
         }
 
@@ -169,7 +163,7 @@ module nest.h5 {
                 var callbackInfo = {result: 0, "contact": data.contact};
                 callback.call(null, callbackInfo);
             };
-            EgretH5Sdk.getCustomInfo(nest.utils.APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+            EgretH5Sdk.getCustomInfo(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
         }
     }
 }
@@ -180,14 +174,13 @@ module nest.h5_2 {
     export module user {
         export function isSupport(callback:Function) {
             var loginType = [];
-            if (utils.isQQBrowser()) {
+            if (utils.$isQQBrowser()) {
                 loginType.push("qq");
                 loginType.push("wx");
             }
-            var loginCallbackInfo:nest.user.LoginCallbackInfo = {
+            var loginCallbackInfo:nest.user.UserSupportCallbackInfo = {
                 "result": 0,
                 "loginType": loginType,
-                "token": undefined,
                 "getInfo": 0
             };
             callback.call(null, loginCallbackInfo);
@@ -220,8 +213,8 @@ module nest.h5_2 {
         export function isSupport(callback:Function) {
             var supportShareCallback = function (data) {
                 var status = data.result;
-                var loginCallbackInfo = {"share": status, "msg":data.msg};
-                callback.call(null, loginCallbackInfo);
+                var shareCallbackInfo = {"share": status, "msg":data.msg};
+                callback.call(null, shareCallbackInfo);
             };
             EgretH5Sdk.isSupportShare({}, supportShareCallback);
         }

@@ -26,19 +26,28 @@
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+/*
+ * @private
+ */
 var nest;
 (function (nest) {
     var utils;
     (function (utils) {
-        utils.DEBUG = false;
-        function changeMethod(version) {
-            console.log("nest use module : " + version);
+        /*
+         * @private
+         */
+        utils.$DEBUG_LOG = false;
+        /*
+         * @private
+         */
+        function $changeMethod(version) {
+            //console.log("nest use module : " + version);
             var arr = ["user", "iap", "share", "social", "app"];
             for (var i = 0; i < arr.length; i++) {
                 var module = arr[i];
                 if (nest[version] && nest[version][module]) {
                     nest[module] = nest[version][module];
-                    if (utils.DEBUG) {
+                    if (utils.$DEBUG_LOG) {
                         for (var key in nest[module]) {
                             var fun = nest[module][key];
                             if (typeof fun == "function") {
@@ -49,15 +58,15 @@ var nest;
                 }
             }
         }
-        utils.changeMethod = changeMethod;
+        utils.$changeMethod = $changeMethod;
         function debugFunction(module, key) {
             var fun = nest[module][key];
             var newFun;
             if (key == "isSupport") {
                 newFun = function (callback) {
-                    egret.log("调用接口nest." + module + "." + key);
+                    egret.log("[Nest]调用接口nest." + module + "." + key);
                     var debugCallback = function (data) {
-                        egret.log("获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                        egret.log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
                         callback.call(null, data);
                     };
                     fun.call(null, debugCallback);
@@ -65,9 +74,9 @@ var nest;
             }
             else {
                 newFun = function (info, callback) {
-                    egret.log("调用接口nest." + module + "." + key);
+                    egret.log("[Nest]调用接口nest." + module + "." + key);
                     var debugCallback = function (data) {
-                        egret.log("获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                        egret.log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
                         callback.call(null, data);
                     };
                     fun.call(null, info, debugCallback);
@@ -75,37 +84,58 @@ var nest;
             }
             nest[module][key] = newFun;
         }
-        function isRuntime() {
+        /*
+         * @private
+         */
+        function $isRuntime() {
             return egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE;
         }
-        utils.isRuntime = isRuntime;
-        function getSpid() {
+        utils.$isRuntime = $isRuntime;
+        /*
+         * @private
+         */
+        function $getSpid() {
             if (utils.$spid == undefined) {
                 utils.$spid = parseInt(egret.getOption("egret.runtime.spid"));
             }
             return utils.$spid;
         }
-        utils.getSpid = getSpid;
+        utils.$getSpid = $getSpid;
+        /*
+         * @private
+         */
         var $channelTag;
-        function getChannelTag() {
+        /*
+         * @private
+         */
+        function $getChannelTag() {
             if ($channelTag == undefined) {
                 $channelTag = egret.getOption("channelTag");
             }
             return $channelTag;
         }
-        utils.getChannelTag = getChannelTag;
-        var $isQQBrowser;
-        function isQQBrowser() {
-            if ($isQQBrowser == undefined) {
-                $isQQBrowser = isTargetPlatform(9392);
+        utils.$getChannelTag = $getChannelTag;
+        /*
+         * @private
+         */
+        var $QQBrowser;
+        /*
+         * @private
+         */
+        function $isQQBrowser() {
+            if ($QQBrowser == undefined) {
+                $QQBrowser = $isTargetPlatform(9392);
             }
-            return $isQQBrowser;
+            return $QQBrowser;
         }
-        utils.isQQBrowser = isQQBrowser;
-        function isTargetPlatform(target) {
-            return getSpid() == target;
+        utils.$isQQBrowser = $isQQBrowser;
+        /*
+         * @private
+         */
+        function $isTargetPlatform(target) {
+            return $getSpid() == target;
         }
-        utils.isTargetPlatform = isTargetPlatform;
+        utils.$isTargetPlatform = $isTargetPlatform;
     })(utils = nest.utils || (nest.utils = {}));
 })(nest || (nest = {}));
 
@@ -878,10 +908,10 @@ var nest;
             }
             app.sendToDesktop = sendToDesktop;
             function getInfo(appInfo, callback) {
-                var url = nest.utils.API_DOMAIN + "user/getCustomInfo";
-                url += "?appId=" + nest.utils.APP_ID;
+                var url = nest.utils.$API_DOMAIN + "user/getCustomInfo";
+                url += "?appId=" + nest.utils.$APP_ID;
                 url += "&runtime=1";
-                url += "&egretChanId=" + nest.utils.getSpid();
+                url += "&egretChanId=" + nest.utils.$getSpid();
                 var request = new egret.HttpRequest();
                 request.open(url);
                 request.addEventListener(egret.Event.COMPLETE, function () {
@@ -908,7 +938,6 @@ var nest;
             var tag = "nest";
             if (parallel) {
                 egret.ExternalInterface.addCallback(tag, function (data) {
-                    console.log(data);
                     var obj = JSON.parse(data);
                     callback(obj.data);
                 });
@@ -930,7 +959,6 @@ var nest;
                 var info = externalArr.shift();
                 var tag = "nest";
                 egret.ExternalInterface.addCallback(tag, function (data) {
-                    console.log(data);
                     var obj = JSON.parse(data);
                     info["callback"](obj.data);
                     isRunning = false;
@@ -973,11 +1001,15 @@ var nest;
 //////////////////////////////////////////////////////////////////////////////////////
 /*
  * cm old solution
+ * @private
  */
 var nest;
 (function (nest) {
     var cm;
     (function (cm) {
+        /*
+         * @private
+         */
         function callRuntime(data, callback) {
             var deviceId;
             if (deviceId = egret.localStorage.getItem("deviceid")) {
@@ -1028,22 +1060,28 @@ var nest;
             }
         }
         cm.callRuntime = callRuntime;
+        /*
+         * @private
+         */
         function loginBefore(callback) {
             var postdata = {};
-            var url = nest.utils.API_DOMAIN + "app/getInfo";
-            postdata["egretChanId"] = nest.utils.getSpid();
-            postdata["egretGameId"] = nest.utils.APP_ID;
+            var url = nest.utils.$API_DOMAIN + "app/getInfo";
+            postdata["egretChanId"] = nest.utils.$getSpid();
+            postdata["egretGameId"] = nest.utils.$APP_ID;
             postdata["debug"] = 1;
             setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
                 callback(resultData);
             });
         }
         cm.loginBefore = loginBefore;
+        /*
+         * @private
+         */
         function loginAfter(postdata, callback, isNew) {
             var sendData = {};
             sendData["access_token"] = postdata["access_token"];
             sendData["openid"] = postdata["openid"];
-            var url = nest.utils.API_DOMAIN + "game/" + nest.utils.getSpid() + "/" + nest.utils.APP_ID + "/";
+            var url = nest.utils.$API_DOMAIN + "game/" + nest.utils.$getSpid() + "/" + nest.utils.$APP_ID + "/";
             sendData["runtime"] = 1;
             sendData["showGame"] = 1;
             if (isNew) {
@@ -1055,11 +1093,14 @@ var nest;
             });
         }
         cm.loginAfter = loginAfter;
+        /*
+         * @private
+         */
         function payBefore(orderInfo, callback) {
-            var url = nest.utils.API_DOMAIN + "user/placeOrder";
+            var url = nest.utils.$API_DOMAIN + "user/placeOrder";
             var postdata = {
                 "id": cm.user.egretInfo.egretUserId,
-                "appId": nest.utils.APP_ID,
+                "appId": nest.utils.$APP_ID,
                 "time": Date.now(),
                 "runtime": 1
             };
@@ -1102,12 +1143,18 @@ var nest;
         }
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/*
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
     (function (cm) {
         var user;
         (function (user) {
+            /*
+             * @private
+             */
             function checkLogin(loginInfo, callback) {
                 var postData = {};
                 function checkAfter(resultData) {
@@ -1146,7 +1193,7 @@ var nest;
                         postData["client_secret"] = tempData["client_secret"];
                         postData["redirect_uri"] = tempData["redirect_uri"];
                         //调用初始化桌面快捷方式
-                        nest.cm.app.initDesktop({
+                        nest.cm.app.$initDesktop({
                             "Title": tempData["title"],
                             "DetailUrl": tempData["detailUrl"],
                             "PicUrl": tempData["picUrl"]
@@ -1185,6 +1232,7 @@ var nest;
             }
             user.checkLogin = checkLogin;
             /**
+             * @private
              * 调用渠道登录接口
              * @param loginInfo
              * @param callback
@@ -1198,6 +1246,9 @@ var nest;
         })(user = cm.user || (cm.user = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/*
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
@@ -1257,6 +1308,9 @@ var nest;
         })(iap = cm.iap || (cm.iap = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/*
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
@@ -1265,6 +1319,7 @@ var nest;
         (function (share) {
             /**
              * 是否支持分享
+             * @priavte
              * @param callback
              * @callback-param {status:0, share:0}
              */
@@ -1275,6 +1330,9 @@ var nest;
         })(share = cm.share || (cm.share = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/*
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
@@ -1283,18 +1341,20 @@ var nest;
         (function (app) {
             var desktopInfo;
             /**
+             * @private
              * 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
              * @param param
              */
-            function initDesktop(param) {
+            function $initDesktop(param) {
                 desktopInfo = param;
                 egret.ExternalInterface.call("save_shortcut_info", JSON.stringify({
                     token: String(Math.random()),
                     value: JSON.stringify(param)
                 }));
             }
-            app.initDesktop = initDesktop;
+            app.$initDesktop = $initDesktop;
             /**
+             * @private
              * 是否支持特定功能
              * @param callback
              * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
@@ -1309,6 +1369,7 @@ var nest;
             }
             app.isSupport = isSupport;
             /**
+             * @private
              * 发送到桌面
              * @param appInfo
              * @param callback
@@ -1392,10 +1453,10 @@ var nest;
             if (postdata != "") {
                 postdata = postdata.substr(0, postdata.length - 1);
             }
-            console.log("qq hall send : " + url + "?" + postdata);
+            console.log("[Nest]qq hall send : " + url + "?" + postdata);
             var loader = new egret.URLLoader();
             loader.addEventListener(egret.Event.COMPLETE, function () {
-                console.log("qq hall get data : " + loader.data);
+                console.log("[Nest]qq hall get data : " + loader.data);
                 var jsonObj = JSON.parse(loader.data);
                 callback(jsonObj);
             }, this);
@@ -1405,10 +1466,10 @@ var nest;
             loader.load(request);
         }
         function payBefore(orderInfo, callback) {
-            var url = nest.utils.API_DOMAIN + "user/placeOrder";
+            var url = nest.utils.$API_DOMAIN + "user/placeOrder";
             var postdata = {
                 "id": qqhall.userId,
-                "appId": nest.utils.APP_ID,
+                "appId": nest.utils.$APP_ID,
                 "time": Date.now(),
                 "openid": qqhall.OpenId,
                 "openkey": qqhall.OpenKey,
@@ -1425,13 +1486,11 @@ var nest;
         qqhall.payBefore = payBefore;
         function callHall(data) {
             var msg = JSON.stringify(data);
-            console.log("NestForQQHall::HALL_EGRET_MSG_FROM " + msg);
             egret.ExternalInterface.call("HALL_EGRET_MSG_FROM", msg);
         }
         qqhall.callHall = callHall;
         egret.ExternalInterface.addCallback("HALL_EGRET_MSG_TO", function (data) {
             var info = JSON.parse(data);
-            console.log("NestForQQHall::HALL_EGRET_MSG_TO " + info);
             switch (info.msgType) {
                 case qqhall.login_callback_type:
                     if (info["accessToken"] == null) {
@@ -1439,9 +1498,7 @@ var nest;
                         if (qqhall.loginNum >= 3) {
                             //彻底登陆失败
                             var loginCallbackInfo = {
-                                "status": -1,
                                 "result": -1,
-                                "loginType": undefined,
                                 "token": undefined
                             };
                             qqhall.loginCallback.call(null, loginCallbackInfo);
@@ -1464,7 +1521,7 @@ var nest;
                         qqhall.payToken = info["payToken"];
                         var loginInfo = "登录成功";
                         callHall({ msgType: qqhall.login_back_call_type, msgVersion: qqhall.version, errorID: 0, loginInfoStr: loginInfo });
-                        var api = nest.utils.API_DOMAIN + "game/" + qqhall.spid + "/" + nest.utils.APP_ID;
+                        var api = nest.utils.$API_DOMAIN + "game/" + qqhall.spid + "/" + nest.utils.$APP_ID;
                         var sendData = {};
                         sendData["openkey"] = qqhall.OpenKey;
                         sendData["openid"] = qqhall.OpenId;
@@ -1473,7 +1530,6 @@ var nest;
                         sendData["showGame"] = 1;
                         //需要发送 runtime=1 showGame=1 openkey= openid= paytoken=
                         setProxy(api, sendData, egret.URLRequestMethod.GET, function (resultData) {
-                            console.log("loginCallbackInfo:" + JSON.stringify(resultData));
                             var data = resultData.data;
                             qqhall.userId = data.id;
                             qqhall.loginCallback.call(null, data);
@@ -1517,7 +1573,6 @@ var nest;
         var user;
         (function (user) {
             function isSupport(callback) {
-                console.log("NestForQQHall::user.isSupport");
                 var status = 0;
                 var loginCallbackInfo = {
                     "status": status,
@@ -1531,7 +1586,6 @@ var nest;
             }
             user.isSupport = isSupport;
             function checkLogin(loginInfo, callback) {
-                console.log("NestForQQHall::checkLogin");
                 var status = -1;
                 var loginCallbackInfo = {
                     "status": status,
@@ -1543,7 +1597,6 @@ var nest;
             }
             user.checkLogin = checkLogin;
             function login(loginInfo, callback) {
-                console.log("NestForQQHall::login");
                 qqhall.loginCallback = callback;
                 qqhall.callHall({ msgType: qqhall.login_call_type, msgVersion: qqhall.version });
             }
@@ -1744,15 +1797,13 @@ var nest;
         (function (user) {
             function isSupport(callback) {
                 var loginType = [];
-                if (nest.utils.isQQBrowser()) {
+                if (nest.utils.$isQQBrowser()) {
                     loginType.push("qq");
                     loginType.push("wx");
                 }
                 var loginCallbackInfo = {
-                    "status": 0,
                     "result": 0,
                     "loginType": loginType,
-                    "token": undefined,
                     "getInfo": 0
                 };
                 callback.call(null, loginCallbackInfo);
@@ -1766,9 +1817,7 @@ var nest;
                         status = 0;
                     }
                     var loginCallbackInfo = {
-                        "status": status,
                         "result": status,
-                        "loginType": undefined,
                         "token": data.token
                     };
                     callback.call(null, loginCallbackInfo);
@@ -1784,9 +1833,7 @@ var nest;
                         status = 0;
                     }
                     var loginCallbackInfo = {
-                        "status": status,
                         "result": status,
-                        "loginType": undefined,
                         "token": data.token
                     };
                     callback.call(null, loginCallbackInfo);
@@ -1808,7 +1855,7 @@ var nest;
         (function (iap) {
             function pay(orderInfo, callback) {
                 if (nest.h5.uid) {
-                    orderInfo["appId"] = nest.utils.APP_ID;
+                    orderInfo["appId"] = nest.utils.$APP_ID;
                     orderInfo["uId"] = nest.h5.uid;
                     EgretH5Sdk.pay(orderInfo, function (data) {
                         callback(data);
@@ -1825,7 +1872,7 @@ var nest;
                     var loginCallbackInfo = { "share": status };
                     callback.call(null, loginCallbackInfo);
                 };
-                EgretH5Sdk.isOpenShare(nest.utils.APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+                EgretH5Sdk.isOpenShare(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
             }
             share_1.isSupport = isSupport;
             function share(shareInfo, callback) {
@@ -1840,7 +1887,7 @@ var nest;
                     var loginCallbackInfo = { "status": status, "result": status };
                     callback.call(null, loginCallbackInfo);
                 };
-                EgretH5Sdk.share(nest.utils.APP_ID, nest.h5.uid, shareInfo, egretH5SdkCallback, null);
+                EgretH5Sdk.share(nest.utils.$APP_ID, nest.h5.uid, shareInfo, egretH5SdkCallback, null);
             }
             share_1.share = share;
         })(share = h5.share || (h5.share = {}));
@@ -1867,11 +1914,11 @@ var nest;
                     var loginCallbackInfo = { "attention": status };
                     callback.call(null, loginCallbackInfo);
                 };
-                EgretH5Sdk.isOpenAttention(nest.utils.APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+                EgretH5Sdk.isOpenAttention(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
             }
             app.isSupport = isSupport;
             function attention(appInfo, callback) {
-                EgretH5Sdk.attention(nest.utils.APP_ID, nest.h5.uid);
+                EgretH5Sdk.attention(nest.utils.$APP_ID, nest.h5.uid);
                 callback.call(null, { "result": 0 });
             }
             app.attention = attention;
@@ -1884,7 +1931,7 @@ var nest;
                     var callbackInfo = { result: 0, "contact": data.contact };
                     callback.call(null, callbackInfo);
                 };
-                EgretH5Sdk.getCustomInfo(nest.utils.APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+                EgretH5Sdk.getCustomInfo(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
             }
             app.getInfo = getInfo;
         })(app = h5.app || (h5.app = {}));
@@ -1899,14 +1946,13 @@ var nest;
         (function (user) {
             function isSupport(callback) {
                 var loginType = [];
-                if (nest.utils.isQQBrowser()) {
+                if (nest.utils.$isQQBrowser()) {
                     loginType.push("qq");
                     loginType.push("wx");
                 }
                 var loginCallbackInfo = {
                     "result": 0,
                     "loginType": loginType,
-                    "token": undefined,
                     "getInfo": 0
                 };
                 callback.call(null, loginCallbackInfo);
@@ -1941,8 +1987,8 @@ var nest;
             function isSupport(callback) {
                 var supportShareCallback = function (data) {
                     var status = data.result;
-                    var loginCallbackInfo = { "share": status, "msg": data.msg };
-                    callback.call(null, loginCallbackInfo);
+                    var shareCallbackInfo = { "share": status, "msg": data.msg };
+                    callback.call(null, shareCallbackInfo);
                 };
                 EgretH5Sdk.isSupportShare({}, supportShareCallback);
             }
@@ -2036,20 +2082,20 @@ nest.core = nest.core || {};
 nest.core.startup = function (info, callback) {
     var api = "http://api.egret-labs.org/v2/";
     //qq渠道换为腾讯云
-    if (nest.utils.isQQBrowser() || nest.utils.isTargetPlatform(10080) || nest.utils.isTargetPlatform(10835)) {
+    if (nest.utils.$isQQBrowser() || nest.utils.$isTargetPlatform(10080) || nest.utils.$isTargetPlatform(10835)) {
         api = "http://api.gz.1251278653.clb.myqcloud.com/v2/";
     }
-    nest.utils.API_DOMAIN = api;
-    nest.utils.APP_ID = info.egretAppId;
-    nest.utils.DEBUG = true; //info.debug;
-    if (nest.utils.isRuntime()) {
+    nest.utils.$API_DOMAIN = api;
+    nest.utils.$APP_ID = info.egretAppId;
+    nest.utils.$DEBUG_LOG = info.debug;
+    if (nest.utils.$isRuntime()) {
         nest.core.callCustomMethod = nest.runtime.core.callCustomMethod;
         //猎豹
-        if (nest.utils.isTargetPlatform(10044) || (!egret_native.getOption("egret.runtime.nest"))) {
+        if (nest.utils.$isTargetPlatform(10044) || (!egret_native.getOption("egret.runtime.nest"))) {
             egret_native["setOption"]("channelTag", "liebao");
             CMPAY_DEBUG = false;
             var spid;
-            if (nest.utils.APP_ID == 85 || nest.utils.APP_ID == 88) {
+            if (nest.utils.$APP_ID == 85 || nest.utils.$APP_ID == 88) {
                 spid = 10044;
             }
             else {
@@ -2057,21 +2103,21 @@ nest.core.startup = function (info, callback) {
             }
             egret_native["setOption"]("egret.runtime.spid", spid);
             nest.utils.$spid = spid;
-            nest.utils.changeMethod("cm");
+            nest.utils.$changeMethod("cm");
         }
-        else if (nest.utils.isTargetPlatform(10835)) {
-            nest.utils.changeMethod("qqhall");
+        else if (nest.utils.$isTargetPlatform(10835)) {
+            nest.utils.$changeMethod("qqhall");
         }
         else {
-            nest.utils.changeMethod("runtime");
+            nest.utils.$changeMethod("runtime");
         }
     }
     else {
         if (info.version == 2) {
             //新版api
-            nest.utils.changeMethod("h5_2");
+            nest.utils.$changeMethod("h5_2");
             //加载h5sdk
-            var url = nest.utils.API_DOMAIN + "misc/scripts/egreth5sdk.js";
+            var url = nest.utils.$API_DOMAIN + "misc/scripts/egreth5sdk.js";
             var s = document.createElement('script');
             if (s.hasOwnProperty("async")) {
                 s.async = false;
@@ -2092,7 +2138,7 @@ nest.core.startup = function (info, callback) {
         }
         else {
             //旧版api
-            nest.utils.changeMethod("h5");
+            nest.utils.$changeMethod("h5");
         }
     }
     callback({ "result": 0 });

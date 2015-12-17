@@ -26,22 +26,33 @@
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
-
+/*
+ * @private
+ */
 module nest.utils {
-    export var API_DOMAIN:string;
-
-    export var APP_ID:number;
-
-    export var DEBUG:boolean = false;
-
-    export function changeMethod(version:string):void {
-        console.log("nest use module : " + version);
+    /*
+     * @private
+     */
+    export var $API_DOMAIN:string;
+    /*
+     * @private
+     */
+    export var $APP_ID:number;
+    /*
+     * @private
+     */
+    export var $DEBUG_LOG:boolean = false;
+    /*
+     * @private
+     */
+    export function $changeMethod(version:string):void {
+        //console.log("[Nest]use module : " + version);
         var arr = ["user", "iap", "share", "social", "app"];
         for (var i = 0; i < arr.length; i++) {
             var module = arr[i];
             if (nest[version] && nest[version][module]) {
                 nest[module] = nest[version][module];
-                if (DEBUG) {
+                if ($DEBUG_LOG) {
                     for (var key in nest[module]) {
                         var fun = nest[module][key];
                         if (typeof fun == "function") {
@@ -58,9 +69,9 @@ module nest.utils {
         var newFun:Function;
         if (key == "isSupport") {
             newFun = function (callback:Function) {
-                egret.log("调用接口nest." + module + "." + key);
+                egret.log("[Nest]调用接口nest." + module + "." + key);
                 var debugCallback = function (data) {
-                    egret.log("获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                    egret.log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
                     callback.call(null, data);
                 };
                 fun.call(null, debugCallback);
@@ -68,9 +79,9 @@ module nest.utils {
         }
         else {
             newFun = function (info:any, callback:Function) {
-                egret.log("调用接口nest." + module + "." + key);
+                egret.log("[Nest]调用接口nest." + module + "." + key);
                 var debugCallback = function (data) {
-                    egret.log("获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                    egret.log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
                     callback.call(null, data);
                 };
                 fun.call(null, info, debugCallback);
@@ -78,39 +89,55 @@ module nest.utils {
         }
         nest[module][key] = newFun;
     }
-
-    export function isRuntime():boolean {
+    /*
+     * @private
+     */
+    export function $isRuntime():boolean {
         return egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE;
     }
-
+    /*
+     * @private
+     */
     export var $spid:number;
-
-    export function getSpid():number {
+    /*
+     * @private
+     */
+    export function $getSpid():number {
         if ($spid == undefined) {
             $spid = parseInt(egret.getOption("egret.runtime.spid"));
         }
         return $spid;
     }
-
+    /*
+     * @private
+     */
     var $channelTag:string;
-
-    export function getChannelTag():string {
+    /*
+     * @private
+     */
+    export function $getChannelTag():string {
         if ($channelTag == undefined) {
             $channelTag = egret.getOption("channelTag");
         }
         return $channelTag;
     }
-
-    var $isQQBrowser:boolean;
-
-    export function isQQBrowser():boolean {
-        if ($isQQBrowser == undefined) {
-            $isQQBrowser = isTargetPlatform(9392);
+    /*
+     * @private
+     */
+    var $QQBrowser:boolean;
+    /*
+     * @private
+     */
+    export function $isQQBrowser():boolean {
+        if ($QQBrowser == undefined) {
+            $QQBrowser = $isTargetPlatform(9392);
         }
-        return $isQQBrowser;
+        return $QQBrowser;
     }
-
-    export function isTargetPlatform(target:number):boolean {
-        return getSpid() == target;
+    /*
+     * @private
+     */
+    export function $isTargetPlatform(target:number):boolean {
+        return $getSpid() == target;
     }
 }

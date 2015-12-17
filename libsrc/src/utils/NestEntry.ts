@@ -31,23 +31,23 @@ nest.core = nest.core || <any>{};
 nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
     var api:string = "http://api.egret-labs.org/v2/";
     //qq渠道换为腾讯云
-    if (nest.utils.isQQBrowser() || nest.utils.isTargetPlatform(10080) || nest.utils.isTargetPlatform(10835)) {
+    if (nest.utils.$isQQBrowser() || nest.utils.$isTargetPlatform(10080) || nest.utils.$isTargetPlatform(10835)) {
         api = "http://api.gz.1251278653.clb.myqcloud.com/v2/";
     }
-    nest.utils.API_DOMAIN = api;
+    nest.utils.$API_DOMAIN = api;
 
-    nest.utils.APP_ID = info.egretAppId;
+    nest.utils.$APP_ID = info.egretAppId;
 
-    nest.utils.DEBUG = true//info.debug;
+    nest.utils.$DEBUG_LOG = info.debug;
 
-    if (nest.utils.isRuntime()) {
+    if (nest.utils.$isRuntime()) {
         nest.core.callCustomMethod = nest.runtime.core.callCustomMethod;
         //猎豹
-        if (nest.utils.isTargetPlatform(10044) || (!egret_native.getOption("egret.runtime.nest"))) {
+        if (nest.utils.$isTargetPlatform(10044) || (!egret_native.getOption("egret.runtime.nest"))) {
             egret_native["setOption"]("channelTag", "liebao");
             CMPAY_DEBUG = false;
             var spid:number;
-            if (nest.utils.APP_ID == 85 || nest.utils.APP_ID == 88) {
+            if (nest.utils.$APP_ID == 85 || nest.utils.$APP_ID == 88) {
                 spid = 10044;
             }
             else {
@@ -55,24 +55,24 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
             }
             egret_native["setOption"]("egret.runtime.spid", spid);
             nest.utils.$spid = spid;
-            nest.utils.changeMethod("cm");
+            nest.utils.$changeMethod("cm");
         }
         //qq大厅
-        else if (nest.utils.isTargetPlatform(10835)) {
-            nest.utils.changeMethod("qqhall");
+        else if (nest.utils.$isTargetPlatform(10835)) {
+            nest.utils.$changeMethod("qqhall");
         }
         else {
-            nest.utils.changeMethod("runtime");
+            nest.utils.$changeMethod("runtime");
         }
     }
     //h5
     else {
         if (info.version == 2) {
             //新版api
-            nest.utils.changeMethod("h5_2");
+            nest.utils.$changeMethod("h5_2");
 
             //加载h5sdk
-            var url = nest.utils.API_DOMAIN + "misc/scripts/egreth5sdk.js";
+            var url = nest.utils.$API_DOMAIN + "misc/scripts/egreth5sdk.js";
             var s = document.createElement('script');
             if (s.hasOwnProperty("async")) {
                 s.async = false;
@@ -93,7 +93,7 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
         }
         else {
             //旧版api
-            nest.utils.changeMethod("h5");
+            nest.utils.$changeMethod("h5");
         }
     }
 

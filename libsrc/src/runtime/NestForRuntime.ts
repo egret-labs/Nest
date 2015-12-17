@@ -130,10 +130,10 @@ module nest.runtime {
         }
 
         export function getInfo(appInfo:any, callback:Function) {
-            var url = nest.utils.API_DOMAIN + "user/getCustomInfo";
-            url += "?appId=" + utils.APP_ID;
+            var url = nest.utils.$API_DOMAIN + "user/getCustomInfo";
+            url += "?appId=" + utils.$APP_ID;
             url += "&runtime=1";
-            url += "&egretChanId=" + utils.getSpid();
+            url += "&egretChanId=" + utils.$getSpid();
             var request = new egret.HttpRequest();
             request.open(url);
             request.addEventListener(egret.Event.COMPLETE, function () {
@@ -166,12 +166,9 @@ module nest.runtime {
     }
 
     export function callRuntime(data:NestData, callback, parallel:boolean = false) {
-
         var tag = "nest";
         if (parallel) {
-
             egret.ExternalInterface.addCallback(tag, function (data) {
-                console.log(data);
                 var obj = JSON.parse(data);
                 callback(obj.data);
             });
@@ -180,9 +177,7 @@ module nest.runtime {
         else {
             externalArr.push({"data": data, "callback": callback});
             _getData();
-
         }
-
     }
 
     var isRunning:boolean = false;
@@ -197,14 +192,12 @@ module nest.runtime {
 
             var tag = "nest";
             egret.ExternalInterface.addCallback(tag, function (data) {
-                console.log(data);
                 var obj = JSON.parse(data);
                 info["callback"](obj.data);
 
                 isRunning = false;
                 _getData();
             });
-
             egret.ExternalInterface.call(tag, JSON.stringify(info["data"]));
         }
     }
