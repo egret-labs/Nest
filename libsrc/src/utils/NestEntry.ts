@@ -30,20 +30,21 @@
 nest.core = nest.core || <any>{};
 nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
     var api:string = "http://api.egret-labs.org/v2/";
-    //qq渠道换为腾讯云
-    if (nest.utils.$isQQBrowser() || nest.utils.$isTargetPlatform(10080) || nest.utils.$isTargetPlatform(10835)) {
-        api = "http://api.gz.1251278653.clb.myqcloud.com/v2/";
-    }
     nest.utils.$API_DOMAIN = api;
-
     nest.utils.$APP_ID = info.egretAppId;
 
     nest.utils.$DEBUG_LOG = info.debug;
 
     if (nest.utils.$isRuntime()) {
+        //qq渠道换为腾讯云
+        if (nest.utils.$isQQBrowser() || nest.utils.$isTargetPlatform(10080) || nest.utils.$isTargetPlatform(10835)) {
+            api = "http://api.gz.1251278653.clb.myqcloud.com/v2/";
+        }
+        nest.utils.$API_DOMAIN = api;
+
         nest.core.callCustomMethod = nest.runtime.core.callCustomMethod;
         //猎豹
-        if (nest.utils.$isTargetPlatform(10044) || (!egret_native.getOption("egret.runtime.nest"))) {
+        if (nest.utils.$isTargetPlatform(10044) || (!nest.utils.$getOption("egret.runtime.nest"))) {
             egret_native["setOption"]("channelTag", "liebao");
             CMPAY_DEBUG = false;
             var spid:number;
@@ -67,6 +68,10 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
     }
     //h5
     else {
+        var domain = nest.utils.$getOption("egretSdkDomain");
+        if(domain) {
+            nest.utils.$API_DOMAIN = domain + "/";
+        }
         if (info.version == 2) {
             //新版api
             nest.utils.$changeMethod("h5_2");

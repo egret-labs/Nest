@@ -104,7 +104,7 @@ module nest.utils {
      */
     export function $getSpid():number {
         if ($spid == undefined) {
-            $spid = parseInt(egret.getOption("egret.runtime.spid"));
+            $spid = parseInt($getOption("egret.runtime.spid"));
         }
         return $spid;
     }
@@ -117,7 +117,7 @@ module nest.utils {
      */
     export function $getChannelTag():string {
         if ($channelTag == undefined) {
-            $channelTag = egret.getOption("channelTag");
+            $channelTag = $getOption("channelTag");
         }
         return $channelTag;
     }
@@ -139,5 +139,11 @@ module nest.utils {
      */
     export function $isTargetPlatform(target:number):boolean {
         return $getSpid() == target;
+    }
+    /*
+     * @private
+     */
+    export function $getOption(key:string):string {
+        return egret.getOption(key);
     }
 }

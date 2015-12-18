@@ -9,6 +9,7 @@ declare module nest.utils {
     function $getChannelTag(): string;
     function $isQQBrowser(): boolean;
     function $isTargetPlatform(target: number): boolean;
+    function $getOption(key: string): string;
 }
 declare module nest {
     module core {

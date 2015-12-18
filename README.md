@@ -3,7 +3,10 @@
 最新 Nest 下载地址
 
 [Nest 2.5](https://github.com/egret-labs/Nest)
+
 [Nest 2.0](https://github.com/egret-labs/Nest/tree/2.0.x)
+
+[非 Egret 游戏版本入口](https://github.com/egret-labs/Nest/tree/master/libsrc/js)
 
 
 ## 接入
