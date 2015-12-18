@@ -67,6 +67,7 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
         }
         //qq大厅
         else if (nest.utils.$isTargetPlatform(10835)) {
+            nest.qqhall.init();
             nest.utils.$changeMethod("qqhall");
         }
         else {

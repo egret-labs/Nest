@@ -1460,13 +1460,6 @@ var nest;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
-var NestForQQHall = (function () {
-    function NestForQQHall() {
-    }
-    var d = __define,c=NestForQQHall,p=c.prototype;
-    return NestForQQHall;
-})();
-egret.registerClass(NestForQQHall,'NestForQQHall');
 var nest;
 (function (nest) {
     var qqhall;
@@ -1528,81 +1521,84 @@ var nest;
             egret.ExternalInterface.call("HALL_EGRET_MSG_FROM", msg);
         }
         qqhall.callHall = callHall;
-        egret.ExternalInterface.addCallback("HALL_EGRET_MSG_TO", function (data) {
-            var info = JSON.parse(data);
-            switch (info.msgType) {
-                case qqhall.login_callback_type:
-                    if (info["accessToken"] == null) {
-                        qqhall.loginNum++;
-                        if (qqhall.loginNum >= 3) {
-                            //彻底登陆失败
-                            var loginCallbackInfo = {
-                                "result": -1,
-                                "token": undefined
-                            };
-                            qqhall.loginCallback.call(null, loginCallbackInfo);
-                            qqhall.loginCallback = null;
+        function init() {
+            egret.ExternalInterface.addCallback("HALL_EGRET_MSG_TO", function (data) {
+                var info = JSON.parse(data);
+                switch (info.msgType) {
+                    case qqhall.login_callback_type:
+                        if (info["accessToken"] == null) {
+                            qqhall.loginNum++;
+                            if (qqhall.loginNum >= 3) {
+                                //彻底登陆失败
+                                var loginCallbackInfo = {
+                                    "result": -1,
+                                    "token": undefined
+                                };
+                                qqhall.loginCallback.call(null, loginCallbackInfo);
+                                qqhall.loginCallback = null;
+                                return;
+                            }
+                            //登录失败，尝试重新登陆
+                            var loginInfo = "OpenId/OpenKey 为空";
+                            callHall({ msgType: qqhall.login_back_call_type, msgVersion: qqhall.version, errorID: 1, loginInfoStr: loginInfo });
+                            callHall({ msgType: qqhall.login_call_type, msgVersion: qqhall.version });
                             return;
                         }
-                        //登录失败，尝试重新登陆
-                        var loginInfo = "OpenId/OpenKey 为空";
-                        callHall({ msgType: qqhall.login_back_call_type, msgVersion: qqhall.version, errorID: 1, loginInfoStr: loginInfo });
-                        callHall({ msgType: qqhall.login_call_type, msgVersion: qqhall.version });
-                        return;
-                    }
-                    if (qqhall.loginCallback) {
-                        qqhall.gameType = info["msgType"];
-                        qqhall.gameVersion = info["msgVersion"];
-                        qqhall.OpenId = info["openId"];
-                        qqhall.OpenKey = info["accessToken"];
-                        qqhall.enterType = info["enterType"];
-                        qqhall.enterId = info["enterId"];
-                        qqhall.payToken = info["payToken"];
-                        var loginInfo = "登录成功";
-                        callHall({ msgType: qqhall.login_back_call_type, msgVersion: qqhall.version, errorID: 0, loginInfoStr: loginInfo });
-                        var api = nest.utils.$API_DOMAIN + "game/" + qqhall.spid + "/" + nest.utils.$APP_ID;
-                        var sendData = {};
-                        sendData["openkey"] = qqhall.OpenKey;
-                        sendData["openid"] = qqhall.OpenId;
-                        sendData["paytoken"] = qqhall.payToken;
-                        sendData["runtime"] = 1;
-                        sendData["showGame"] = 1;
-                        //需要发送 runtime=1 showGame=1 openkey= openid= paytoken=
-                        setProxy(api, sendData, egret.URLRequestMethod.GET, function (resultData) {
-                            var data = resultData.data;
-                            qqhall.userId = data.id;
-                            qqhall.loginCallback.call(null, data);
-                            qqhall.loginCallback = null;
-                        });
-                    }
-                    break;
-                case qqhall.pay_callback_type:
-                    if (qqhall.payCallback) {
-                        var result = -1;
-                        var errorMsg; //todo
-                        switch (info.payState) {
-                            case -1: //未知问题
-                            case 1: //用户取消
-                            case 2:
-                                qqhall.payOrderInfo = null;
-                                qqhall.payCallback.call(null, { result: result, status: result });
-                                qqhall.payCallback = null;
-                                break;
-                            case 0:
-                                qqhall.iap.repay();
-                                break;
+                        if (qqhall.loginCallback) {
+                            qqhall.gameType = info["msgType"];
+                            qqhall.gameVersion = info["msgVersion"];
+                            qqhall.OpenId = info["openId"];
+                            qqhall.OpenKey = info["accessToken"];
+                            qqhall.enterType = info["enterType"];
+                            qqhall.enterId = info["enterId"];
+                            qqhall.payToken = info["payToken"];
+                            var loginInfo = "登录成功";
+                            callHall({ msgType: qqhall.login_back_call_type, msgVersion: qqhall.version, errorID: 0, loginInfoStr: loginInfo });
+                            var api = nest.utils.$API_DOMAIN + "game/" + qqhall.spid + "/" + nest.utils.$APP_ID;
+                            var sendData = {};
+                            sendData["openkey"] = qqhall.OpenKey;
+                            sendData["openid"] = qqhall.OpenId;
+                            sendData["paytoken"] = qqhall.payToken;
+                            sendData["runtime"] = 1;
+                            sendData["showGame"] = 1;
+                            //需要发送 runtime=1 showGame=1 openkey= openid= paytoken=
+                            setProxy(api, sendData, egret.URLRequestMethod.GET, function (resultData) {
+                                var data = resultData.data;
+                                qqhall.userId = data.id;
+                                qqhall.loginCallback.call(null, data);
+                                qqhall.loginCallback = null;
+                            });
                         }
-                    }
-                    break;
-                case qqhall.share_callback_type:
-                    if (qqhall.shareCallback) {
-                        var result = info.errorid;
-                        qqhall.shareCallback.call(null, { result: result, status: result });
-                        qqhall.shareCallback = null;
-                    }
-                    break;
-            }
-        });
+                        break;
+                    case qqhall.pay_callback_type:
+                        if (qqhall.payCallback) {
+                            var result = -1;
+                            var errorMsg; //todo
+                            switch (info.payState) {
+                                case -1: //未知问题
+                                case 1: //用户取消
+                                case 2:
+                                    qqhall.payOrderInfo = null;
+                                    qqhall.payCallback.call(null, { result: result, status: result });
+                                    qqhall.payCallback = null;
+                                    break;
+                                case 0:
+                                    qqhall.iap.repay();
+                                    break;
+                            }
+                        }
+                        break;
+                    case qqhall.share_callback_type:
+                        if (qqhall.shareCallback) {
+                            var result = info.errorid;
+                            qqhall.shareCallback.call(null, { result: result, status: result });
+                            qqhall.shareCallback = null;
+                        }
+                        break;
+                }
+            });
+        }
+        qqhall.init = init;
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
 var nest;
@@ -2153,6 +2149,7 @@ nest.core.startup = function (info, callback) {
             nest.utils.$changeMethod("cm");
         }
         else if (nest.utils.$isTargetPlatform(10835)) {
+            nest.qqhall.init();
             nest.utils.$changeMethod("qqhall");
         }
         else {

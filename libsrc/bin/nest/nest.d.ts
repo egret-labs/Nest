@@ -502,8 +502,6 @@ declare module nest.cm.app {
      */
     function sendToDesktop(appInfo: any, callback: Function): void;
 }
-declare class NestForQQHall {
-}
 declare module nest.qqhall {
     var login_call_type: number;
     var login_back_call_type: number;
@@ -529,6 +527,7 @@ declare module nest.qqhall {
     var payOrderInfo: any;
     function payBefore(orderInfo: nest.iap.PayInfo, callback: any): void;
     function callHall(data: any): void;
+    function init(): void;
 }
 declare module nest.qqhall.user {
     function isSupport(callback: Function): void;
