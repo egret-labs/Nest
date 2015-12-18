@@ -45,6 +45,10 @@ module nest.utils {
     /*
      * @private
      */
+    export var $EGRET_SUPPORT:boolean;
+    /*
+     * @private
+     */
     export function $changeMethod(version:string):void {
         //console.log("[Nest]use module : " + version);
         var arr = ["user", "iap", "share", "social", "app"];
@@ -69,9 +73,9 @@ module nest.utils {
         var newFun:Function;
         if (key == "isSupport") {
             newFun = function (callback:Function) {
-                egret.log("[Nest]调用接口nest." + module + "." + key);
+                $log("[Nest]调用接口nest." + module + "." + key);
                 var debugCallback = function (data) {
-                    egret.log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                    $log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
                     callback.call(null, data);
                 };
                 fun.call(null, debugCallback);
@@ -79,9 +83,9 @@ module nest.utils {
         }
         else {
             newFun = function (info:any, callback:Function) {
-                egret.log("[Nest]调用接口nest." + module + "." + key);
+                $log("[Nest]调用接口nest." + module + "." + key);
                 var debugCallback = function (data) {
-                    egret.log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                    $log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
                     callback.call(null, data);
                 };
                 fun.call(null, info, debugCallback);
@@ -89,12 +93,11 @@ module nest.utils {
         }
         nest[module][key] = newFun;
     }
+
     /*
      * @private
      */
-    export function $isRuntime():boolean {
-        return egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE;
-    }
+    export var $isRuntime:boolean;
     /*
      * @private
      */
@@ -108,6 +111,7 @@ module nest.utils {
         }
         return $spid;
     }
+
     /*
      * @private
      */
@@ -121,6 +125,7 @@ module nest.utils {
         }
         return $channelTag;
     }
+
     /*
      * @private
      */
@@ -134,16 +139,58 @@ module nest.utils {
         }
         return $QQBrowser;
     }
+
     /*
      * @private
      */
     export function $isTargetPlatform(target:number):boolean {
         return $getSpid() == target;
     }
+
     /*
      * @private
      */
     export function $getOption(key:string):string {
-        return egret.getOption(key);
+        if ($EGRET_SUPPORT) {
+            return egret.getOption(key);
+        }
+        else {
+            if (window.location) {
+                var search = location.search;
+                if (search == "") {
+                    return "";
+                }
+                search = search.slice(1);
+                var searchArr = search.split("&");
+                var length = searchArr.length;
+                for (var i:number = 0; i < length; i++) {
+                    var str = searchArr[i];
+                    var arr = str.split("=");
+                    if (arr[0] == key) {
+                        return arr[1];
+                    }
+                }
+            }
+            return "";
+        }
     }
+
+    /*
+     * @private
+     */
+    export function $log(msg:string):void {
+        if ($EGRET_SUPPORT) {
+            egret.log(msg);
+        }
+        else {
+            console.log(msg);
+        }
+    }
+}
+
+if (this["navigator"]) {
+    nest.utils.$isRuntime = false;
+}
+else {
+    nest.utils.$isRuntime = true;
 }

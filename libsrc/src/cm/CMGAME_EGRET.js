@@ -1,4 +1,4 @@
-if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
+if (nest.utils.$isRuntime) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         var CMGAME_EGRET = (function () {

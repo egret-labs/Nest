@@ -64,9 +64,9 @@ var nest;
             var newFun;
             if (key == "isSupport") {
                 newFun = function (callback) {
-                    egret.log("[Nest]调用接口nest." + module + "." + key);
+                    $log("[Nest]调用接口nest." + module + "." + key);
                     var debugCallback = function (data) {
-                        egret.log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                        $log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
                         callback.call(null, data);
                     };
                     fun.call(null, debugCallback);
@@ -74,9 +74,9 @@ var nest;
             }
             else {
                 newFun = function (info, callback) {
-                    egret.log("[Nest]调用接口nest." + module + "." + key);
+                    $log("[Nest]调用接口nest." + module + "." + key);
                     var debugCallback = function (data) {
-                        egret.log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
+                        $log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
                         callback.call(null, data);
                     };
                     fun.call(null, info, debugCallback);
@@ -84,13 +84,6 @@ var nest;
             }
             nest[module][key] = newFun;
         }
-        /*
-         * @private
-         */
-        function $isRuntime() {
-            return egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE;
-        }
-        utils.$isRuntime = $isRuntime;
         /*
          * @private
          */
@@ -140,13 +133,52 @@ var nest;
          * @private
          */
         function $getOption(key) {
-            return egret.getOption(key);
+            if (utils.$EGRET_SUPPORT) {
+                return egret.getOption(key);
+            }
+            else {
+                if (window.location) {
+                    var search = location.search;
+                    if (search == "") {
+                        return "";
+                    }
+                    search = search.slice(1);
+                    var searchArr = search.split("&");
+                    var length = searchArr.length;
+                    for (var i = 0; i < length; i++) {
+                        var str = searchArr[i];
+                        var arr = str.split("=");
+                        if (arr[0] == key) {
+                            return arr[1];
+                        }
+                    }
+                }
+                return "";
+            }
         }
         utils.$getOption = $getOption;
+        /*
+         * @private
+         */
+        function $log(msg) {
+            if (utils.$EGRET_SUPPORT) {
+                egret.log(msg);
+            }
+            else {
+                console.log(msg);
+            }
+        }
+        utils.$log = $log;
     })(utils = nest.utils || (nest.utils = {}));
 })(nest || (nest = {}));
+if (this["navigator"]) {
+    nest.utils.$isRuntime = false;
+}
+else {
+    nest.utils.$isRuntime = true;
+}
 
-if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
+if (nest.utils.$isRuntime) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         var CMPAY_EGRET = (function () {
@@ -587,7 +619,7 @@ if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
         })();
     }
 }
-if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) {
+if (nest.utils.$isRuntime) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
         var CMGAME_EGRET = (function () {
@@ -2087,11 +2119,18 @@ var nest;
 //////////////////////////////////////////////////////////////////////////////////////
 nest.core = nest.core || {};
 nest.core.startup = function (info, callback) {
+    try {
+        new egret.HashObject();
+        nest.utils.$EGRET_SUPPORT = true;
+    }
+    catch (e) {
+        nest.utils.$EGRET_SUPPORT = false;
+    }
     var api = "http://api.egret-labs.org/v2/";
     nest.utils.$API_DOMAIN = api;
     nest.utils.$APP_ID = info.egretAppId;
     nest.utils.$DEBUG_LOG = info.debug;
-    if (nest.utils.$isRuntime()) {
+    if (nest.utils.$isRuntime) {
         //qq渠道换为腾讯云
         if (nest.utils.$isQQBrowser() || nest.utils.$isTargetPlatform(10080) || nest.utils.$isTargetPlatform(10835)) {
             api = "http://api.gz.1251278653.clb.myqcloud.com/v2/";

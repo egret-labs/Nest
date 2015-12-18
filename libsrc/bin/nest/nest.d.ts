@@ -2,14 +2,16 @@ declare module nest.utils {
     var $API_DOMAIN: string;
     var $APP_ID: number;
     var $DEBUG_LOG: boolean;
+    var $EGRET_SUPPORT: boolean;
     function $changeMethod(version: string): void;
-    function $isRuntime(): boolean;
+    var $isRuntime: boolean;
     var $spid: number;
     function $getSpid(): number;
     function $getChannelTag(): string;
     function $isQQBrowser(): boolean;
     function $isTargetPlatform(target: number): boolean;
     function $getOption(key: string): string;
+    function $log(msg: string): void;
 }
 declare module nest {
     module core {

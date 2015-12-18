@@ -9,3 +9,5 @@ qq.html
 
 demo/bin-debug/*
 demo/libs/*
+
+libsrc/bin/nest/test.html
