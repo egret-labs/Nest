@@ -2123,8 +2123,8 @@ nest.core.startup = function (info, callback) {
                 s.async = false;
             }
             s.src = url;
+            s.id = "egreth5sdk";
             s.addEventListener('load', function () {
-                s.parentNode.removeChild(s);
                 this.removeEventListener('load', arguments.callee, false);
                 EgretH5Sdk.init({}, callback);
             }, false);
@@ -2133,7 +2133,7 @@ nest.core.startup = function (info, callback) {
                 this.removeEventListener('error', arguments.callee, false);
                 callback({ "result": -2 });
             }, false);
-            document.body.appendChild(s);
+            document.head.appendChild(s);
             return;
         }
         else {
