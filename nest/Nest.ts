@@ -144,10 +144,11 @@ module nest.user {
 
     /**
      * 获取用户信息，目前只有qq浏览器支持
+     * @param loginInfo 请传递一个{}
      * @param callback
      */
-    export function getInfo(callback:Function) {
-        var data = {module: "user", action: "getInfo"};
+    export function getInfo(loginInfo:LoginInfo, callback:Function) {
+        var data = {module: "user", action: "getInfo", param: loginInfo};
         callRuntime(data, callback);
     }
 
