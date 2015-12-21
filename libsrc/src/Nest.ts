@@ -366,8 +366,39 @@ module nest {
     }
 
     export var social:{
+        /**
+         * social接口支持
+         * @param callback 回调函数
+         * @example 以下代码获取是否支持
+         * <pre>
+         *     nest.social.isSupport(function (data){
+         *         if(data.result == 0) {
+         *             //获取是否支持获得好友列表
+         *             var getFriends = data.getFriends == 1;
+         *             //获取是否支持打开BBS
+         *             var openBBS = data.openBBS == 1;
+         *         }
+         *     });
+         * </pre>
+         */
         isSupport(callback:(resultInfo:social.SocialSupportCallbackInfo)=>any):void;
         getFriends(socialInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>any):void;
+        /**
+         * 打开BBS
+         * @param socialInfo 请传递一个{}
+         * @param callback 回调
+         * @example 以下代码进行打开BBS
+         * <pre>
+         *     nest.social.openBBS({}, function (data){
+         *         if(data.result == 0) {
+         *             //打开成功
+         *         }
+         *         else {
+         *             //打开失败
+         *         }
+         *     });
+         * </pre>
+         */
         openBBS(socialInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>any):void;
     };
 
