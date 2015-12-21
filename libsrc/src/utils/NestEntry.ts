@@ -37,7 +37,6 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
         nest.utils.$EGRET_SUPPORT = false;
     }
     var api:string = "http://api.egret-labs.org/v2/";
-    nest.utils.$API_DOMAIN = api;
     nest.utils.$APP_ID = info.egretAppId;
 
     nest.utils.$DEBUG_LOG = info.debug;
@@ -76,16 +75,17 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
     }
     //h5
     else {
-        var domain = nest.utils.$getOption("egretSdkDomain");
+        var domain = nest.utils.$getOption("egretServerDomain");
         if(domain) {
             nest.utils.$API_DOMAIN = domain + "/";
         }
+        var sdkDomain = nest.utils.$getOption("egretSdkDomain");
         if (info.version == 2) {
             //新版api
             nest.utils.$changeMethod("h5_2");
 
             //加载h5sdk
-            var url = nest.utils.$API_DOMAIN + "misc/scripts/egreth5sdk.js";
+            var url = sdkDomain + "/misc/scripts/egreth5sdk.js";
             var s = document.createElement('script');
             if (s.hasOwnProperty("async")) {
                 s.async = false;
