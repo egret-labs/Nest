@@ -147,7 +147,7 @@ module nest {
          *             var token = data.token;
          *         }
          *         else {
-         *             //没有登录,之后需要用nest.uset.isSupport接口获取loginType并根据loginType显示登录界面
+         *             //没有登录,之后需要用nest.user.isSupport接口获取loginType并根据loginType显示登录界面
          *         }
          *     });
          * </pre>
@@ -193,7 +193,8 @@ module nest {
         logout(loginInfo:nest.user.LoginInfo, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
         /**
          * 检测支持何种登录方式
-         * @param callback
+         * @param info 请传递一个{}
+         * @param callback 回调函数
          * @callback-param  @see nest.user.UserSupportCallbackInfo
          * @example 以下代码进行检测支持何种登录方式
          * <pre>
@@ -314,10 +315,11 @@ module nest {
     export var share:{
         /**
          * 是否支持分享
+         * @param info 请传递一个{}
          * @param callback 回调函数
          * @example 以下代码获取是否支持分享
          * <pre>
-         *     nest.share.isSupport(function (data){
+         *     nest.share.isSupport({}, function (data){
          *         if(data.result == 0) {
          *             //获取是否支持分享
          *             var share = data.share == 1;
@@ -373,10 +375,11 @@ module nest {
     export var social:{
         /**
          * social接口支持
+         * @param info 请传递一个{}
          * @param callback 回调函数
          * @example 以下代码获取是否支持
          * <pre>
-         *     nest.social.isSupport(function (data){
+         *     nest.social.isSupport({}, function (data){
          *         if(data.result == 0) {
          *             //获取是否支持获得好友列表
          *             var getFriends = data.getFriends == 1;
@@ -433,7 +436,8 @@ module nest {
     export var app:{
         /**
          * 是否支持特定功能
-         * @param callback
+         * @param info 请传递一个{}
+         * @param callback 回调函数
          * @callback-param  { result:"0" , attention :"1" , sendToDesktop : "1" , exitGame : "1" , getInfo : "1"}
          * attention|sendToDesktop|exitGame|getInfo 1支持 0不支持
          */
