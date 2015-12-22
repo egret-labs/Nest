@@ -36,8 +36,8 @@ module nest.runtime {
     }
 
     export module user {
-        export function isSupport(callback:Function) {
-            var data = {module: "user", action: "isSupport"};
+        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
+            var data = {module: "user", action: "isSupport", param: info};
             callRuntime(data, callback);
         }
 
@@ -76,8 +76,8 @@ module nest.runtime {
     }
 
     export module share {
-        export function isSupport(callback:Function) {
-            var data = {module: "share", action: "isSupport"};
+        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
+            var data = {module: "share", action: "isSupport", param: info};
             callRuntime(data, callback);
         }
 
@@ -92,8 +92,8 @@ module nest.runtime {
     }
 
     export module social {
-        export function isSupport(callback:Function) {
-            var data = {module: "social", action: "isSupport"};
+        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
+            var data = {module: "social", action: "isSupport", param: info};
             callRuntime(data, callback);
         }
 
@@ -109,8 +109,8 @@ module nest.runtime {
     }
 
     export module app {
-        export function isSupport(callback:Function) {
-            var data = {module: "app", action: "isSupport"};
+        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
+            var data = {module: "app", action: "isSupport", param: info};
             callRuntime(data, callback);
         }
 

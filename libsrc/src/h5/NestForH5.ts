@@ -31,7 +31,7 @@ module nest.h5 {
     export var uid:number = undefined;
 
     export module user {
-        export function isSupport(callback:Function) {
+        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
             var loginType = [];
             if (utils.$isQQBrowser()) {
                 loginType.push("qq");
@@ -100,7 +100,7 @@ module nest.h5 {
     }
 
     export module share {
-        export function isSupport(callback:Function) {
+        export function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType) {
             var egretH5SdkCallback = function (data) {
                 var status = data.status;
                 var loginCallbackInfo = {"share": status};
@@ -126,7 +126,7 @@ module nest.h5 {
     }
 
     export module social {
-        export function isSupport(callback:Function) {
+        export function isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType) {
             callback.call(null, {"result": 0, "getFriends": 0, "openBBS": 0});
         }
 
@@ -140,7 +140,7 @@ module nest.h5 {
     }
 
     export module app {
-        export function isSupport(callback:Function) {
+        export function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType) {
             var egretH5SdkCallback = function (data) {
                 var status = data.status;
                 var loginCallbackInfo = {"attention": status};
@@ -172,7 +172,7 @@ module nest.h5 {
 //新版
 module nest.h5_2 {
     export module user {
-        export function isSupport(callback:Function) {
+        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
             var loginType = [];
             if (utils.$isQQBrowser()) {
                 loginType.push("qq");
@@ -210,7 +210,7 @@ module nest.h5_2 {
     }
 
     export module share {
-        export function isSupport(callback:Function) {
+        export function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType) {
             var supportShareCallback = function (data) {
                 var status = data.result;
                 var shareCallbackInfo = {"share": status, "msg":data.msg};
@@ -231,7 +231,7 @@ module nest.h5_2 {
     }
 
     export module social {
-        export function isSupport(callback:Function) {
+        export function isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType) {
             callback.call(null, {"result": 0, "getFriends": 0, "openBBS": 0});
         }
 
@@ -245,7 +245,7 @@ module nest.h5_2 {
     }
 
     export module app {
-        export function isSupport(callback:Function) {
+        export function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType) {
             var egretH5SdkCallback = function (data) {
                 var status = data.result;
                 var loginCallbackInfo = {"attention": status, "getInfo": 1, "exitGame": 0, "sendToDesktop": 0};

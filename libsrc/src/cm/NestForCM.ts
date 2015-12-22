@@ -388,8 +388,8 @@ module nest.cm.share {
      * @param callback
      * @callback-param {status:0, share:0}
      */
-    export function isSupport(callback:Function) {
-        callback({status: 0, share: 0});
+    export function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType) {
+        callback({result: 0, share: 0});
     }
 }
 /*
@@ -427,12 +427,12 @@ module nest.cm.app {
      * @param callback
      * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
      */
-    export function isSupport(callback:Function) {
+    export function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType) {
         if (CMPAY_EGRET.getVersion() != false && !isNaN(CMPAY_EGRET.getVersion()) && CMPAY_EGRET.getVersion() > 301030) {
-            callback({status: 0, sendToDesktop: 1, attention: 0});
+            callback({result: 0, sendToDesktop: 1, attention: 0});
         }
         else {
-            callback({status: 0, sendToDesktop: 0, attention: 0});
+            callback({result: 0, sendToDesktop: 0, attention: 0});
         }
     }
 

@@ -26,6 +26,38 @@
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+var nest;
+(function (nest) {
+})(nest || (nest = {}));
+
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
 /*
  * @private
  */
@@ -47,29 +79,34 @@ var nest;
                 var module = arr[i];
                 if (nest[version] && nest[version][module]) {
                     nest[module] = nest[version][module];
-                    if (utils.$DEBUG_LOG) {
-                        for (var key in nest[module]) {
-                            var fun = nest[module][key];
-                            if (typeof fun == "function") {
-                                debugFunction(module, key);
-                            }
+                    for (var key in nest[module]) {
+                        var fun = nest[module][key];
+                        if (typeof fun == "function") {
+                            modifyFunction(module, key);
                         }
                     }
                 }
             }
         }
         utils.$changeMethod = $changeMethod;
-        function debugFunction(module, key) {
+        function modifyFunction(module, key) {
             var fun = nest[module][key];
             var newFun;
+            //这里兼容下老版本,老版本isSupport函数传一个参数的
             if (key == "isSupport") {
-                newFun = function (callback) {
+                newFun = function (info, callback) {
                     $log("[Nest]调用接口nest." + module + "." + key);
+                    var rInfo = info;
+                    var rCallback = callback;
+                    if (typeof info == "function") {
+                        rInfo = {};
+                        rCallback = info;
+                    }
                     var debugCallback = function (data) {
                         $log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
-                        callback.call(null, data);
+                        rCallback.call(null, data);
                     };
-                    fun.call(null, debugCallback);
+                    fun.call(null, rInfo, debugCallback);
                 };
             }
             else {
@@ -161,11 +198,13 @@ var nest;
          * @private
          */
         function $log(msg) {
-            if (utils.$EGRET_SUPPORT) {
-                egret.log(msg);
-            }
-            else {
-                console.log(msg);
+            if (DEBUG) {
+                if (utils.$EGRET_SUPPORT) {
+                    egret.log(msg);
+                }
+                else {
+                    console.log(msg);
+                }
             }
         }
         utils.$log = $log;
@@ -805,38 +844,6 @@ if (nest.utils.$isRuntime) {
 //////////////////////////////////////////////////////////////////////////////////////
 var nest;
 (function (nest) {
-})(nest || (nest = {}));
-
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-2015, Egret Technology Inc.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-var nest;
-(function (nest) {
     var runtime;
     (function (runtime) {
         var core;
@@ -849,8 +856,8 @@ var nest;
         })(core = runtime.core || (runtime.core = {}));
         var user;
         (function (user) {
-            function isSupport(callback) {
-                var data = { module: "user", action: "isSupport" };
+            function isSupport(info, callback) {
+                var data = { module: "user", action: "isSupport", param: info };
                 callRuntime(data, callback);
             }
             user.isSupport = isSupport;
@@ -891,8 +898,8 @@ var nest;
         })(iap = runtime.iap || (runtime.iap = {}));
         var share;
         (function (share_1) {
-            function isSupport(callback) {
-                var data = { module: "share", action: "isSupport" };
+            function isSupport(info, callback) {
+                var data = { module: "share", action: "isSupport", param: info };
                 callRuntime(data, callback);
             }
             share_1.isSupport = isSupport;
@@ -908,8 +915,8 @@ var nest;
         })(share = runtime.share || (runtime.share = {}));
         var social;
         (function (social) {
-            function isSupport(callback) {
-                var data = { module: "social", action: "isSupport" };
+            function isSupport(info, callback) {
+                var data = { module: "social", action: "isSupport", param: info };
                 callRuntime(data, callback);
             }
             social.isSupport = isSupport;
@@ -926,8 +933,8 @@ var nest;
         })(social = runtime.social || (runtime.social = {}));
         var app;
         (function (app) {
-            function isSupport(callback) {
-                var data = { module: "app", action: "isSupport" };
+            function isSupport(info, callback) {
+                var data = { module: "app", action: "isSupport", param: info };
                 callRuntime(data, callback);
             }
             app.isSupport = isSupport;
@@ -1362,8 +1369,8 @@ var nest;
              * @param callback
              * @callback-param {status:0, share:0}
              */
-            function isSupport(callback) {
-                callback({ status: 0, share: 0 });
+            function isSupport(info, callback) {
+                callback({ result: 0, share: 0 });
             }
             share.isSupport = isSupport;
         })(share = cm.share || (cm.share = {}));
@@ -1398,12 +1405,12 @@ var nest;
              * @param callback
              * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
              */
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 if (CMPAY_EGRET.getVersion() != false && !isNaN(CMPAY_EGRET.getVersion()) && CMPAY_EGRET.getVersion() > 301030) {
-                    callback({ status: 0, sendToDesktop: 1, attention: 0 });
+                    callback({ result: 0, sendToDesktop: 1, attention: 0 });
                 }
                 else {
-                    callback({ status: 0, sendToDesktop: 0, attention: 0 });
+                    callback({ result: 0, sendToDesktop: 0, attention: 0 });
                 }
             }
             app.isSupport = isSupport;
@@ -1607,7 +1614,7 @@ var nest;
     (function (qqhall) {
         var user;
         (function (user) {
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 var status = 0;
                 var loginCallbackInfo = {
                     "status": status,
@@ -1695,7 +1702,7 @@ var nest;
     (function (qqhall) {
         var app;
         (function (app) {
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 var status = 0;
                 var loginCallbackInfo = {
                     "status": status,
@@ -1732,12 +1739,7 @@ var nest;
     (function (qqhall) {
         var share;
         (function (share_1) {
-            /**
-             * 是否支持分享
-             * @param callback
-             * @callback-param {status:0, share:0}  share 1支持 0不支持
-             */
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 var status = 0;
                 var loginCallbackInfo = {
                     "status": status,
@@ -1774,7 +1776,7 @@ var nest;
     (function (qqhall) {
         var social;
         (function (social) {
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 var status = 0;
                 var loginCallbackInfo = {
                     "status": status,
@@ -1830,7 +1832,7 @@ var nest;
         h5.uid = undefined;
         var user;
         (function (user) {
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 var loginType = [];
                 if (nest.utils.$isQQBrowser()) {
                     loginType.push("qq");
@@ -1901,7 +1903,7 @@ var nest;
         })(iap = h5.iap || (h5.iap = {}));
         var share;
         (function (share_1) {
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 var egretH5SdkCallback = function (data) {
                     var status = data.status;
                     var loginCallbackInfo = { "share": status };
@@ -1928,7 +1930,7 @@ var nest;
         })(share = h5.share || (h5.share = {}));
         var social;
         (function (social) {
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 callback.call(null, { "result": 0, "getFriends": 0, "openBBS": 0 });
             }
             social.isSupport = isSupport;
@@ -1943,7 +1945,7 @@ var nest;
         })(social = h5.social || (h5.social = {}));
         var app;
         (function (app) {
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 var egretH5SdkCallback = function (data) {
                     var status = data.status;
                     var loginCallbackInfo = { "attention": status };
@@ -1979,7 +1981,7 @@ var nest;
     (function (h5_2) {
         var user;
         (function (user) {
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 var loginType = [];
                 if (nest.utils.$isQQBrowser()) {
                     loginType.push("qq");
@@ -2019,7 +2021,7 @@ var nest;
         })(iap = h5_2.iap || (h5_2.iap = {}));
         var share;
         (function (share_2) {
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 var supportShareCallback = function (data) {
                     var status = data.result;
                     var shareCallbackInfo = { "share": status, "msg": data.msg };
@@ -2041,7 +2043,7 @@ var nest;
         })(share = h5_2.share || (h5_2.share = {}));
         var social;
         (function (social) {
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 callback.call(null, { "result": 0, "getFriends": 0, "openBBS": 0 });
             }
             social.isSupport = isSupport;
@@ -2056,7 +2058,7 @@ var nest;
         })(social = h5_2.social || (h5_2.social = {}));
         var app;
         (function (app) {
-            function isSupport(callback) {
+            function isSupport(info, callback) {
                 var egretH5SdkCallback = function (data) {
                     var status = data.result;
                     var loginCallbackInfo = { "attention": status, "getInfo": 1, "exitGame": 0, "sendToDesktop": 0 };
@@ -2158,9 +2160,15 @@ nest.core.startup = function (info, callback) {
     else {
         var domain = nest.utils.$getOption("egretServerDomain");
         if (domain) {
-            nest.utils.$API_DOMAIN = domain + "/";
+            api = domain + "/";
+        }
+        else {
+            nest.utils.$API_DOMAIN = api;
         }
         var sdkDomain = nest.utils.$getOption("egretSdkDomain");
+        if (!sdkDomain) {
+            sdkDomain = nest.utils.$API_DOMAIN;
+        }
         if (info.version == 2) {
             //新版api
             nest.utils.$changeMethod("h5_2");

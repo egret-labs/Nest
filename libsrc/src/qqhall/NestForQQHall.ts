@@ -187,7 +187,7 @@ module nest.qqhall {
     }
 }
 module nest.qqhall.user {
-    export function isSupport(callback:Function) {
+    export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
         var status = 0;
         var loginCallbackInfo = {
             "status": status,
@@ -261,7 +261,7 @@ module nest.qqhall.iap {
 }
 
 module nest.qqhall.app {
-    export function isSupport(callback:Function) {
+    export function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType) {
         var status = 0;
         var loginCallbackInfo = {
             "status": status,
@@ -293,13 +293,7 @@ module nest.qqhall.app {
 }
 
 module nest.qqhall.share {
-
-    /**
-     * 是否支持分享
-     * @param callback
-     * @callback-param {status:0, share:0}  share 1支持 0不支持
-     */
-    export function isSupport(callback:Function) {
+    export function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType) {
         var status = 0;
         var loginCallbackInfo = {
             "status": status,
@@ -330,7 +324,7 @@ module nest.qqhall.share {
 }
 
 module nest.qqhall.social {
-    export function isSupport(callback:Function) {
+    export function isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType) {
         var status = 0;
         var loginCallbackInfo = {
             "status": status,

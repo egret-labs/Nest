@@ -28,6 +28,11 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 module nest {
+    export type userSupportCallbackType = (resultInfo:nest.user.UserSupportCallbackInfo)=>void;
+    export type shareSupportCallbackType = (resultInfo:nest.share.ShareSupportCallbackInfo)=>void;
+    export type socialSupportCallbackType = (resultInfo:nest.social.SocialSupportCallbackInfo)=>void;
+    export type appSupportCallbackType = (resultInfo:nest.app.AppSupportCallbackInfo)=>void;
+
     export module core {
         export interface ResultCallbackInfo {
             /**
@@ -69,7 +74,7 @@ module nest {
          *     });
          * </pre>
          */
-        startup(startupInfo:nest.core.StartupInfo, callback:(resultInfo:nest.core.ResultCallbackInfo)=>any):void;
+        startup(startupInfo:nest.core.StartupInfo, callback:(resultInfo:nest.core.ResultCallbackInfo)=>void):void;
 
         callCustomMethod(customInfo:any, callback:Function):void;
     };
@@ -147,7 +152,7 @@ module nest {
          *     });
          * </pre>
          */
-        checkLogin(loginInfo:nest.user.LoginInfo, callback:(resultInfo:nest.user.LoginCallbackInfo)=>any):void;
+        checkLogin(loginInfo:nest.user.LoginInfo, callback:(resultInfo:nest.user.LoginCallbackInfo)=>void):void;
         /**
          * 调用渠道登录接口
          * @param loginInfo
@@ -166,7 +171,7 @@ module nest {
          *     });
          * </pre>
          */
-        login(loginInfo:nest.user.LoginInfo, callback:(resultInfo:nest.user.LoginCallbackInfo)=>any):void;
+        login(loginInfo:nest.user.LoginInfo, callback:(resultInfo:nest.user.LoginCallbackInfo)=>void):void;
         /**
          * 登出接口
          * @param loginInfo 登出参数,没有可以传递{}
@@ -185,14 +190,14 @@ module nest {
          *     });
          * </pre>
          */
-        logout(loginInfo:nest.user.LoginInfo, callback:(resultInfo:core.ResultCallbackInfo)=>any):void;
+        logout(loginInfo:nest.user.LoginInfo, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
         /**
          * 检测支持何种登录方式
          * @param callback
          * @callback-param  @see nest.user.UserSupportCallbackInfo
          * @example 以下代码进行检测支持何种登录方式
          * <pre>
-         *     nest.user.logout({}, function (data){
+         *     nest.user.isSupport({}, function (data){
          *         if(data.result == 0) {
          *             //获取渠道支持的登陆方式,并根据登录方式显示登陆界面
          *             var loginType = data.loginType;
@@ -202,13 +207,13 @@ module nest {
          *     });
          * </pre>
          */
-        isSupport(callback:(resultInfo:nest.user.UserSupportCallbackInfo)=>any):void;
+        isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType):void;
         /**
          * 获取用户信息，目前只有qq浏览器runtime支持
          * @param callback 回调函数
-         * @example 以下代码进行检测支持何种登录方式
+         * @example 以下代码获取用户信息
          * <pre>
-         *     nest.user.logout({}, function (data){
+         *     nest.user.getInfo({}, function (data){
          *         if(data.result == 0) {
          *             var msg = data.msg;              //传回的提示信息
          *             var nickName = data.nickName;     //昵称
@@ -223,7 +228,7 @@ module nest {
          *     });
          * </pre>
          */
-        getInfo(loginInfo:nest.user.LoginInfo, callback:(resultInfo:Object)=>any):void;
+        getInfo(loginInfo:nest.user.LoginInfo, callback:(resultInfo:Object)=>void):void;
     };
 
     export module iap {
@@ -264,7 +269,7 @@ module nest {
          *     });
          * </pre>
          */
-        pay(payInfo:nest.iap.PayInfo, callback:(result:nest.iap.PayCallbackInfo)=>any):void;
+        pay(payInfo:nest.iap.PayInfo, callback:(result:nest.iap.PayCallbackInfo)=>void):void;
     };
 
     export module share {
@@ -320,7 +325,7 @@ module nest {
          *     });
          * </pre>
          */
-        isSupport(callback:(resultInfo:nest.share.ShareSupportCallbackInfo)=>any):void;
+        isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType):void;
 
         /**
          * 设置默认分享内容,以便某些渠道在游戏外点击分享按钮时显示分享内容
@@ -348,7 +353,7 @@ module nest {
          *     });
          * </pre>
          */
-        share(shareInfo:share.ShareInfo, callback:(resultInfo:share.ShareCallbackInfo)=>any):void;
+        share(shareInfo:share.ShareInfo, callback:(resultInfo:share.ShareCallbackInfo)=>void):void;
     };
 
     export module social {
@@ -381,8 +386,8 @@ module nest {
          *     });
          * </pre>
          */
-        isSupport(callback:(resultInfo:social.SocialSupportCallbackInfo)=>any):void;
-        getFriends(socialInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>any):void;
+        isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType):void;
+        getFriends(socialInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
         /**
          * 打开BBS
          * @param socialInfo 请传递一个{}
@@ -399,12 +404,11 @@ module nest {
          *     });
          * </pre>
          */
-        openBBS(socialInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>any):void;
+        openBBS(socialInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
     };
 
     export module app {
         export interface AppSupportCallbackInfo extends core.ResultCallbackInfo{
-            status:number;
             attention?:number;
             sendToDesktop?:number;
             exitGame?:number;
@@ -433,26 +437,26 @@ module nest {
          * @callback-param  { result:"0" , attention :"1" , sendToDesktop : "1" , exitGame : "1" , getInfo : "1"}
          * attention|sendToDesktop|exitGame|getInfo 1支持 0不支持
          */
-        isSupport(callback:(resultInfo:app.AppSupportCallbackInfo)=>any):void;
+        isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType):void;
         /**
          * 关注
          * @param appInfo
          * @param callback
          */
-        attention(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>any):void;
+        attention(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
         /**
          * 退出游戏，回到 App 界面
          * @param appInfo
          * @param callback
          */
-        exitGame(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>any):void;
+        exitGame(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
         /**
          * 发送到桌面
          * @param appInfo
          * @param callback
          * @param callback-param result 0表示添加桌面成功，-1表示添加失败
          */
-        sendToDesktop(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>any):void;
+        sendToDesktop(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
         /**
          * 获取渠道信息
          * @param appInfo 获取信息参数,没有请传递{}
@@ -467,6 +471,6 @@ module nest {
 	     *   "email": //email联系方式数组[],如果没有响应联系方式将没有该字段
 	     * }
          */
-        getInfo(appInfo:any, callback:(resultInfo:app.GetInfoCallbackInfo)=>any):void;
+        getInfo(appInfo:any, callback:(resultInfo:app.GetInfoCallbackInfo)=>void):void;
     };
 }

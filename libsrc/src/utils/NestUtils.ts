@@ -56,29 +56,34 @@ module nest.utils {
             var module = arr[i];
             if (nest[version] && nest[version][module]) {
                 nest[module] = nest[version][module];
-                if ($DEBUG_LOG) {
-                    for (var key in nest[module]) {
-                        var fun = nest[module][key];
-                        if (typeof fun == "function") {
-                            debugFunction(module, key);
-                        }
+                for (var key in nest[module]) {
+                    var fun = nest[module][key];
+                    if (typeof fun == "function") {
+                        modifyFunction(module, key);
                     }
                 }
             }
         }
     }
 
-    function debugFunction(module:string, key:string) {
+    function modifyFunction(module:string, key:string) {
         var fun = nest[module][key];
         var newFun:Function;
+        //这里兼容下老版本,老版本isSupport函数传一个参数的
         if (key == "isSupport") {
-            newFun = function (callback:Function) {
+            newFun = function (info:any, callback?:Function) {
                 $log("[Nest]调用接口nest." + module + "." + key);
+                var rInfo = info;
+                var rCallback = callback;
+                if(typeof info == "function") {
+                    rInfo = {};
+                    rCallback = info;
+                }
                 var debugCallback = function (data) {
                     $log("[Nest]获得nest." + module + "." + key + "接口返回 : " + JSON.stringify(data));
-                    callback.call(null, data);
+                    rCallback.call(null, data);
                 };
-                fun.call(null, debugCallback);
+                fun.call(null, rInfo, debugCallback);
             };
         }
         else {
@@ -179,11 +184,13 @@ module nest.utils {
      * @private
      */
     export function $log(msg:string):void {
-        if ($EGRET_SUPPORT) {
-            egret.log(msg);
-        }
-        else {
-            console.log(msg);
+        if (DEBUG) {
+            if ($EGRET_SUPPORT) {
+                egret.log(msg);
+            }
+            else {
+                console.log(msg);
+            }
         }
     }
 }

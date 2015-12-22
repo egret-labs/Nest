@@ -77,9 +77,15 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
     else {
         var domain = nest.utils.$getOption("egretServerDomain");
         if(domain) {
-            nest.utils.$API_DOMAIN = domain + "/";
+            api = domain + "/";
+        }
+        else {
+            nest.utils.$API_DOMAIN = api;
         }
         var sdkDomain = nest.utils.$getOption("egretSdkDomain");
+        if(!sdkDomain) {
+            sdkDomain = nest.utils.$API_DOMAIN;
+        }
         if (info.version == 2) {
             //新版api
             nest.utils.$changeMethod("h5_2");

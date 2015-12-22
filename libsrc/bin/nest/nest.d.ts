@@ -1,19 +1,8 @@
-declare module nest.utils {
-    var $API_DOMAIN: string;
-    var $APP_ID: number;
-    var $DEBUG_LOG: boolean;
-    var $EGRET_SUPPORT: boolean;
-    function $changeMethod(version: string): void;
-    var $isRuntime: boolean;
-    var $spid: number;
-    function $getSpid(): number;
-    function $getChannelTag(): string;
-    function $isQQBrowser(): boolean;
-    function $isTargetPlatform(target: number): boolean;
-    function $getOption(key: string): string;
-    function $log(msg: string): void;
-}
 declare module nest {
+    type userSupportCallbackType = (resultInfo: nest.user.UserSupportCallbackInfo) => void;
+    type shareSupportCallbackType = (resultInfo: nest.share.ShareSupportCallbackInfo) => void;
+    type socialSupportCallbackType = (resultInfo: nest.social.SocialSupportCallbackInfo) => void;
+    type appSupportCallbackType = (resultInfo: nest.app.AppSupportCallbackInfo) => void;
     module core {
         interface ResultCallbackInfo {
             /**
@@ -51,7 +40,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        startup(startupInfo: nest.core.StartupInfo, callback: (resultInfo: nest.core.ResultCallbackInfo) => any): void;
+        startup(startupInfo: nest.core.StartupInfo, callback: (resultInfo: nest.core.ResultCallbackInfo) => void): void;
         callCustomMethod(customInfo: any, callback: Function): void;
     };
     /**
@@ -123,7 +112,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        checkLogin(loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => any): void;
+        checkLogin(loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => void): void;
         /**
          * 调用渠道登录接口
          * @param loginInfo
@@ -142,7 +131,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        login(loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => any): void;
+        login(loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => void): void;
         /**
          * 登出接口
          * @param loginInfo 登出参数,没有可以传递{}
@@ -161,14 +150,14 @@ declare module nest {
          *     });
          * </pre>
          */
-        logout(loginInfo: nest.user.LoginInfo, callback: (resultInfo: core.ResultCallbackInfo) => any): void;
+        logout(loginInfo: nest.user.LoginInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         /**
          * 检测支持何种登录方式
          * @param callback
          * @callback-param  @see nest.user.UserSupportCallbackInfo
          * @example 以下代码进行检测支持何种登录方式
          * <pre>
-         *     nest.user.logout({}, function (data){
+         *     nest.user.isSupport({}, function (data){
          *         if(data.result == 0) {
          *             //获取渠道支持的登陆方式,并根据登录方式显示登陆界面
          *             var loginType = data.loginType;
@@ -178,13 +167,13 @@ declare module nest {
          *     });
          * </pre>
          */
-        isSupport(callback: (resultInfo: nest.user.UserSupportCallbackInfo) => any): void;
+        isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
         /**
          * 获取用户信息，目前只有qq浏览器runtime支持
          * @param callback 回调函数
-         * @example 以下代码进行检测支持何种登录方式
+         * @example 以下代码获取用户信息
          * <pre>
-         *     nest.user.logout({}, function (data){
+         *     nest.user.getInfo({}, function (data){
          *         if(data.result == 0) {
          *             var msg = data.msg;              //传回的提示信息
          *             var nickName = data.nickName;     //昵称
@@ -199,7 +188,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => any): void;
+        getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void): void;
     };
     module iap {
         interface PayInfo {
@@ -231,7 +220,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        pay(payInfo: nest.iap.PayInfo, callback: (result: nest.iap.PayCallbackInfo) => any): void;
+        pay(payInfo: nest.iap.PayInfo, callback: (result: nest.iap.PayCallbackInfo) => void): void;
     };
     module share {
         /**
@@ -281,7 +270,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        isSupport(callback: (resultInfo: nest.share.ShareSupportCallbackInfo) => any): void;
+        isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
         /**
          * 设置默认分享内容,以便某些渠道在游戏外点击分享按钮时显示分享内容
          * @param shareInfo
@@ -307,7 +296,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        share(shareInfo: share.ShareInfo, callback: (resultInfo: share.ShareCallbackInfo) => any): void;
+        share(shareInfo: share.ShareInfo, callback: (resultInfo: share.ShareCallbackInfo) => void): void;
     };
     module social {
         /**
@@ -321,13 +310,43 @@ declare module nest {
     interface social {
     }
     var social: {
-        isSupport(callback: (resultInfo: social.SocialSupportCallbackInfo) => any): void;
-        getFriends(socialInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => any): void;
-        openBBS(socialInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => any): void;
+        /**
+         * social接口支持
+         * @param callback 回调函数
+         * @example 以下代码获取是否支持
+         * <pre>
+         *     nest.social.isSupport(function (data){
+         *         if(data.result == 0) {
+         *             //获取是否支持获得好友列表
+         *             var getFriends = data.getFriends == 1;
+         *             //获取是否支持打开BBS
+         *             var openBBS = data.openBBS == 1;
+         *         }
+         *     });
+         * </pre>
+         */
+        isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
+        getFriends(socialInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
+        /**
+         * 打开BBS
+         * @param socialInfo 请传递一个{}
+         * @param callback 回调
+         * @example 以下代码进行打开BBS
+         * <pre>
+         *     nest.social.openBBS({}, function (data){
+         *         if(data.result == 0) {
+         *             //打开成功
+         *         }
+         *         else {
+         *             //打开失败
+         *         }
+         *     });
+         * </pre>
+         */
+        openBBS(socialInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
     };
     module app {
         interface AppSupportCallbackInfo extends core.ResultCallbackInfo {
-            status: number;
             attention?: number;
             sendToDesktop?: number;
             exitGame?: number;
@@ -351,26 +370,26 @@ declare module nest {
          * @callback-param  { result:"0" , attention :"1" , sendToDesktop : "1" , exitGame : "1" , getInfo : "1"}
          * attention|sendToDesktop|exitGame|getInfo 1支持 0不支持
          */
-        isSupport(callback: (resultInfo: app.AppSupportCallbackInfo) => any): void;
+        isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
         /**
          * 关注
          * @param appInfo
          * @param callback
          */
-        attention(appInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => any): void;
+        attention(appInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         /**
          * 退出游戏，回到 App 界面
          * @param appInfo
          * @param callback
          */
-        exitGame(appInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => any): void;
+        exitGame(appInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         /**
          * 发送到桌面
          * @param appInfo
          * @param callback
          * @param callback-param result 0表示添加桌面成功，-1表示添加失败
          */
-        sendToDesktop(appInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => any): void;
+        sendToDesktop(appInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         /**
          * 获取渠道信息
          * @param appInfo 获取信息参数,没有请传递{}
@@ -385,15 +404,30 @@ declare module nest {
          *   "email": //email联系方式数组[],如果没有响应联系方式将没有该字段
          * }
          */
-        getInfo(appInfo: any, callback: (resultInfo: app.GetInfoCallbackInfo) => any): void;
+        getInfo(appInfo: any, callback: (resultInfo: app.GetInfoCallbackInfo) => void): void;
     };
+}
+declare module nest.utils {
+    var $API_DOMAIN: string;
+    var $APP_ID: number;
+    var $DEBUG_LOG: boolean;
+    var $EGRET_SUPPORT: boolean;
+    function $changeMethod(version: string): void;
+    var $isRuntime: boolean;
+    var $spid: number;
+    function $getSpid(): number;
+    function $getChannelTag(): string;
+    function $isQQBrowser(): boolean;
+    function $isTargetPlatform(target: number): boolean;
+    function $getOption(key: string): string;
+    function $log(msg: string): void;
 }
 declare module nest.runtime {
     module core {
         function callCustomMethod(customInfo: any, callback: Function): void;
     }
     module user {
-        function isSupport(callback: Function): void;
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
         function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
         function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
         function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
@@ -403,17 +437,17 @@ declare module nest.runtime {
         function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
     }
     module share {
-        function isSupport(callback: Function): void;
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
         function setDefaultData(shareInfo: nest.share.ShareInfo, callback: Function): void;
         function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
     }
     module social {
-        function isSupport(callback: Function): void;
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
         function getFriends(socialInfo: any, callback: Function): void;
         function openBBS(socialInfo: any, callback: Function): void;
     }
     module app {
-        function isSupport(callback: Function): void;
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
         function attention(appInfo: any, callback: Function): void;
         function exitGame(appInfo: any, callback: Function): void;
         function sendToDesktop(appInfo: any, callback: Function): void;
@@ -469,7 +503,7 @@ declare module nest.cm.share {
      * @param callback
      * @callback-param {status:0, share:0}
      */
-    function isSupport(callback: Function): void;
+    function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
 }
 declare module nest.cm.app {
     /**
@@ -492,7 +526,7 @@ declare module nest.cm.app {
      * @param callback
      * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
      */
-    function isSupport(callback: Function): void;
+    function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
     /**
      * @private
      * 发送到桌面
@@ -530,7 +564,7 @@ declare module nest.qqhall {
     function init(): void;
 }
 declare module nest.qqhall.user {
-    function isSupport(callback: Function): void;
+    function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
     function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
     function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
 }
@@ -542,18 +576,13 @@ declare module nest.qqhall.iap {
     function repay(): void;
 }
 declare module nest.qqhall.app {
-    function isSupport(callback: Function): void;
+    function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
     function exitGame(callback: Function): void;
     function attention(appInfo: any, callback: Function): void;
     function sendToDesktop(appInfo: any, callback: Function): void;
 }
 declare module nest.qqhall.share {
-    /**
-     * 是否支持分享
-     * @param callback
-     * @callback-param {status:0, share:0}  share 1支持 0不支持
-     */
-    function isSupport(callback: Function): void;
+    function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
     /**
      * 分享
      * @param shareInfo
@@ -563,14 +592,14 @@ declare module nest.qqhall.share {
     function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
 }
 declare module nest.qqhall.social {
-    function isSupport(callback: Function): void;
+    function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
     function getFriends(socialInfo: any, callback: Function): void;
     function openBBS(socialInfo: any, callback: Function): void;
 }
 declare module nest.h5 {
     var uid: number;
     module user {
-        function isSupport(callback: Function): void;
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
         function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
         function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
         function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
@@ -579,16 +608,16 @@ declare module nest.h5 {
         function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
     }
     module share {
-        function isSupport(callback: Function): void;
+        function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
         function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
     }
     module social {
-        function isSupport(callback: Function): void;
+        function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
         function getFriends(data: any, callback: Function): void;
         function openBBS(data: any, callback: Function): void;
     }
     module app {
-        function isSupport(callback: Function): void;
+        function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
         function attention(appInfo: any, callback: Function): void;
         function sendToDesktop(appInfo: any, callback: Function): void;
         function getInfo(appInfo: any, callback: Function): void;
@@ -596,7 +625,7 @@ declare module nest.h5 {
 }
 declare module nest.h5_2 {
     module user {
-        function isSupport(callback: Function): void;
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
         function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
         function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
         function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
@@ -606,17 +635,17 @@ declare module nest.h5_2 {
         function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
     }
     module share {
-        function isSupport(callback: Function): void;
+        function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
         function setDefaultData(shareInfo: nest.share.ShareInfo, callback: Function): void;
         function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
     }
     module social {
-        function isSupport(callback: Function): void;
+        function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
         function getFriends(data: any, callback: Function): void;
         function openBBS(data: any, callback: Function): void;
     }
     module app {
-        function isSupport(callback: Function): void;
+        function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
         function attention(appInfo: any, callback: Function): void;
         function sendToDesktop(appInfo: any, callback: Function): void;
         function exitGame(appInfo: any, callback: Function): void;
