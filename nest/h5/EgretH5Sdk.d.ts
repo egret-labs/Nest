@@ -28,14 +28,20 @@
 //////////////////////////////////////////////////////////////////////////////////////
 declare class EgretH5Sdk
 {
-    static checkLogin(fun:Function, thisObj:any);
-    static login(fun:Function, thisObj:any, loginType:string);
-    static logout(fun:Function, thisObj:any);
-    static pay(para:any, fun:Function, thisObj:any);
+    static checkLogin(fun:any, thisObj:any);
+    static login(fun:any, thisObj:any, loginType?:string);
+    static logout(fun:any, thisObj:any);
+    static pay(para:any, fun:any, thisObj?:any);
     static attention(appId:any, id:any);
     static isOpenAttention(appId:any, id:any, callbackFun:Function, callbackFunClass:any);
-    static getCustomInfo(appId:any, id:any, callbackFun:Function, callbackFunClass:any);
+    static getCustomInfo(appId:any, id:any, callbackFun?:Function, callbackFunClass?:any);
 
     static isOpenShare(appId:any, id:any, callbackFun:Function, callbackFunClass:any);
-    static share(appId:any, id:any, shareTxt:any, callbackFun:Function, callbackFunClass:any);
+    static share(appId:any, id:any, shareTxt?:any, callbackFun?:Function, callbackFunClass?:any);
+
+    //以下为v2版本新增接口
+    static init(data:any, callbackFun:Function);
+    static isSupportShare(data:any, callbackFun:Function);
+    static isSupportAttention(data:any, callbackFun:Function);
+    static setShareDefaultData(data:any, callbackFun:Function);
 }

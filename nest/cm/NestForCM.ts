@@ -29,27 +29,31 @@
 
 /*
  * cm old solution
+ * @private
  */
-module  nest.cm {
+module nest.cm {
+    /*
+     * @private
+     */
     export interface EgretData {
         egretUserId:string;
     }
+    /*
+     * @private
+     */
+    export interface NestData {
 
-    export var spid:number = null;
+        module:string;
 
-    export function getSpid():number {
-        if(spid == null) {
-            if (core.appId == 85 || core.appId == 88) {
-                spid = 10044;
-            }
-            else {
-                spid = 18287;
-            }
-            egret_native["setOption"]("egret.runtime.spid", spid);
-        }
-        return spid;
+        action:string;
+
+        param?:any;
+
+        postData?:any;
     }
-
+    /*
+     * @private
+     */
     export function callRuntime(data:NestData, callback) {
         var deviceId;
         if (deviceId = egret.localStorage.getItem("deviceid")) {
@@ -106,10 +110,14 @@ module  nest.cm {
         }
     }
 
+    /*
+     * @private
+     */
     export function loginBefore(callback):void {
         var postdata = {};
-        var url:string = "http://api.egret-labs.org/games/www/getAppInfo.php/";
-        url += core.appId + "_" + getSpid();
+        var url:string = nest.utils.$API_DOMAIN + "app/getInfo";
+        postdata["egretChanId"] = utils.$getSpid();
+        postdata["egretGameId"] = utils.$APP_ID;
         postdata["debug"] = 1;
 
         setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
@@ -117,13 +125,15 @@ module  nest.cm {
         });
     }
 
+    /*
+     * @private
+     */
     export function loginAfter(postdata, callback, isNew:boolean):void {
 
         var sendData = {};
         sendData["access_token"] = postdata["access_token"];
         sendData["openid"] = postdata["openid"];
-        var url:string = "http://api.egret-labs.org/games/www/game.php/";
-        url += core.appId + "_" + getSpid();
+        var url:string = nest.utils.$API_DOMAIN + "game/" + utils.$getSpid() + "/" + utils.$APP_ID + "/";
         sendData["runtime"] = 1;
         sendData["showGame"] = 1;
         if (isNew) {
@@ -136,13 +146,15 @@ module  nest.cm {
         });
     }
 
+    /*
+     * @private
+     */
     export function payBefore(orderInfo:nest.iap.PayInfo, callback):void {
-        var url:string = "http://api.egret-labs.org/games/api.php";
+        var url:string = nest.utils.$API_DOMAIN + "user/placeOrder";
 
         var postdata = {
-            "action": "pay.buy",
-            "id": egretInfo.egretUserId,
-            "appId": core.appId,
+            "id": user.egretInfo.egretUserId,
+            "appId": utils.$APP_ID,
             "time": Date.now(),
             "runtime": 1
         };
@@ -188,8 +200,17 @@ module  nest.cm {
         loader.load(request);
     }
 }
-
+/*
+ * @private
+ */
 module nest.cm.user {
+    /*
+     * @private
+     */
+    export var egretInfo:any;
+    /*
+     * @private
+     */
     export function checkLogin(loginInfo:nest.user.LoginInfo, callback) {
 
         var postData = {};
@@ -232,7 +253,7 @@ module nest.cm.user {
         }
 
         function checkBefore(resultData) {
-            if (resultData["status"] == 0) {
+            if (resultData["code"] == 0) {
 
                 var tempData = resultData["data"];
                 postData["client_id"] = tempData["client_id"];
@@ -240,7 +261,7 @@ module nest.cm.user {
                 postData["redirect_uri"] = tempData["redirect_uri"];
 
                 //调用初始化桌面快捷方式
-                nest.cm.app.initDesktop({
+                nest.cm.app.$initDesktop({
                     "Title": tempData["title"],
                     "DetailUrl": tempData["detailUrl"],
                     "PicUrl": tempData["picUrl"]
@@ -282,6 +303,7 @@ module nest.cm.user {
     }
 
     /**
+     * @private
      * 调用渠道登录接口
      * @param loginInfo
      * @param callback
@@ -292,9 +314,12 @@ module nest.cm.user {
         nest.cm.callRuntime(data, callback);
     }
 }
+/*
+ * @private
+ */
 module nest.cm.iap {
 
-    export var isFirst:boolean = true;
+    var isFirst:boolean = true;
 
     /**
      * 支付
@@ -307,8 +332,8 @@ module nest.cm.iap {
         var failInt = -2;
 
         payBefore(orderInfo, function (data) {
-            if (data["status"] == 0) {//成功
-                if (nest.cm.iap.isFirst) {
+            if (data["code"] == 0) {//成功
+                if (isFirst) {
                     CMPAY_EGRET.on('cmpay_order_complete', function (msg) {
                         console.log("cm old solution cmpay_order_complete  " + JSON.stringify(msg, null, 4));
                         if (msg["success"] == true) {
@@ -323,7 +348,7 @@ module nest.cm.iap {
                             }
                         }
                     });
-                    nest.cm.iap.isFirst = false;
+                    isFirst = false;
                 }
 
                 var option = {
@@ -352,28 +377,43 @@ module nest.cm.iap {
     }
 
 }
-
+/*
+ * @private
+ */
 module nest.cm.share {
 
     /**
      * 是否支持分享
+     * @priavte
      * @param callback
      * @callback-param {status:0, share:0}
      */
-    export function isSupport(callback:Function) {
-        callback({status: 0, share: 0});
+    export function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType) {
+        callback({result: 0, share: 0});
     }
 }
-
+/*
+ * @private
+ */
 module nest.cm.app {
 
-    var desktopInfo:nest.app.IDesktopInfo;
+    /**
+     * @private
+     */
+    export interface IDesktopInfo {
+        Title:string;           // 桌面图标标题，不要超过五个中文字
+        DetailUrl:string;      // 桌面图标对应的页面url
+        PicUrl: string; //120*120
+    }
+
+    var desktopInfo:IDesktopInfo;
 
     /**
+     * @private
      * 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
      * @param param
      */
-    export function initDesktop(param:nest.app.IDesktopInfo) {
+    export function $initDesktop(param:IDesktopInfo) {
         desktopInfo = param;
         egret.ExternalInterface.call("save_shortcut_info", JSON.stringify({
             token: String(Math.random()),
@@ -382,20 +422,22 @@ module nest.cm.app {
     }
 
     /**
+     * @private
      * 是否支持特定功能
      * @param callback
      * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
      */
-    export function isSupport(callback:Function) {
+    export function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType) {
         if (CMPAY_EGRET.getVersion() != false && !isNaN(CMPAY_EGRET.getVersion()) && CMPAY_EGRET.getVersion() > 301030) {
-            callback({status: 0, sendToDesktop: 1, attention: 0});
+            callback({result: 0, sendToDesktop: 1, attention: 0});
         }
         else {
-            callback({status: 0, sendToDesktop: 0, attention: 0});
+            callback({result: 0, sendToDesktop: 0, attention: 0});
         }
     }
 
     /**
+     * @private
      * 发送到桌面
      * @param appInfo
      * @param callback
@@ -414,26 +456,5 @@ module nest.cm.app {
         else {
             callback({result: -1});
         }
-    }
-}
-
-if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
-    console.log("cm old 11111 ");
-    console.log(egret_native.getOption("egret.runtime.spid"));
-    console.log(egret_native.getOption("egret.runtime.nest"));
-    console.log("cm old 22222 ");
-
-    if (egret_native.getOption("egret.runtime.spid") == 10044
-        || (!egret_native.getOption("egret.runtime.nest"))) {
-        console.log("cm old u r in cm");
-        var egretInfo:nest.cm.EgretData;
-
-        egret_native["setOption"]("channelTag", "liebao");
-        CMPAY_DEBUG = false;
-        nest.user.checkLogin = nest.cm.user.checkLogin;
-        nest.iap.pay = nest.cm.iap.pay;
-        nest.share.isSupport = nest.cm.share.isSupport;
-        nest.app.isSupport = nest.cm.app.isSupport;
-        nest.app.sendToDesktop = nest.cm.app.sendToDesktop;
     }
 }

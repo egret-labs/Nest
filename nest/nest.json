@@ -3,13 +3,15 @@
   "dependence": ["core"],
   "source":".",
   "file_list" : [
+    "utils/NestUtils.ts",
+    "utils/NestEntry.ts",
     "cm/CMPAY_EGRET.js",
     "cm/CMPAY_EGRET.d.ts",
     "cm/CMGAME_EGRET.js",
     "cm/CMGAME_EGRET.d.ts",
     "Nest.ts",
+    "runtime/NestForRuntime.ts",
     "cm/NestForCM.ts",
-    "egret_sdk_bridge.js",
     "h5/NestForH5.ts",
     "h5/EgretH5Sdk.d.ts",
     "qqhall/NestForQQHall.ts"

@@ -1,8 +1,10 @@
-if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
+if (nest.utils.$isRuntime) {
     if (egret_native.getOption("egret.runtime.spid") == 10044
         || (!egret_native.getOption("egret.runtime.nest"))) {
-        var CMPAY_EGRET = (function(){
-            function empty(){}
+        var CMPAY_EGRET = (function () {
+            function empty() {
+            }
+
             var cmpay = {
                 on: empty,
                 off: empty,
@@ -14,28 +16,28 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                 type: 'egret_runtime'
             };
             var readyListeners = [];
-            cmpay.ready = function(fn){
-                if(cmpay.isReady){
+            cmpay.ready = function (fn) {
+                if (cmpay.isReady) {
                     fn();
-                }else{
+                } else {
                     readyListeners.push(fn);
                 }
             };
-            function callReady(){
+            function callReady() {
                 var rLen = readyListeners.length;
-                for(var i=0;i<rLen;++i){
+                for (var i = 0; i < rLen; ++i) {
                     readyListeners[i]();
                 }
                 readyListeners.length = 0;
             }
 
-            function initOld(){
+            function initOld() {
 
                 var isDebug = false;
 
-                if(typeof CMPAY_DEBUG === 'boolean'){
+                if (typeof CMPAY_DEBUG === 'boolean') {
                     isDebug = CMPAY_DEBUG;
-                }else{
+                } else {
                     CMPAY_DEBUG = false;
                 }
                 console.log('ssss:initOld:' + isDebug);
@@ -45,16 +47,16 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                  FIXME:
                  接收来自webview 的消息
                  */
-                egret.ExternalInterface.addCallback('webview_to_runtime_js_data' , function(str){
+                egret.ExternalInterface.addCallback('webview_to_runtime_js_data', function (str) {
                     console.log('ssss:runtime-recv:' + str);
                     var msg;
-                    try{
+                    try {
                         msg = JSON.parse(str);
-                    }catch(e){
+                    } catch (e) {
                         return;
                     }
-                    if(msg && msg.type){
-                        switch(msg.type){
+                    if (msg && msg.type) {
+                        switch (msg.type) {
                             case 'cmpay_loaded':
                                 cmpay.isReady = true;
                                 callReady();
@@ -62,8 +64,8 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                             case 'cmpay_invoke':
                                 var token = msg.token;
                                 var fn;
-                                if(token && listeners.hasOwnProperty(token) && listeners[token] && typeof (fn = listeners[token].fn) === 'function'){
-                                    if(!listeners[token].isPersist){
+                                if (token && listeners.hasOwnProperty(token) && listeners[token] && typeof (fn = listeners[token].fn) === 'function') {
+                                    if (!listeners[token].isPersist) {
                                         delete listeners[token];
                                     }
                                     fn.apply(null, msg.args);
@@ -74,9 +76,9 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                 });
 
                 var url = 'http://game.liebao.cn/game/pay/part/cmpay-runtime-proxy-egret.html?';
-                url += '_t=' + Math.floor(Date.now()/3600/24/1000);
-                if(isDebug){
-                    url +='&debug=1';
+                url += '_t=' + Math.floor(Date.now() / 3600 / 24 / 1000);
+                if (isDebug) {
+                    url += '&debug=1';
                 }
                 //var webviewId = 'cmpay_proxy_laya';
                 /*
@@ -87,17 +89,17 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                 //webview.addJSCallback('layaRuntimeOnMessage', layaRuntimeOnMessage);
                 egret.ExternalInterface.call('newWebViewInstance', JSON.stringify({
                     action: 'createHiddenWebView',
-                    data:{
+                    data: {
                         url: url
                     }
                 }));
                 console.log('ssss:runtime-create:' + url);
 
-                function sendMessage(msg){
+                function sendMessage(msg) {
                     var str;
-                    try{
+                    try {
                         str = JSON.stringify(msg).replace(/"/g, '`');
-                    }catch(e){
+                    } catch (e) {
                         return false;
                     }
                     console.log('ssss:runtime-send:' + str);
@@ -107,7 +109,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                      */
                     egret.ExternalInterface.call('newWebViewInstance', JSON.stringify({
                         action: 'callWebViewMethod',
-                        data:{
+                        data: {
                             methodName: 'egretRuntimeOnMessage',
                             paramStr: str
                         }
@@ -127,21 +129,22 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                     //}));
                     return true;
                 }
-                function cmpay_invoke(method, args){
+
+                function cmpay_invoke(method, args) {
                     var len;
-                    if(args && typeof args === 'object' && typeof (len = args.length) === 'number'){
+                    if (args && typeof args === 'object' && typeof (len = args.length) === 'number') {
                         var isOn = method === 'on';
                         var isOff = method === 'off';
-                        for(var i=0;i<len;++i){
+                        for (var i = 0; i < len; ++i) {
                             var item = args[i];
-                            if(typeof item === 'function'){
+                            if (typeof item === 'function') {
                                 var token = String(Math.random());
-                                if(!isOff){
+                                if (!isOff) {
                                     listeners[token] = {
                                         isPersist: isOn,
                                         fn: item
                                     };
-                                }else{
+                                } else {
                                     delete listeners[token];
                                 }
                                 args[i] = {
@@ -165,48 +168,51 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                 //    }
                 //};
 
-                function slice(args){
+                function slice(args) {
                     var arr = [];
                     var len = args.length;
-                    for(var i=0;i<len;++i){
+                    for (var i = 0; i < len; ++i) {
                         arr.push(args[i]);
                     }
                     return arr;
                 }
-                var methods = ['on','off','fire','purchase'];
-                for(var i = methods.length-1;i>-1;--i){
-                    (function(method){
-                        cmpay[method] = function(){
+
+                var methods = ['on', 'off', 'fire', 'purchase'];
+                for (var i = methods.length - 1; i > -1; --i) {
+                    (function (method) {
+                        cmpay[method] = function () {
                             cmpay_invoke(method, slice(arguments));
                         };
                     })(methods[i]);
                 }
             }
 
-            function initNew(){
+            function initNew() {
 
                 var isDebug = false;
 
-                if(typeof CMPAY_DEBUG === 'boolean'){
+                if (typeof CMPAY_DEBUG === 'boolean') {
                     isDebug = CMPAY_DEBUG;
-                }else{
+                } else {
                     CMPAY_DEBUG = false;
                 }
 
                 console.log('ssss:initNew:' + isDebug);
 
-                function wsjLaunchPay(request, fn){
+                function wsjLaunchPay(request, fn) {
                     var token = String(Math.random());
-                    egret.ExternalInterface.addCallback('wsj_pay', function(response){
+                    egret.ExternalInterface.addCallback('wsj_pay', function (response) {
                         var data;
-                        try{
+                        try {
                             data = JSON.parse(response);
-                        }catch(e){}
-                        if(data && data.token === token){
+                        } catch (e) {
+                        }
+                        if (data && data.token === token) {
                             var wsjResponse;
-                            try{
+                            try {
                                 wsjResponse = JSON.parse(data.response);
-                            }catch(e){}
+                            } catch (e) {
+                            }
                             fn(wsjResponse);
                         }
                     });
@@ -219,6 +225,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                         request: JSON.stringify(request)
                     }));
                 }
+
                 function param(obj) {
                     var arr = [];
                     for (var i in obj) {
@@ -232,45 +239,47 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                     }
                     return arr.join('&');
                 }
-                function ajax(option, fn){
+
+                function ajax(option, fn) {
                     var urlloader = new egret.URLLoader();
                     var urlreq = new egret.URLRequest();
-                    if(option.method && option.method.toLowerCase() === 'post'){
+                    if (option.method && option.method.toLowerCase() === 'post') {
                         urlreq.method = egret.URLRequestMethod.POST;
                     }
                     var postData = '';
-                    if(option.data){
-                        if(typeof option.data === 'string'){
+                    if (option.data) {
+                        if (typeof option.data === 'string') {
                             postData = option.data;
-                        }else{
+                        } else {
                             postData = param(option.data);
                         }
                         urlreq.data = new egret.URLVariables(postData);
                     }
                     urlreq.url = option.url;
                     urlloader.dataFormat = egret.URLLoaderDataFormat.TEXT;
-                    urlloader.addEventListener(egret.Event.COMPLETE, function(){
+                    urlloader.addEventListener(egret.Event.COMPLETE, function () {
                         console.log('tttt:netreq:complete:' + urlloader.data);
                         fn(urlloader.data);
                     });
                     console.log('tttt:netreq:' + urlreq.url + ':' + postData);
-                    urlloader.load( urlreq );
+                    urlloader.load(urlreq);
                 }
-                function placeOrderProxy(option, fn){
+
+                function placeOrderProxy(option, fn) {
                     console.log('ssss:placeOrderProxy:' + JSON.stringify(option));
                     var token = option.data && option.data.access_token;
-                    if(!token){
+                    if (!token) {
                         fn(false, -1, '{"msg":"Token not provided."}');
-                    }else{
-                        if(token.length === 32 || token.slice(0,3) === 'sdk'){
+                    } else {
+                        if (token.length === 32 || token.slice(0, 3) === 'sdk') {
                             var p = {
                                 token: token,
                                 method: option.pay_method,
                                 dev: option.debug ? 1 : null
                             };
                             var _d = option.data;
-                            for(var i in _d){
-                                if(_d.hasOwnProperty(i) && i !== 'access_token'){
+                            for (var i in _d) {
+                                if (_d.hasOwnProperty(i) && i !== 'access_token') {
                                     p[i] = _d[i];
                                 }
                             }
@@ -279,7 +288,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                                 url: 'http://gclogin.liebao.cn/api/native/order/pay',
                                 data: p
                             }, fn);
-                        }else{
+                        } else {
                             ajax({
                                 method: 'POST',
                                 url: 'http://gc.liebao.cn/pay/topay.php',
@@ -292,34 +301,36 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                         }
                     }
                 }
-                function placeOrder(option, fn){
-                    placeOrderProxy(option, function(responseText){
+
+                function placeOrder(option, fn) {
+                    placeOrderProxy(option, function (responseText) {
                         var response;
                         var success = false;
                         var msg = 'Unkown error';
-                        if(responseText){
-                            responseText = responseText.replace(/"transaction_id":(\d+)/,'"transaction_id":"$1"');
-                            try{
+                        if (responseText) {
+                            responseText = responseText.replace(/"transaction_id":(\d+)/, '"transaction_id":"$1"');
+                            try {
                                 response = JSON.parse(responseText);
                                 success = true;
-                            }catch(e){
+                            } catch (e) {
                                 msg = 'Empty response';
                             }
                         }
                         var valid = success && response && response.data && response.data.args && response.data.args.goodsTokenUrl && response.ret === 1;
-                        if(valid){
+                        if (valid) {
                             var goodsTokenUrl = response.data.args.goodsTokenUrl;
-                            if(goodsTokenUrl){
+                            if (goodsTokenUrl) {
                                 msg = 'ok';
-                            }else{
+                            } else {
                                 msg = 'Empty goods token url';
                             }
                         }
                         fn(valid, valid ? 0 : (response ? response.ret : -1), msg, response);
                     });
                 }
+
                 var loginListeners = {};
-                cmpay.on = function(type, fn) {
+                cmpay.on = function (type, fn) {
                     var arr;
                     if (loginListeners.hasOwnProperty(type)) {
                         arr = loginListeners[type];
@@ -328,7 +339,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                     }
                     arr.push(fn);
                 };
-                cmpay.off = function(type, fn) {
+                cmpay.off = function (type, fn) {
                     var arr;
                     if (loginListeners.hasOwnProperty(type)) {
                         arr = loginListeners[type];
@@ -340,7 +351,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                         }
                     }
                 };
-                cmpay.fire = function(type) {
+                cmpay.fire = function (type) {
                     if (loginListeners.hasOwnProperty(type)) {
                         var args = [].slice.call(arguments, 1);
                         var arr = loginListeners[type];
@@ -350,7 +361,8 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                             var fn = _arr[i];
                             try {
                                 fn.apply(null, args);
-                            } catch (e) {}
+                            } catch (e) {
+                            }
                         }
                     }
                 };
@@ -359,13 +371,13 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                 //cmpay.ready = function(fn){
                 //    fn();
                 //};
-                cmpay.purchase = function(option){
+                cmpay.purchase = function (option) {
                     console.log('ssss:purchase:' + JSON.stringify(option));
                     placeOrder({
                         pay_method: 'wsjpay/sdk',
                         data: option,
                         debug: typeof option.debug !== 'undefined' ? option.debug : isDebug
-                    },function(success, code, msg, response){
+                    }, function (success, code, msg, response) {
                         cmpay.fire('cmpay_order_placed', {
                             type: 'cmpay_order_placed',
                             transaction_id: response && response.data ? response.data.transaction_id : null,
@@ -374,8 +386,8 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                             success: success,
                             response: response
                         });
-                        if(success){
-                            wsjLaunchPay(response.data.args, function(wsjResponse){
+                        if (success) {
+                            wsjLaunchPay(response.data.args, function (wsjResponse) {
                                 var ret = wsjResponse && typeof wsjResponse.resultCode === 'number' ? wsjResponse.resultCode : -99;
                                 var paid = wsjResponse && wsjResponse.resultCode === 0;
                                 cmpay.fire('cmpay_order_complete', {
@@ -388,7 +400,7 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                                     wsjResponse: wsjResponse
                                 });
                             });
-                        }else{
+                        } else {
                             cmpay.fire('cmpay_order_complete', {
                                 type: 'cmpay_order_complete',
                                 transaction_id: response && response.data ? response.data.transaction_id : null,
@@ -403,19 +415,20 @@ if (egret.MainContext.runtimeType == egret.MainContext.RUNTIME_NATIVE) {
                 };
                 callReady();
             }
+
             var version = false;
             cmpay.getVersion = function () {
                 return version;
             };
 
-            var to = egret.setTimeout(function(){
-                if(version === false){
+            var to = egret.setTimeout(function () {
+                if (version === false) {
                     initOld();
-                }else{
+                } else {
                     initNew();
                 }
             }, null, 100);
-            egret.ExternalInterface.addCallback("get_game_sdk_version", function(ver) {
+            egret.ExternalInterface.addCallback("get_game_sdk_version", function (ver) {
                 egret.clearTimeout(to);
                 console.log('ssss:get_game_sdk_version:' + JSON.stringify(arguments));
                 version = ver;
