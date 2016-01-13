@@ -31,6 +31,7 @@ module nest.qqhall2 {
     var login_call_type = 100;
     var pay_call_type = 101;
     var share_call_type = 104;
+    var friend_call_type = 105;
     var refresh_token_call_type = 106;
     var check_call_type = 107;
     var user_info_call_type = 108;
@@ -196,6 +197,9 @@ module nest.qqhall2 {
     export function init():void {
         egret.ExternalInterface.addCallback("HALL_EGRET_MSG_TO", function (data:string) {
             console.log("get hall data : " + data);
+            for (var i = 0; i < Math.ceil(data.length / 450); i++) {
+                console.log(data.slice(i * 450, (i + 1) * 450));
+            }
             var info:any = JSON.parse(data);
             var result:number;
             switch (info.msgType) {
@@ -237,6 +241,16 @@ module nest.qqhall2 {
                                         userId = data.id;
                                         loginCallback.call(null, data);
                                         loginCallback = null;
+
+                                        //获取好友
+                                        //callHall({
+                                        //    msgType: friend_call_type,
+                                        //    appid: appid,
+                                        //    appsig: appsig,
+                                        //    qbopenid: qbopenid,
+                                        //    qbopenkey: qbopenkey,
+                                        //    msgVersion: version
+                                        //})
                                     });
                                 }
                             };
@@ -341,6 +355,7 @@ module nest.qqhall2 {
             var loginCallbackInfo = {
                 "status": status,
                 "result": status,
+                "loginType": ["qq"],
                 "checkLogin": 0,
                 "login": 1,
                 "logout": 0,
