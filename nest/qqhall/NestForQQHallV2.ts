@@ -506,7 +506,7 @@ module nest.qqhall2 {
                     qbopenkey: qbopenkey,
                     title: shareInfo.title,
                     summary: shareInfo.description,
-                    imageLocalUrl: "",
+                    imageLocalUrl: shareInfo.img_url,
                     img_title: shareInfo.title,
                     cus_txt: "",
                     targetUrl: shareInfo.url
