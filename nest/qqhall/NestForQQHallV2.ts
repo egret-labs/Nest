@@ -341,6 +341,7 @@ module nest.qqhall2 {
             var loginCallbackInfo = {
                 "status": status,
                 "result": status,
+                "loginType": ["qq"],
                 "checkLogin": 0,
                 "login": 1,
                 "logout": 0,
