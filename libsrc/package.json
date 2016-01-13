@@ -13,6 +13,7 @@
 			  	"runtime/NestForRuntime.ts",
 				"cm/NestForCM.ts",
 				"qqhall/NestForQQHall.ts",
+				"qqhall/NestForQQHallV2.ts",
 				"h5/NestForH5.ts",
 				"utils/NestEntry.ts"
 			],

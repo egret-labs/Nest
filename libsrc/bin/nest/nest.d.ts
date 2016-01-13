@@ -107,7 +107,7 @@ declare module nest {
          *             var token = data.token;
          *         }
          *         else {
-         *             //没有登录,之后需要用nest.uset.isSupport接口获取loginType并根据loginType显示登录界面
+         *             //没有登录,之后需要用nest.user.isSupport接口获取loginType并根据loginType显示登录界面
          *         }
          *     });
          * </pre>
@@ -153,7 +153,8 @@ declare module nest {
         logout(loginInfo: nest.user.LoginInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         /**
          * 检测支持何种登录方式
-         * @param callback
+         * @param info 请传递一个{}
+         * @param callback 回调函数
          * @callback-param  @see nest.user.UserSupportCallbackInfo
          * @example 以下代码进行检测支持何种登录方式
          * <pre>
@@ -259,10 +260,11 @@ declare module nest {
     var share: {
         /**
          * 是否支持分享
+         * @param info 请传递一个{}
          * @param callback 回调函数
          * @example 以下代码获取是否支持分享
          * <pre>
-         *     nest.share.isSupport(function (data){
+         *     nest.share.isSupport({}, function (data){
          *         if(data.result == 0) {
          *             //获取是否支持分享
          *             var share = data.share == 1;
@@ -312,10 +314,11 @@ declare module nest {
     var social: {
         /**
          * social接口支持
+         * @param info 请传递一个{}
          * @param callback 回调函数
          * @example 以下代码获取是否支持
          * <pre>
-         *     nest.social.isSupport(function (data){
+         *     nest.social.isSupport({}, function (data){
          *         if(data.result == 0) {
          *             //获取是否支持获得好友列表
          *             var getFriends = data.getFriends == 1;
@@ -366,7 +369,8 @@ declare module nest {
     var app: {
         /**
          * 是否支持特定功能
-         * @param callback
+         * @param info 请传递一个{}
+         * @param callback 回调函数
          * @callback-param  { result:"0" , attention :"1" , sendToDesktop : "1" , exitGame : "1" , getInfo : "1"}
          * attention|sendToDesktop|exitGame|getInfo 1支持 0不支持
          */
@@ -549,7 +553,6 @@ declare module nest.qqhall {
     var shareCallback: Function;
     var version: string;
     var loginNum: number;
-    var spid: number;
     var gameType: any;
     var gameVersion: any;
     var OpenId: any;
@@ -595,6 +598,42 @@ declare module nest.qqhall.social {
     function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
     function getFriends(socialInfo: any, callback: Function): void;
     function openBBS(socialInfo: any, callback: Function): void;
+}
+declare module nest.qqhall2 {
+    function init(): void;
+    module user {
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+        function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+    }
+    module iap {
+        function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+        /**
+         * 大厅充值成功后，再次调用付费接口
+         */
+        function repay(): void;
+    }
+    module app {
+        function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
+        function exitGame(callback: Function): void;
+        function attention(appInfo: any, callback: Function): void;
+        function sendToDesktop(appInfo: any, callback: Function): void;
+    }
+    module share {
+        function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
+        /**
+         * 分享
+         * @param shareInfo
+         * @param callback
+         * @callback-param result 0 表示分享成功，-1表示用户取消
+         */
+        function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
+    }
+    module social {
+        function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
+        function getFriends(socialInfo: any, callback: Function): void;
+        function openBBS(socialInfo: any, callback: Function): void;
+    }
 }
 declare module nest.h5 {
     var uid: number;
