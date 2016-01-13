@@ -14,6 +14,7 @@
     "cm/NestForCM.ts",
     "h5/NestForH5.ts",
     "h5/EgretH5Sdk.d.ts",
-    "qqhall/NestForQQHall.ts"
+    "qqhall/NestForQQHall.ts",
+    "qqhall/NestForQQHallV2.ts"
   ]
 }

@@ -43,7 +43,6 @@ module nest.qqhall {
 
     export var version:string = "V1.0.0";
     export var loginNum:number = 0;
-    export var spid:number = 10835;
 
     export var gameType;
     export var gameVersion;
@@ -140,7 +139,7 @@ module nest.qqhall {
 
                         var loginInfo:string = "登录成功";
                         callHall({msgType: login_back_call_type, msgVersion: version, errorID: 0, loginInfoStr: loginInfo});
-                        var api = nest.utils.$API_DOMAIN + "game/" + spid + "/" + utils.$APP_ID;
+                        var api = nest.utils.$API_DOMAIN + "game/" + utils.$getSpid() + "/" + utils.$APP_ID;
 
                         var sendData = {};
                         sendData["openkey"] = OpenKey;

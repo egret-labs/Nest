@@ -66,8 +66,20 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
         }
         //qq大厅
         else if (nest.utils.$isTargetPlatform(10835)) {
-            nest.qqhall.init();
-            nest.utils.$changeMethod("qqhall");
+            var spid:number;
+            //古龙和萌战机用旧版API
+            if(nest.utils.$APP_ID == 66 || nest.utils.$APP_ID == 86) {
+                spid = 10835;
+                nest.qqhall.init();
+                nest.utils.$changeMethod("qqhall");
+            }
+            else {
+                spid = 20546;
+                nest.qqhall2.init();
+                nest.utils.$changeMethod("qqhall2");
+            }
+            egret_native["setOption"]("egret.runtime.spid", spid);
+            nest.utils.$spid = spid;
         }
         else {
             nest.utils.$changeMethod("runtime");
