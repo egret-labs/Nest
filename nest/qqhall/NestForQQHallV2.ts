@@ -31,9 +31,11 @@ module nest.qqhall2 {
     var login_call_type = 100;
     var pay_call_type = 101;
     var share_call_type = 104;
+    var friend_call_type = 105;
     var refresh_token_call_type = 106;
     var check_call_type = 107;
     var user_info_call_type = 108;
+    var login_type_call_type = 109;
 
     var login_callback_type = 200;
     var pay_callback_type = 201;
@@ -41,6 +43,7 @@ module nest.qqhall2 {
     var refresh_token_callback_type = 206;
     var check_callback_type = 207;
     var user_info_callback_type = 208;
+    var login_type_callback_type = 209;
 
     var loginCallback:Function = null;
     var payCallback:Function = null;
@@ -48,6 +51,7 @@ module nest.qqhall2 {
     var refreshTokenCallback:Function = null;
     var checkCallback:Function = null;
     var userInfoCallback:Function = null;
+    var loginTypeCallback:Function = null;
 
     var version:string = "1.0.0";
 
@@ -77,6 +81,7 @@ module nest.qqhall2 {
 
     var userId;
     var pf;
+    var loginType = [];
 
     var payOrderInfo;
     var payType;
@@ -96,12 +101,12 @@ module nest.qqhall2 {
 
         var msg = "[Nest]qq hall2 send : " + url + "?" + postdata;
         for (var i = 0; i < Math.ceil(msg.length / 450); i++) {
-            console.log(msg.slice(i * 450, (i + 1) * 450));
+            nest.utils.$log(msg.slice(i * 450, (i + 1) * 450));
         }
 
         var loader:egret.URLLoader = new egret.URLLoader();
         loader.addEventListener(egret.Event.COMPLETE, function () {
-            console.log("[Nest]qq hall2 get data : " + loader.data);
+            nest.utils.$log("[Nest]qq hall2 get data : " + loader.data);
             var jsonObj = JSON.parse(loader.data);
             callback(jsonObj);
         }, this);
@@ -153,7 +158,7 @@ module nest.qqhall2 {
 
     function callHall(data:any) {
         var msg:string = JSON.stringify(data);
-        console.log("call hall : " + msg);
+        nest.utils.$log("call hall : " + msg);
         egret.ExternalInterface.call("HALL_EGRET_MSG_FROM", msg);
     }
 
@@ -193,9 +198,26 @@ module nest.qqhall2 {
         });
     }
 
+    //刷新票据
+    function getLoginType(callback) {
+        loginTypeCallback = callback;
+        callHall({
+            msgType: login_type_call_type,
+            appid: appid,
+            appsig: appsig,
+            appsigData: appsigData,
+            qbopenid: "",
+            qbopenkey: "",
+            msgVersion: version
+        });
+    }
+
     export function init():void {
         egret.ExternalInterface.addCallback("HALL_EGRET_MSG_TO", function (data:string) {
-            console.log("get hall data : " + data);
+            nest.utils.$log("get hall data : " + data);
+            for (var i = 0; i < Math.ceil(data.length / 450); i++) {
+                nest.utils.$log(data.slice(i * 450, (i + 1) * 450));
+            }
             var info:any = JSON.parse(data);
             var result:number;
             switch (info.msgType) {
@@ -237,6 +259,16 @@ module nest.qqhall2 {
                                         userId = data.id;
                                         loginCallback.call(null, data);
                                         loginCallback = null;
+
+                                        //获取好友
+                                        //callHall({
+                                        //    msgType: friend_call_type,
+                                        //    appid: appid,
+                                        //    appsig: appsig,
+                                        //    qbopenid: qbopenid,
+                                        //    qbopenkey: qbopenkey,
+                                        //    msgVersion: version
+                                        //})
                                     });
                                 }
                             };
@@ -331,51 +363,77 @@ module nest.qqhall2 {
                         userInfoCallback.call(null);
                         userInfoCallback = null;
                     }
+                    break;
+                case login_type_callback_type:
+                    if (info.loginType == 1) {
+                        loginType.push("qq");
+                    }
+                    else if (info.loginType == 2) {
+                        loginType.push("wx");
+                    }
+                    else if (info.loginType == 3) {
+                        loginType.push("qq");
+                        loginType.push("wx");
+                    }
+                    if (loginTypeCallback) {
+                        loginTypeCallback.call(null);
+                        loginTypeCallback = null;
+                    }
+                    break;
             }
         });
     }
 
     export module user {
         export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
-            var status = 0;
-            var loginCallbackInfo = {
-                "status": status,
-                "result": status,
-                "loginType": ["qq"],
-                "checkLogin": 0,
-                "login": 1,
-                "logout": 0,
-                "getInfo": 0
-            };
-            callback.call(null, loginCallbackInfo);
+            getLoginType(function () {
+                var result = 0;
+                var loginCallbackInfo = {
+                    "status": result,
+                    "result": result,
+                    "loginType": loginType,
+                    "checkLogin": 0,
+                    "login": 1,
+                    "logout": 0,
+                    "getInfo": 0
+                };
+                callback.call(null, loginCallbackInfo);
+            })
         }
 
         export function checkLogin(loginInfo:nest.user.LoginInfo, callback:Function) {
-            var status = -1;
-            var loginCallbackInfo = {
-                "status": status,
-                "result": status,
-                "loginType": undefined,
-                "token": undefined
+            //获取appid
+            var url:string = nest.utils.$API_DOMAIN + "app/getSignInfo";
+            var postdata = {
+                "egretChanId": utils.$getSpid(),
+                "appId": utils.$APP_ID
             };
-            callback.call(null, loginCallbackInfo);
+            setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
+                appid = resultData.data.appid;
+                appsig = resultData.data.appsig;
+                appsigData = resultData.data.appsigdata;
+
+                var result = -2;
+                var loginCallbackInfo = {
+                    "status": result,
+                    "result": result,
+                    "loginType": undefined,
+                    "token": undefined
+                };
+                callback.call(null, loginCallbackInfo);
+            });
         }
 
         export function login(loginInfo:nest.user.LoginInfo, callback:Function) {
-            loginBefore(null, function (data) {
-                appid = data.data.appid;
-                appsig = data.data.appsig;
-                appsigData = data.data.appsigdata;
-                loginCallback = callback;
-                pf = loginInfo.loginType;
-                callHall({
-                    msgType: login_call_type,
-                    appid: appid,
-                    appsig: appsig,
-                    appsigData: appsigData,
-                    loginType: pf,
-                    msgVersion: version
-                });
+            loginCallback = callback;
+            pf = loginInfo.loginType;
+            callHall({
+                msgType: login_call_type,
+                appid: appid,
+                appsig: appsig,
+                appsigData: appsigData,
+                loginType: pf,
+                msgVersion: version
             });
         }
     }

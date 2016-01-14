@@ -62,8 +62,8 @@ module nest.runtime {
             }
         }
 
-        export function getInfo(callback:Function) {
-            var data = {module: "user", action: "getInfo"};
+        export function getInfo(loginInfo:nest.user.LoginInfo, callback:(resultInfo:Object)=>void) {
+            var data = {module: "user", action: "getInfo", param: loginInfo};
             callRuntime(data, callback);
         }
     }
