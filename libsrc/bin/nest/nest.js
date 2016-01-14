@@ -882,8 +882,8 @@ var nest;
                 }
             }
             user.logout = logout;
-            function getInfo(callback) {
-                var data = { module: "user", action: "getInfo" };
+            function getInfo(loginInfo, callback) {
+                var data = { module: "user", action: "getInfo", param: loginInfo };
                 callRuntime(data, callback);
             }
             user.getInfo = getInfo;
@@ -1835,18 +1835,21 @@ var nest;
         var refresh_token_call_type = 106;
         var check_call_type = 107;
         var user_info_call_type = 108;
+        var login_type_call_type = 109;
         var login_callback_type = 200;
         var pay_callback_type = 201;
         var share_callback_type = 204;
         var refresh_token_callback_type = 206;
         var check_callback_type = 207;
         var user_info_callback_type = 208;
+        var login_type_callback_type = 209;
         var loginCallback = null;
         var payCallback = null;
         var shareCallback = null;
         var refreshTokenCallback = null;
         var checkCallback = null;
         var userInfoCallback = null;
+        var loginTypeCallback = null;
         var version = "1.0.0";
         var appid;
         var appsig;
@@ -1870,6 +1873,7 @@ var nest;
         var avatarUrl;
         var userId;
         var pf;
+        var loginType = [];
         var payOrderInfo;
         var payType;
         var payValue;
@@ -1966,6 +1970,19 @@ var nest;
                 appid: appid,
                 qbopenid: qbopenid,
                 refreshToken: "",
+                msgVersion: version
+            });
+        }
+        //刷新票据
+        function getLoginType(callback) {
+            loginTypeCallback = callback;
+            callHall({
+                msgType: login_type_call_type,
+                appid: appid,
+                appsig: appsig,
+                appsigData: appsigData,
+                qbopenid: "",
+                qbopenkey: "",
                 msgVersion: version
             });
         }
@@ -2118,6 +2135,23 @@ var nest;
                             userInfoCallback.call(null);
                             userInfoCallback = null;
                         }
+                        break;
+                    case login_type_callback_type:
+                        if (info.loginType == 1) {
+                            loginType.push("qq");
+                        }
+                        else if (info.loginType == 2) {
+                            loginType.push("wx");
+                        }
+                        else if (info.loginType == 3) {
+                            loginType.push("qq");
+                            loginType.push("wx");
+                        }
+                        if (loginTypeCallback) {
+                            loginTypeCallback.call(null);
+                            loginTypeCallback = null;
+                        }
+                        break;
                 }
             });
         }
@@ -2125,45 +2159,53 @@ var nest;
         var user;
         (function (user) {
             function isSupport(info, callback) {
-                var status = 0;
-                var loginCallbackInfo = {
-                    "status": status,
-                    "result": status,
-                    "loginType": ["qq"],
-                    "checkLogin": 0,
-                    "login": 1,
-                    "logout": 0,
-                    "getInfo": 0
-                };
-                callback.call(null, loginCallbackInfo);
+                getLoginType(function () {
+                    var result = 0;
+                    var loginCallbackInfo = {
+                        "status": result,
+                        "result": result,
+                        "loginType": loginType,
+                        "checkLogin": 0,
+                        "login": 1,
+                        "logout": 0,
+                        "getInfo": 0
+                    };
+                    callback.call(null, loginCallbackInfo);
+                });
             }
             user.isSupport = isSupport;
             function checkLogin(loginInfo, callback) {
-                var status = -1;
-                var loginCallbackInfo = {
-                    "status": status,
-                    "result": status,
-                    "loginType": undefined,
-                    "token": undefined
+                //获取appid
+                var url = nest.utils.$API_DOMAIN + "app/getSignInfo";
+                var postdata = {
+                    "egretChanId": nest.utils.$getSpid(),
+                    "appId": nest.utils.$APP_ID
                 };
-                callback.call(null, loginCallbackInfo);
+                setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
+                    appid = resultData.data.appid;
+                    appsig = resultData.data.appsig;
+                    appsigData = resultData.data.appsigdata;
+                    var result = -2;
+                    var loginCallbackInfo = {
+                        "status": result,
+                        "result": result,
+                        "loginType": undefined,
+                        "token": undefined
+                    };
+                    callback.call(null, loginCallbackInfo);
+                });
             }
             user.checkLogin = checkLogin;
             function login(loginInfo, callback) {
-                loginBefore(null, function (data) {
-                    appid = data.data.appid;
-                    appsig = data.data.appsig;
-                    appsigData = data.data.appsigdata;
-                    loginCallback = callback;
-                    pf = loginInfo.loginType;
-                    callHall({
-                        msgType: login_call_type,
-                        appid: appid,
-                        appsig: appsig,
-                        appsigData: appsigData,
-                        loginType: pf,
-                        msgVersion: version
-                    });
+                loginCallback = callback;
+                pf = loginInfo.loginType;
+                callHall({
+                    msgType: login_call_type,
+                    appid: appid,
+                    appsig: appsig,
+                    appsigData: appsigData,
+                    loginType: pf,
+                    msgVersion: version
                 });
             }
             user.login = login;
@@ -2678,21 +2720,17 @@ nest.core.startup = function (info, callback) {
             nest.utils.$spid = spid;
             nest.utils.$changeMethod("cm");
         }
-        else if (nest.utils.$isTargetPlatform(10835)) {
+        else if (nest.utils.$isTargetPlatform(10835) || nest.utils.$isTargetPlatform(20546)) {
             var spid;
             //古龙和萌战机用旧版API
             if (nest.utils.$APP_ID == 66 || nest.utils.$APP_ID == 86) {
-                spid = 10835;
                 nest.qqhall.init();
                 nest.utils.$changeMethod("qqhall");
             }
             else {
-                spid = 20546;
                 nest.qqhall2.init();
                 nest.utils.$changeMethod("qqhall2");
             }
-            egret_native["setOption"]("egret.runtime.spid", spid);
-            nest.utils.$spid = spid;
         }
         else {
             nest.utils.$changeMethod("runtime");

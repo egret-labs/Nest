@@ -435,7 +435,7 @@ declare module nest.runtime {
         function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
         function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
         function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
-        function getInfo(callback: Function): void;
+        function getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void): void;
     }
     module iap {
         function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
