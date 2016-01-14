@@ -43,7 +43,7 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
 
     if (nest.utils.$isRuntime) {
         //qq渠道换为腾讯云
-        if (nest.utils.$isQQBrowser() || nest.utils.$isTargetPlatform(10080) || nest.utils.$isTargetPlatform(10835)) {
+        if (nest.utils.$isQQBrowser() || nest.utils.$isTargetPlatform(10080) || nest.utils.$isTargetPlatform(10835) || nest.utils.$isTargetPlatform(20546)) {
             api = "http://api.gz.1251278653.clb.myqcloud.com/v2/";
         }
         nest.utils.$API_DOMAIN = api;
