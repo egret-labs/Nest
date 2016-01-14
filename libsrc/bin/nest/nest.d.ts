@@ -615,7 +615,7 @@ declare module nest.qqhall2 {
     }
     module app {
         function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
-        function exitGame(callback: Function): void;
+        function exitGame(appInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         function attention(appInfo: any, callback: Function): void;
         function sendToDesktop(appInfo: any, callback: Function): void;
     }

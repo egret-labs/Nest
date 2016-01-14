@@ -101,12 +101,12 @@ module nest.qqhall2 {
 
         var msg = "[Nest]qq hall2 send : " + url + "?" + postdata;
         for (var i = 0; i < Math.ceil(msg.length / 450); i++) {
-            console.log(msg.slice(i * 450, (i + 1) * 450));
+            nest.utils.$log(msg.slice(i * 450, (i + 1) * 450));
         }
 
         var loader:egret.URLLoader = new egret.URLLoader();
         loader.addEventListener(egret.Event.COMPLETE, function () {
-            console.log("[Nest]qq hall2 get data : " + loader.data);
+            nest.utils.$log("[Nest]qq hall2 get data : " + loader.data);
             var jsonObj = JSON.parse(loader.data);
             callback(jsonObj);
         }, this);
@@ -114,19 +114,6 @@ module nest.qqhall2 {
         request.method = method;
         request.data = new egret.URLVariables(postdata);
         loader.load(request);
-    }
-
-    function loginBefore(data, callback):void {
-        var url:string = nest.utils.$API_DOMAIN + "app/getSignInfo";
-
-        var postdata = {
-            "egretChanId": utils.$getSpid(),
-            "appId": utils.$APP_ID
-        };
-
-        setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
-            callback(resultData);
-        });
     }
 
     function payBefore(orderInfo:nest.iap.PayInfo, callback):void {
@@ -158,7 +145,7 @@ module nest.qqhall2 {
 
     function callHall(data:any) {
         var msg:string = JSON.stringify(data);
-        console.log("call hall : " + msg);
+        nest.utils.$log("call hall : " + msg);
         egret.ExternalInterface.call("HALL_EGRET_MSG_FROM", msg);
     }
 
@@ -214,9 +201,9 @@ module nest.qqhall2 {
 
     export function init():void {
         egret.ExternalInterface.addCallback("HALL_EGRET_MSG_TO", function (data:string) {
-            console.log("get hall data : " + data);
+            nest.utils.$log("get hall data : " + data);
             for (var i = 0; i < Math.ceil(data.length / 450); i++) {
-                console.log(data.slice(i * 450, (i + 1) * 450));
+                nest.utils.$log(data.slice(i * 450, (i + 1) * 450));
             }
             var info:any = JSON.parse(data);
             var result:number;
@@ -505,10 +492,10 @@ module nest.qqhall2 {
 
     export module app {
         export function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType) {
-            var status = 0;
+            var result = 0;
             var loginCallbackInfo = {
-                "status": status,
-                "result": status,
+                "status": result,
+                "result": result,
                 "attention": 0,
                 "sendToDesktop": 0,
                 "exitGame": 0
@@ -516,13 +503,8 @@ module nest.qqhall2 {
             callback.call(null, loginCallbackInfo);
         }
 
-        export function exitGame(callback:Function) {
-            var status = 0;
-            var loginCallbackInfo = {
-                "status": status,
-                "result": status
-            };
-            callback.call(null, loginCallbackInfo);
+        export function exitGame(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void) {
+
         }
 
         export function attention(appInfo:any, callback:Function) {
@@ -536,10 +518,10 @@ module nest.qqhall2 {
 
     export module share {
         export function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType) {
-            var status = 0;
+            var result = 0;
             var loginCallbackInfo = {
-                "status": status,
-                "result": status,
+                "status": result,
+                "result": result,
                 "share": 1
             };
             callback.call(null, loginCallbackInfo);

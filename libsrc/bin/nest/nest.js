@@ -1890,11 +1890,11 @@ var nest;
             }
             var msg = "[Nest]qq hall2 send : " + url + "?" + postdata;
             for (var i = 0; i < Math.ceil(msg.length / 450); i++) {
-                console.log(msg.slice(i * 450, (i + 1) * 450));
+                nest.utils.$log(msg.slice(i * 450, (i + 1) * 450));
             }
             var loader = new egret.URLLoader();
             loader.addEventListener(egret.Event.COMPLETE, function () {
-                console.log("[Nest]qq hall2 get data : " + loader.data);
+                nest.utils.$log("[Nest]qq hall2 get data : " + loader.data);
                 var jsonObj = JSON.parse(loader.data);
                 callback(jsonObj);
             }, this);
@@ -1902,16 +1902,6 @@ var nest;
             request.method = method;
             request.data = new egret.URLVariables(postdata);
             loader.load(request);
-        }
-        function loginBefore(data, callback) {
-            var url = nest.utils.$API_DOMAIN + "app/getSignInfo";
-            var postdata = {
-                "egretChanId": nest.utils.$getSpid(),
-                "appId": nest.utils.$APP_ID
-            };
-            setProxy(url, postdata, egret.URLRequestMethod.GET, function (resultData) {
-                callback(resultData);
-            });
         }
         function payBefore(orderInfo, callback) {
             var url = nest.utils.$API_DOMAIN + "user/placeOrder";
@@ -1937,7 +1927,7 @@ var nest;
         }
         function callHall(data) {
             var msg = JSON.stringify(data);
-            console.log("call hall : " + msg);
+            nest.utils.$log("call hall : " + msg);
             egret.ExternalInterface.call("HALL_EGRET_MSG_FROM", msg);
         }
         //查询钻石
@@ -1988,9 +1978,9 @@ var nest;
         }
         function init() {
             egret.ExternalInterface.addCallback("HALL_EGRET_MSG_TO", function (data) {
-                console.log("get hall data : " + data);
+                nest.utils.$log("get hall data : " + data);
                 for (var i = 0; i < Math.ceil(data.length / 450); i++) {
-                    console.log(data.slice(i * 450, (i + 1) * 450));
+                    nest.utils.$log(data.slice(i * 450, (i + 1) * 450));
                 }
                 var info = JSON.parse(data);
                 var result;
@@ -2278,10 +2268,10 @@ var nest;
         var app;
         (function (app) {
             function isSupport(info, callback) {
-                var status = 0;
+                var result = 0;
                 var loginCallbackInfo = {
-                    "status": status,
-                    "result": status,
+                    "status": result,
+                    "result": result,
                     "attention": 0,
                     "sendToDesktop": 0,
                     "exitGame": 0
@@ -2289,13 +2279,7 @@ var nest;
                 callback.call(null, loginCallbackInfo);
             }
             app.isSupport = isSupport;
-            function exitGame(callback) {
-                var status = 0;
-                var loginCallbackInfo = {
-                    "status": status,
-                    "result": status
-                };
-                callback.call(null, loginCallbackInfo);
+            function exitGame(appInfo, callback) {
             }
             app.exitGame = exitGame;
             function attention(appInfo, callback) {
@@ -2308,10 +2292,10 @@ var nest;
         var share;
         (function (share_1) {
             function isSupport(info, callback) {
-                var status = 0;
+                var result = 0;
                 var loginCallbackInfo = {
-                    "status": status,
-                    "result": status,
+                    "status": result,
+                    "result": result,
                     "share": 1
                 };
                 callback.call(null, loginCallbackInfo);
@@ -2700,7 +2684,7 @@ nest.core.startup = function (info, callback) {
     nest.utils.$DEBUG_LOG = info.debug;
     if (nest.utils.$isRuntime) {
         //qq渠道换为腾讯云
-        if (nest.utils.$isQQBrowser() || nest.utils.$isTargetPlatform(10080) || nest.utils.$isTargetPlatform(10835)) {
+        if (nest.utils.$isQQBrowser() || nest.utils.$isTargetPlatform(10080) || nest.utils.$isTargetPlatform(10835) || nest.utils.$isTargetPlatform(20546)) {
             api = "http://api.gz.1251278653.clb.myqcloud.com/v2/";
         }
         nest.utils.$API_DOMAIN = api;
