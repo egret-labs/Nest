@@ -184,7 +184,7 @@ module nest.utils {
      * @private
      */
     export function $log(msg:string):void {
-        if (DEBUG) {
+        if ($DEBUG_LOG) {
             if ($EGRET_SUPPORT) {
                 egret.log(msg);
             }

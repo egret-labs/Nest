@@ -198,7 +198,7 @@ var nest;
          * @private
          */
         function $log(msg) {
-            if (DEBUG) {
+            if (utils.$DEBUG_LOG) {
                 if (utils.$EGRET_SUPPORT) {
                     egret.log(msg);
                 }
