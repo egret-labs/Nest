@@ -284,9 +284,23 @@ module nest.qqhall2 {
                 case pay_callback_type:
                     if (payCallback) {
                         if (payType == 0) {
-                            check(function () {
-                                iap.repay();
-                            })
+                            //支付取消
+                            if(info.resultCode == 2) {
+                                payOrderInfo = null;
+                                payCallback.call(null, {result: -1, status: -1});
+                                payCallback = null;
+                            }
+                            else if(info.resultCode == 0) {
+                                check(function () {
+                                    iap.repay();
+                                })
+                            }
+                            //支付失败
+                            else {
+                                payOrderInfo = null;
+                                payCallback.call(null, {result: -2, status: -2});
+                                payCallback = null;
+                            }
                         }
                         else {
                             //后台验证支付
