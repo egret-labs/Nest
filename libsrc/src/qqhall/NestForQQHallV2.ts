@@ -313,6 +313,8 @@ module nest.qqhall2 {
                                     payOrderInfo = null;
                                     payCallback.call(null, {result: 0, status: 0});
                                     payCallback = null;
+                                    //刷新下余额
+                                    check(null);
                                 }
                                 else {
                                     payOrderInfo = null;
@@ -320,8 +322,6 @@ module nest.qqhall2 {
                                     payCallback = null;
                                 }
                             });
-                            //刷新下余额
-                            check(null);
                             break;
                         }
                     }

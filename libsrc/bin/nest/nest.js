@@ -2088,6 +2088,8 @@ var nest;
                                         payOrderInfo = null;
                                         payCallback.call(null, { result: 0, status: 0 });
                                         payCallback = null;
+                                        //刷新下余额
+                                        check(null);
                                     }
                                     else {
                                         payOrderInfo = null;
@@ -2095,8 +2097,6 @@ var nest;
                                         payCallback = null;
                                     }
                                 });
-                                //刷新下余额
-                                check(null);
                                 break;
                             }
                         }
