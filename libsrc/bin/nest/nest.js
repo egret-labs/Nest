@@ -2082,6 +2082,8 @@ var nest;
                                         payCallback = null;
                                     }
                                 });
+                                //刷新下余额
+                                check(null);
                                 break;
                             }
                         }
