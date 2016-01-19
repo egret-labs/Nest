@@ -491,6 +491,8 @@ declare module nest.cm.user {
      * @callback-param  @see nest.user.LoginCallbackInfo
      */
     function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+    function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+    function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
 }
 declare module nest.cm.iap {
     /**
@@ -499,6 +501,11 @@ declare module nest.cm.iap {
      * @param callback
      */
     function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+}
+declare module nest.cm.social {
+    function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+    function getFriends(socialInfo: any, callback: Function): void;
+    function openBBS(socialInfo: any, callback: Function): void;
 }
 declare module nest.cm.share {
     /**

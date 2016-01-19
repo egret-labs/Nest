@@ -1289,6 +1289,14 @@ var nest;
                 nest.cm.callRuntime(data, callback);
             }
             user.login = login;
+            function isSupport(info, callback) {
+                nest.runtime.user.isSupport(info, callback);
+            }
+            user.isSupport = isSupport;
+            function logout(loginInfo, callback) {
+                nest.runtime.user.logout(loginInfo, callback);
+            }
+            user.logout = logout;
         })(user = cm.user || (cm.user = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
@@ -1352,6 +1360,27 @@ var nest;
             }
             iap.pay = pay;
         })(iap = cm.iap || (cm.iap = {}));
+    })(cm = nest.cm || (nest.cm = {}));
+})(nest || (nest = {}));
+var nest;
+(function (nest) {
+    var cm;
+    (function (cm) {
+        var social;
+        (function (social) {
+            function isSupport(info, callback) {
+                nest.runtime.social.isSupport(info, callback);
+            }
+            social.isSupport = isSupport;
+            function getFriends(socialInfo, callback) {
+                nest.runtime.social.getFriends(socialInfo, callback);
+            }
+            social.getFriends = getFriends;
+            function openBBS(socialInfo, callback) {
+                nest.runtime.social.openBBS(socialInfo, callback);
+            }
+            social.openBBS = openBBS;
+        })(social = cm.social || (cm.social = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
 /*
