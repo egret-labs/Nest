@@ -313,6 +313,14 @@ module nest.cm.user {
         var data = {module: "user", action: "login", param: loginInfo};
         nest.cm.callRuntime(data, callback);
     }
+
+    export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
+        nest.runtime.user.isSupport(info, callback);
+    }
+
+    export function logout(loginInfo:nest.user.LoginInfo, callback:Function) {
+        nest.runtime.user.logout(loginInfo, callback);
+    }
 }
 /*
  * @private
@@ -376,6 +384,19 @@ module nest.cm.iap {
         });
     }
 
+}
+module nest.cm.social {
+    export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
+        nest.runtime.social.isSupport(info, callback);
+    }
+
+    export function getFriends(socialInfo, callback:Function) {
+        nest.runtime.social.getFriends(socialInfo, callback);
+    }
+
+    export function openBBS(socialInfo, callback:Function) {
+        nest.runtime.social.openBBS(socialInfo, callback);
+    }
 }
 /*
  * @private
