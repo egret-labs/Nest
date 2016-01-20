@@ -40,6 +40,7 @@ module nest.h5 {
             var loginCallbackInfo:nest.user.UserSupportCallbackInfo = {
                 "result": 0,
                 "loginType": loginType,
+                "loginTypes": undefined,
                 "getInfo": 0
             };
             callback.call(null, loginCallbackInfo);
@@ -173,17 +174,19 @@ module nest.h5 {
 module nest.h5_2 {
     export module user {
         export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
-            var loginType = [];
-            if (utils.$isQQBrowser()) {
-                loginType.push("qq");
-                loginType.push("wx");
-            }
             var loginCallbackInfo:nest.user.UserSupportCallbackInfo = {
                 "result": 0,
-                "loginType": loginType,
+                "loginType": undefined,
+                "loginTypes": undefined,
                 "getInfo": 0
             };
-            callback.call(null, loginCallbackInfo);
+
+            EgretH5Sdk.getLoginType({}, function (data) {
+                loginCallbackInfo.loginType = data.loginType;
+                loginCallbackInfo.loginTypes = data.loginTypes;
+                callback.call(null, loginCallbackInfo);
+            });
+
         }
 
         export function checkLogin(loginInfo:nest.user.LoginInfo, callback:Function) {

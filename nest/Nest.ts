@@ -119,8 +119,17 @@ module nest {
              * 登录方式。
              * 以QQ浏览器为例，返回 ["qq","wx"]
              * 开发者应该主动判断登录方式，如果返回了 null ，则表示没有特殊登录方式
+             * 需要优先判断loginTypes,如果有loginTypes用loginTypes里面的值
              */
-            loginType:Array<string>
+            loginType:Array<string>;
+
+            /**
+             * isSupport 函数返回。
+             * 登录方式。
+             * 以QQ浏览器为例，返回 [{loginType:"qq",accInfo:{nickName:"",avatarUrl:""}},{loginType:"wx",accInfo:{nickName:"",avatarUrl:""}}]
+             * 开发者应该主动判断登录方式，如果返回了 null ，则表示没有特殊登录方式
+             */
+            loginTypes:Array<Object>;
 
             /**
              * 是否支持获取用户信息

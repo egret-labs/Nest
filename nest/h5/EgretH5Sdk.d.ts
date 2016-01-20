@@ -44,4 +44,5 @@ declare class EgretH5Sdk
     static isSupportShare(data:any, callbackFun:Function);
     static isSupportAttention(data:any, callbackFun:Function);
     static setShareDefaultData(data:any, callbackFun:Function);
+    static getLoginType(data:any, callbackFun:Function);
 }
