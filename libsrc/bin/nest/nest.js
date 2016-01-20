@@ -2440,6 +2440,7 @@ var nest;
                 var loginCallbackInfo = {
                     "result": 0,
                     "loginType": loginType,
+                    "loginTypes": undefined,
                     "getInfo": 0
                 };
                 callback.call(null, loginCallbackInfo);
@@ -2581,17 +2582,17 @@ var nest;
         var user;
         (function (user) {
             function isSupport(info, callback) {
-                var loginType = [];
-                if (nest.utils.$isQQBrowser()) {
-                    loginType.push("qq");
-                    loginType.push("wx");
-                }
                 var loginCallbackInfo = {
                     "result": 0,
-                    "loginType": loginType,
+                    "loginType": undefined,
+                    "loginTypes": undefined,
                     "getInfo": 0
                 };
-                callback.call(null, loginCallbackInfo);
+                EgretH5Sdk.getLoginType({}, function (data) {
+                    loginCallbackInfo.loginType = data.loginType;
+                    loginCallbackInfo.loginTypes = data.loginTypes;
+                    callback.call(null, loginCallbackInfo);
+                });
             }
             user.isSupport = isSupport;
             function checkLogin(loginInfo, callback) {
