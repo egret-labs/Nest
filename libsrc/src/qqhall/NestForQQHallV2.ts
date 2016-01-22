@@ -564,7 +564,7 @@ module nest.qqhall2 {
                     title: shareInfo.title,
                     summary: shareInfo.description,
                     imageLocalUrl: shareInfo.img_url,
-                    img_title: shareInfo.title,
+                    img_title: shareInfo.img_title,
                     cus_txt: "",
                     targetUrl: shareInfo.url
                 });
