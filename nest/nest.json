@@ -5,10 +5,8 @@
   "file_list" : [
     "utils/NestUtils.ts",
     "utils/NestEntry.ts",
-    "cm/CMPAY_EGRET.js",
-    "cm/CMPAY_EGRET.d.ts",
-    "cm/CMGAME_EGRET.js",
-    "cm/CMGAME_EGRET.d.ts",
+    "cm/CMGAME_SDK_EGRET.js",
+    "cm/CMGAME_SDK_EGRET.d.ts",
     "Nest.ts",
     "runtime/NestForRuntime.ts",
     "cm/NestForCM.ts",
