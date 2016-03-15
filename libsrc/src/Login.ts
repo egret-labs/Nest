@@ -224,10 +224,10 @@ module nest {
 
         function isLogout():boolean {
             if (nest.utils.$isRuntime) {
-                return egret.localStorage.getItem("egret_logout");
+                return egret.localStorage.getItem("egret_logout") == "1";
             }
             else {
-                return window.localStorage.getItem("egret_logout");
+                return window.localStorage.getItem("egret_logout") == "1";
             }
         }
 
