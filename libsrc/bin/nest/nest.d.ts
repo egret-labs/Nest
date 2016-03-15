@@ -419,6 +419,19 @@ declare module nest {
         getInfo(appInfo: any, callback: (resultInfo: app.GetInfoCallbackInfo) => void): void;
     };
 }
+declare module nest.user {
+    interface ICreate {
+        loginTypes: Array<ILoginType>;
+    }
+    interface ILoginType {
+        loginType: string;
+        accInfo?: {
+            nickName?: string;
+            avatarUrl?: string;
+        };
+    }
+    function resLogin(loginInfo1: any): void;
+}
 declare module nest.utils {
     var $API_DOMAIN: string;
     var $APP_ID: number;

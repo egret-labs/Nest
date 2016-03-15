@@ -53,11 +53,19 @@ module nest.h5 {
                 if (nest.h5.uid) {
                     status = 0;
                 }
-                var loginCallbackInfo:nest.user.LoginCallbackInfo = {
-                    "result": status,
-                    "token": data.token
-                };
-                callback.call(null, loginCallbackInfo);
+                var isLogout:boolean = window.localStorage.getItem("egret_logout") == "1";
+                if (isLogout) {
+                    callback.call(null, {"result" : -1});
+                }
+                else {
+                    var loginCallbackInfo:nest.user.LoginCallbackInfo = <nest.user.LoginCallbackInfo>{
+                        "result": status,
+                        "token": data.token
+                    };
+
+                    callback.call(null, loginCallbackInfo);
+                }
+
             };
             EgretH5Sdk.checkLogin(egretH5SdkCallback, null);
         }
@@ -69,7 +77,7 @@ module nest.h5 {
                 if (nest.h5.uid) {
                     status = 0;
                 }
-                var loginCallbackInfo:nest.user.LoginCallbackInfo = {
+                var loginCallbackInfo:nest.user.LoginCallbackInfo = <nest.user.LoginCallbackInfo>{
                     "result": status,
                     "token": data.token
                 };
@@ -80,6 +88,9 @@ module nest.h5 {
 
         export function logout(loginInfo:nest.user.LoginInfo, callback:Function) {
             var egretH5SdkCallback = function (data) {
+                //登出保存登出状态
+                window.localStorage.setItem("egret_logout", "1");
+
                 var status = data.status;
                 var result = status == 1 ? 0 : 1;
                 callback.call(null, {"result": result});

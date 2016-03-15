@@ -43,7 +43,18 @@ module nest.runtime {
 
         export function checkLogin(loginInfo:nest.user.LoginInfo, callback:Function) {
             var data = {module: "user", action: "checkLogin", param: loginInfo};
-            callRuntime(data, callback);
+
+            var egretCallback = function () {
+                var isLogout:boolean = egret.localStorage.getItem("egret_logout") == "1";
+                if (isLogout) {
+                    callback.call(null, {"result" : -1});
+                }
+                else {
+                    callback.apply(null, arguments);
+                }
+            };
+
+            callRuntime(data, egretCallback);
         }
 
         export function login(loginInfo:nest.user.LoginInfo, callback:Function) {
@@ -55,9 +66,19 @@ module nest.runtime {
             var nestVersion:any = egret.getOption("egret.runtime.nest");
             if (nestVersion >= 4 || nestVersion == "custom") {
                 var data = {module: "user", action: "logout", param: loginInfo};
-                callRuntime(data, callback);
+
+                var egretCallback = function () {
+                    //登出保存登出状态
+                    egret.localStorage.setItem("egret_logout", "1");
+
+                    callback.apply(null, arguments);
+                };
+
+                callRuntime(data, egretCallback);
             }
             else {
+                egret.localStorage.setItem("egret_logout", "1");
+
                 callback({"result": 0});
             }
         }
