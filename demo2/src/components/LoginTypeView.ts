@@ -17,8 +17,8 @@ class LoginTypeView extends egret.gui.SkinnableComponent {
         this.skinName = skins.LoginTypeViewSkin;
     }
 
-    public createChildren() {
-        super.createChildren();
+    public childrenCreated() {
+        super.childrenCreated();
 
         var self = this;
 
@@ -39,37 +39,5 @@ class LoginTypeView extends egret.gui.SkinnableComponent {
                 self.loginType.onChoose(this.name);
             }, btn);
         }
-    }
-
-    private getLabelName(type:string, hasUrl:boolean):string {
-
-        var str:string = "";
-        switch (type) {
-            case "qq" :
-                str = "qq";
-                break;
-            case "wx" :
-                str = "微信";
-                break;
-            case "wb" :
-                str = "微博";
-                break;
-        }
-
-        if (hasUrl) {
-            return str + "--" + "一键登录";
-        }
-
-        return str + "登录";
-    }
-
-    private onClickHandler(e:egret.TouchEvent):void {
-        var btn:egret.gui.Button = <egret.gui.Button>e.currentTarget;
-        var index:number = this.btnGroup.getElementIndex(btn);
-        var value:string = this.loginType[index];
-
-        console.log(value);
-
-        new Login().login(value);
     }
 }

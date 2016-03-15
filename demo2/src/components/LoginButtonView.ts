@@ -3,8 +3,9 @@
  * @author 
  *
  */
-class LoginButtonView extends egret.gui.SkinnableContainer{
+class LoginButtonView extends egret.gui.SkinnableComponent{
 
+    icon_group:egret.gui.Group;
     right_ui:egret.gui.UIAsset;
     name_txt:egret.gui.Label;
 
@@ -13,11 +14,18 @@ class LoginButtonView extends egret.gui.SkinnableContainer{
 
 	public constructor(type:string, url:string) {
         super();
-        this.skinName = skins.LoginTypeViewSkin;
+        this.skinName = skins.LoginButtonSkin;
+
+        this.type = type;
+        this.url = url;
 	}
 	
-	public createChildren(){
-        super.createChildren();
+	public childrenCreated(){
+        super.childrenCreated();
+
+        var ui:egret.gui.UIAsset = new egret.gui.UIAsset();
+        ui.source = this.type + "_png";
+        this.icon_group.addElementAt(ui, 0);
 
         if (this.url && this.url != "") {
             this.right_ui.visible = true;
@@ -40,16 +48,12 @@ class LoginButtonView extends egret.gui.SkinnableContainer{
 
             var icon:egret.gui.UIAsset = new egret.gui.UIAsset();
             icon.source = con;
-            this.addElementAt(icon, 0);
+            this.icon_group.addElementAt(icon, 0);
         }
         else {
 
             this.right_ui.visible = false;
         }
-
-        var ui:egret.gui.UIAsset = new egret.gui.UIAsset();
-        ui.source = this.type;
-        this.addElementAt(ui, 0);
 
         this.name_txt.text = this.getLabelName(this.type, this.url && this.url != "");
 	}

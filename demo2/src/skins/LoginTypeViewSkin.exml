@@ -8,8 +8,7 @@
 	</e:states>
 	<e:Group id="btnGroup" width="339" height="63" x="74" y="269">
 		<e:layout>
-			<e:HorizontalLayout horizontalAlign="center"/>
+			<e:HorizontalLayout horizontalAlign="center" gap="20"/>
 		</e:layout>
 	</e:Group>
-	<e:Button x="197" y="386" skinName="@ButtonSkin('wx_png','qq_png')" height.normal="169" x.disabled="168" y.disabled="392" width.normal="181" skinName.normal="@ButtonSkin('wx_png','qq_png')"/>
 </e:Skin>
