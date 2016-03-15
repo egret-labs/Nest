@@ -136,7 +136,7 @@ nest.user.checkLogin({}, function (data) {
 * 示例
 
 ~~~
-	nest.user.isSupport({}, function (data:nest.user.UserSupportCallbackInfo) {
+nest.user.isSupport({}, function (data:nest.user.UserSupportCallbackInfo) {
     //获取是否支持nest.user.getInfo接口，有该字段并且该字段值为1表示支持
     var getInfo = data.getInfo;
     //已经登录过的信息，该字段目前只有新版qq浏览器runtime有
