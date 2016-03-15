@@ -27,6 +27,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @private
+ */
 module nest.qqhall {
     export var login_call_type = 102;
     export var login_back_call_type = 100;
@@ -185,6 +188,10 @@ module nest.qqhall {
         });
     }
 }
+
+/**
+ * @private
+ */
 module nest.qqhall.user {
     export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
         var status = 0;
@@ -216,6 +223,9 @@ module nest.qqhall.user {
     }
 }
 
+/**
+ * @private
+ */
 module nest.qqhall.iap {
     export function pay(orderInfo:nest.iap.PayInfo, callback:Function) {
         if(payOrderInfo) {
@@ -259,6 +269,9 @@ module nest.qqhall.iap {
     }
 }
 
+/**
+ * @private
+ */
 module nest.qqhall.app {
     export function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType) {
         var status = 0;
@@ -291,6 +304,9 @@ module nest.qqhall.app {
     }
 }
 
+/**
+ * @private
+ */
 module nest.qqhall.share {
     export function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType) {
         var status = 0;
@@ -322,6 +338,9 @@ module nest.qqhall.share {
     }
 }
 
+/**
+ * @private
+ */
 module nest.qqhall.social {
     export function isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType) {
         var status = 0;

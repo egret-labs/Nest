@@ -27,6 +27,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @private
+ */
 module nest.runtime {
     export module core {
         export function callCustomMethod(customInfo:any, callback:Function) {

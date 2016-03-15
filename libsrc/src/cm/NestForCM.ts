@@ -385,6 +385,9 @@ module nest.cm.iap {
     }
 
 }
+/**
+ * @private
+ */
 module nest.cm.social {
     export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
         nest.runtime.social.isSupport(info, callback);

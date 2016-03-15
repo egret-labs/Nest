@@ -27,6 +27,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @private
+ */
 module nest.h5 {
     export var uid:number = undefined;
 
@@ -172,8 +175,10 @@ module nest.h5 {
     }
 }
 
-
-//新版
+/**
+ * 新版
+ * @private
+ */
 module nest.h5_2 {
     export module user {
         export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
