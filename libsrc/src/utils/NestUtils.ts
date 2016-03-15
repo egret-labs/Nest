@@ -185,13 +185,35 @@ module nest.utils {
      */
     export function $log(msg:string):void {
         if ($DEBUG_LOG) {
-            if ($EGRET_SUPPORT) {
-                egret.log(msg);
+            if ($EGRET_SUPPORT && egret["log"]) {
+                egret["log"](msg);
             }
             else {
                 console.log(msg);
             }
         }
+    }
+
+    export function setProxy(url:string, postData:Object, method:string, callback:Function, errCallback:Function):void {
+        var cmpostdata = "";
+        for (var key in postData) {
+            cmpostdata += key + "=" + postData[key] + "&";
+        }
+        if (cmpostdata != "") {
+            cmpostdata = cmpostdata.substr(0, cmpostdata.length - 1);
+        }
+        var loader:egret.URLLoader = new egret.URLLoader();
+        loader.addEventListener(egret.Event.COMPLETE, function () {
+            var jsonObj = JSON.parse(loader.data);
+            callback(jsonObj);
+        }, this);
+        loader.addEventListener(egret.IOErrorEvent.IO_ERROR, function () {
+            errCallback();
+        }, this);
+        var request:egret.URLRequest = new egret.URLRequest(url);
+        request.method = method;
+        request.data = new egret.URLVariables(cmpostdata);
+        loader.load(request);
     }
 }
 

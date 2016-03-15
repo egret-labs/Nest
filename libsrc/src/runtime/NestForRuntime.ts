@@ -131,13 +131,13 @@ module nest.runtime {
 
         export function getInfo(appInfo:any, callback:Function) {
             var url = nest.utils.$API_DOMAIN + "user/getCustomInfo";
-            url += "?appId=" + utils.$APP_ID;
-            url += "&runtime=1";
-            url += "&egretChanId=" + utils.$getSpid();
-            var request = new egret.HttpRequest();
-            request.open(url);
-            request.addEventListener(egret.Event.COMPLETE, function () {
-                var data = JSON.parse(request.response);
+            var data = {
+                appId: utils.$APP_ID,
+                runtime: 1,
+                egretChanId: utils.$getSpid()
+            };
+
+            utils.setProxy(url, data, egret.URLRequestMethod.GET, function(data) {
                 var callbackData = data.data;
                 callbackData.result = 0;
                 if(data.code == 0) {
@@ -146,11 +146,9 @@ module nest.runtime {
                 else {
                     callback.call(null, {result: -2});
                 }
-            }, this);
-            request.addEventListener(egret.IOErrorEvent.IO_ERROR, function () {
+            }, function () {
                 callback.call(null, {result: -2});
-            }, this);
-            request.send();
+            });
         }
     }
 
