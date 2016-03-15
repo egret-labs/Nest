@@ -27,163 +27,171 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-module nest.user {
-    /**
-     * 登录页面相关按钮信息
-     */
-    export interface ILoginTypes {
-        /**
-         * 登录页面所有的按钮相关信息
-         */
-        loginTypes:Array<ILoginType>;
+module nest {
+    export module user {
 
         /**
-         * 按钮点击后，需要调用此方法并传入相应的类型
-         * @param loginType
+         * 登录页面相关按钮信息
          */
-        onChoose:(loginType:string)=>void;
-    }
+        export interface ILoginTypes {
+            /**
+             * 登录页面所有的按钮相关信息
+             */
+            loginTypes:Array<ILoginType>;
 
-    /**
-     * 单个按钮的信息
-     */
-    export interface ILoginType {
-        /**
-         * 登录类型
-         */
-        loginType:string;
-
-        /**
-         * 不存在，则不需要显示具体的内容
-         */
-        accInfo ?: {
-            nickName ?: string;
-            avatarUrl ?: string;
+            /**
+             * 按钮点击后，需要调用此方法并传入相应的类型
+             * @param loginType
+             */
+            onChoose:(loginType:string)=>void;
         }
-    }
-
-    /**
-     * 登录相关信息
-     */
-    export interface ILoginCallbacks {
-        /**
-         * 需要创建登录页面时回调
-         * @param data 登录类型信息
-         */
-        onCreate(data:ILoginTypes):void;
 
         /**
-         * 登录成功后回调
-         * @param data 登录成功信息
+         * 单个按钮的信息
          */
-        onSuccess(data:nest.user.LoginCallbackInfo):void;
+        export interface ILoginType {
+            /**
+             * 登录类型
+             */
+            loginType:string;
+
+            /**
+             * 不存在，则不需要显示具体的内容
+             */
+            accInfo ?: {
+                nickName ?: string;
+                avatarUrl ?: string;
+            }
+        }
 
         /**
-         * 登录失败后回调
-         * @param data 登录失败信息
+         * 登录相关信息
          */
-        onFail(data:nest.core.ResultCallbackInfo):void;
-    }
+        export interface ILoginCallbacks {
+            /**
+             * 需要创建登录页面时回调
+             * @param data 登录类型信息
+             */
+            onCreate(data:ILoginTypes):void;
 
-    var $loginInfo: ILoginCallbacks;
+            /**
+             * 登录成功后回调
+             * @param data 登录成功信息
+             */
+            onSuccess(data:nest.user.LoginCallbackInfo):void;
 
-    var isFirst:boolean = true;
-    var $loginTypes:Array<ILoginType>;
+            /**
+             * 登录失败后回调
+             * @param data 登录失败信息
+             */
+            onFail(data:nest.core.ResultCallbackInfo):void;
+        }
 
-    /**
-     * 登录
-     * @param loginInfo 登录传递的信息，需要对 onCreate，onSuccess，onFail 进行响应
-     */
-    export function resLogin(loginInfo:ILoginCallbacks):void {
-        $loginInfo = loginInfo;
+        var $loginInfo: ILoginCallbacks;
 
-        //
-        if (isFirst) {
-            isFirst = false;
+        var isFirst:boolean = true;
+        var $loginTypes:Array<ILoginType>;
 
-            nest.user.checkLogin({}, function (resultInfo:nest.user.LoginCallbackInfo) {
-                if (resultInfo.token) {
-                    onSuccess(resultInfo);
+        /**
+         * 登录
+         * @param loginInfo 登录传递的信息，需要对 onCreate，onSuccess，onFail 进行响应
+         */
+        export function resLogin(loginInfo:ILoginCallbacks):void {
+            $loginInfo = loginInfo;
+
+            //
+            if (isFirst) {
+                isFirst = false;
+
+                nest.user.checkLogin({}, function (resultInfo:nest.user.LoginCallbackInfo) {
+                    if (resultInfo.token) {
+                        onSuccess(resultInfo);
+                    }
+                    else {
+                        callSupport();
+                    }
+                });
+            }
+            else {
+                if ($loginTypes && $loginTypes.length) {
+                    for (var i:number = 0; i < $loginTypes.length; i++) {
+                        var info:ILoginType = $loginTypes[i];
+                        info.accInfo = null;
+                        $loginTypes[i] = info;
+                    }
+                    onCreate($loginTypes);
                 }
                 else {
-                    callSupport();
+                    callLogin("");
                 }
-            });
-        }
-        else {
-            if ($loginTypes && $loginTypes.length) {
-                onCreate($loginTypes);
-            }
-            else {
-                callLogin("");
             }
         }
-    }
 
-    function callSupport():void {
-        nest.user.isSupport({}, function (data) {
-            //获取是否支持nest.user.getInfo接口，有该字段并且该字段值为1表示支持
-            var getInfo = data.getInfo;
-            //已经登录过的信息，该字段目前只有新版qq浏览器runtime有
-            //如果有该字段，请放弃使用loginType字段，并用该字段获取可用的登录方式以及登录信息
-            var loginTypes = <Array<ILoginType>>data.loginTypes;
-            if(loginTypes && loginTypes.length) {
-                onCreate(loginTypes);
-            }
-            else if (data.loginType && data.loginType.length) {
-                //获取登录方式数组，如["qq","wx"]
-                //开发者应该主动判断登录方式，如果返回了 null ，则表示没有特殊登录方式
-                var loginType = data.loginType;
-
-                var arr:Array<any> = [];
-                for (var i:number = 0; i < loginType.length; i++) {
-                    arr.push({"loginType" : loginType[i]});
+        function callSupport():void {
+            nest.user.isSupport({}, function (data) {
+                //获取是否支持nest.user.getInfo接口，有该字段并且该字段值为1表示支持
+                var getInfo = data.getInfo;
+                //已经登录过的信息，该字段目前只有新版qq浏览器runtime有
+                //如果有该字段，请放弃使用loginType字段，并用该字段获取可用的登录方式以及登录信息
+                var loginTypes = <Array<ILoginType>>data.loginTypes;
+                if(loginTypes && loginTypes.length) {
+                    onCreate(loginTypes);
                 }
+                else if (data.loginType && data.loginType.length) {
+                    //获取登录方式数组，如["qq","wx"]
+                    //开发者应该主动判断登录方式，如果返回了 null ，则表示没有特殊登录方式
+                    var loginType = data.loginType;
 
-                onCreate(arr);
-            }
-            else {
-                callLogin("");
-            }
-        })
-    }
+                    var arr:Array<any> = [];
+                    for (var i:number = 0; i < loginType.length; i++) {
+                        arr.push({"loginType" : loginType[i]});
+                    }
 
-    function callLogin(type:string):void {
-        //如果用户点击某个登录按钮，则传递loginType，否则不传
-        var loginTypeInfo = {};
-        if (type && type != "") {
-            loginTypeInfo["loginType"] = type;
+                    onCreate(arr);
+                }
+                else {
+                    callLogin("");
+                }
+            })
         }
 
-        nest.user.login(loginTypeInfo, function (data) {
-            if(data.token) {
-                //登录成功，获取用户token，并根据token获取用户id，之后进入游戏
-                //获取id代码请看Nest工程中的LoginView文件，这个代码请务必放在服务端实现
-                var token = data.token;
-
-                onSuccess(data);
+        function callLogin(type:string):void {
+            //如果用户点击某个登录按钮，则传递loginType，否则不传
+            var loginTypeInfo = {};
+            if (type && type != "") {
+                loginTypeInfo["loginType"] = type;
             }
-            else {
-                //登录失败，需要重新登陆
-                onFail(data);
-            }
-        })
-    }
 
-    //[{"loginType" : "qq", accInfo: {nickName: "user_name", "avatarUrl" : "a.png"}}]
-    function onCreate(loginTypes:Array<ILoginType>):void {
-        if ($loginTypes == null) {
-            $loginTypes = loginTypes;
+            nest.user.login(loginTypeInfo, function (data) {
+                if(data.token) {
+                    //登录成功，获取用户token，并根据token获取用户id，之后进入游戏
+                    //获取id代码请看Nest工程中的LoginView文件，这个代码请务必放在服务端实现
+                    var token = data.token;
+
+                    onSuccess(data);
+                }
+                else {
+                    //登录失败，需要重新登陆
+                    onFail(data);
+                }
+            })
         }
 
-        $loginInfo.onCreate({"loginTypes":loginTypes, onChoose:callLogin});
-    }
+        //[{"loginType" : "qq", accInfo: {nickName: "user_name", "avatarUrl" : "a.png"}}]
+        function onCreate(loginTypes:Array<ILoginType>):void {
+            if ($loginTypes == null) {
+                $loginTypes = loginTypes;
+            }
 
-    function onSuccess(data:nest.user.LoginCallbackInfo):void {
-        $loginInfo.onSuccess(data);
-    }
+            $loginInfo.onCreate({"loginTypes":loginTypes, onChoose:callLogin});
+        }
 
-    function onFail(data:nest.core.ResultCallbackInfo):void {
-        $loginInfo.onFail(data);
+        function onSuccess(data:nest.user.LoginCallbackInfo):void {
+            $loginInfo.onSuccess(data);
+        }
+
+        function onFail(data:nest.core.ResultCallbackInfo):void {
+            $loginInfo.onFail(data);
+        }
     }
 }
