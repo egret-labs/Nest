@@ -1,0 +1,30 @@
+{
+	"native": {
+		"path_ignore": [],
+		"android_path": "../NestAndroid"
+	},
+	"publish": {
+		"web": 0,
+		"native": 1,
+		"path": "../demo_release/release/"
+	},
+	"modules": [
+		{
+			"name": "egret"
+		},
+		{
+			"name": "game"
+		},
+		{
+			"name": "gui"
+		},
+		{
+			"name": "res"
+		},
+		{
+			"name": "nest",
+			"path": "../Nest/libsrc"
+		}
+	],
+	"egret_version": "3.0.1"
+}
