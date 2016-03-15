@@ -28,31 +28,74 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 module nest.user {
-    export interface ICreate {
+    /**
+     * 登录页面相关按钮信息
+     */
+    export interface ILoginTypes {
+        /**
+         * 登录页面所有的按钮相关信息
+         */
         loginTypes:Array<ILoginType>;
+
+        /**
+         * 按钮点击后，需要调用此方法并传入相应的类型
+         * @param loginType
+         */
+        onChoose:(loginType:string)=>void;
     }
 
+    /**
+     * 单个按钮的信息
+     */
     export interface ILoginType {
+        /**
+         * 登录类型
+         */
         loginType:string;
 
+        /**
+         * 不存在，则不需要显示具体的内容
+         */
         accInfo ?: {
             nickName ?: string;
             avatarUrl ?: string;
         }
     }
 
-    var loginInfo: {
-        onCreate(data:ICreate):void;
+    /**
+     * 登录相关信息
+     */
+    export interface ILoginCallbacks {
+        /**
+         * 需要创建登录页面时回调
+         * @param data 登录类型信息
+         */
+        onCreate(data:ILoginTypes):void;
 
-        onSuccess(data:nest.user.LoginCallbackInfo);
+        /**
+         * 登录成功后回调
+         * @param data 登录成功信息
+         */
+        onSuccess(data:nest.user.LoginCallbackInfo):void;
 
-        onFail(data:nest.core.ResultCallbackInfo);
-    };
+        /**
+         * 登录失败后回调
+         * @param data 登录失败信息
+         */
+        onFail(data:nest.core.ResultCallbackInfo):void;
+    }
+
+    var $loginInfo: ILoginCallbacks;
 
     var isFirst:boolean = true;
     var $loginTypes:Array<ILoginType>;
-    export function resLogin(loginInfo1):void {
-        loginInfo = loginInfo1;
+
+    /**
+     * 登录
+     * @param loginInfo 登录传递的信息，需要对 onCreate，onSuccess，onFail 进行响应
+     */
+    export function resLogin(loginInfo:ILoginCallbacks):void {
+        $loginInfo = loginInfo;
 
         //
         if (isFirst) {
@@ -133,14 +176,14 @@ module nest.user {
             $loginTypes = loginTypes;
         }
 
-        loginInfo.onCreate({"loginTypes":loginTypes});
+        $loginInfo.onCreate({"loginTypes":loginTypes, onChoose:callLogin});
     }
 
     function onSuccess(data:nest.user.LoginCallbackInfo):void {
-        loginInfo.onSuccess(data);
+        $loginInfo.onSuccess(data);
     }
 
     function onFail(data:nest.core.ResultCallbackInfo):void {
-        loginInfo.onFail(data);
+        $loginInfo.onFail(data);
     }
 }
