@@ -454,9 +454,11 @@ var nest;
                 var nestVersion = egret.getOption("egret.runtime.nest");
                 if (nestVersion >= 4 || nestVersion == "custom") {
                     var data = { module: "user", action: "logout", param: loginInfo };
-                    var egretCallback = function () {
-                        //登出保存登出状态
-                        egret.localStorage.setItem("egret_logout", "1");
+                    var egretCallback = function (resultInfo) {
+                        if (resultInfo.result == 1) {
+                            //登出保存登出状态
+                            egret.localStorage.setItem("egret_logout", "1");
+                        }
                         callback.apply(null, arguments);
                     };
                     callRuntime(data, egretCallback);
@@ -2092,10 +2094,12 @@ var nest;
             user.login = login;
             function logout(loginInfo, callback) {
                 var egretH5SdkCallback = function (data) {
-                    //登出保存登出状态
-                    window.localStorage.setItem("egret_logout", "1");
                     var status = data.status;
                     var result = status == 1 ? 0 : 1;
+                    if (result == 1) {
+                        //登出保存登出状态
+                        window.localStorage.setItem("egret_logout", "1");
+                    }
                     callback.call(null, { "result": result });
                 };
                 EgretH5Sdk.logout(egretH5SdkCallback, null);
@@ -2221,7 +2225,15 @@ var nest;
             }
             user.login = login;
             function logout(loginInfo, callback) {
-                EgretH5Sdk.logout(loginInfo, callback);
+                //登出保存登出状态
+                var egretCallback = function (resultInfo) {
+                    if (resultInfo.result == 1) {
+                        //登出保存登出状态
+                        window.localStorage.setItem("egret_logout", "1");
+                    }
+                    callback.apply(null, arguments);
+                };
+                EgretH5Sdk.logout(loginInfo, egretCallback);
             }
             user.logout = logout;
             function getInfo(loginInfo, callback) {

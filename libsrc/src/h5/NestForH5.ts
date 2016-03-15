@@ -81,13 +81,17 @@ module nest.h5 {
             EgretH5Sdk.login(egretH5SdkCallback, null, loginInfo.loginType);
         }
 
-        export function logout(loginInfo:nest.user.LoginInfo, callback:Function) {
+        export function logout(loginInfo:nest.user.LoginInfo, callback:(resultInfo:core.ResultCallbackInfo)=>void) {
             var egretH5SdkCallback = function (data) {
-                //登出保存登出状态
-                window.localStorage.setItem("egret_logout", "1");
 
                 var status = data.status;
                 var result = status == 1 ? 0 : 1;
+
+                if (result == 1) {
+                    //登出保存登出状态
+                    window.localStorage.setItem("egret_logout", "1");
+                }
+
                 callback.call(null, {"result": result});
             };
             EgretH5Sdk.logout(egretH5SdkCallback, null);
@@ -205,8 +209,18 @@ module nest.h5_2 {
             EgretH5Sdk.login(loginInfo, callback);
         }
 
-        export function logout(loginInfo:nest.user.LoginInfo, callback:Function) {
-            EgretH5Sdk.logout(loginInfo, callback);
+        export function logout(loginInfo:nest.user.LoginInfo, callback:(resultInfo:core.ResultCallbackInfo)=>void) {
+            //登出保存登出状态
+            var egretCallback = function (resultInfo:core.ResultCallbackInfo) {
+                if (resultInfo.result == 1) {
+                    //登出保存登出状态
+                    window.localStorage.setItem("egret_logout", "1");
+                }
+
+                callback.apply(null, arguments);
+            };
+
+            EgretH5Sdk.logout(loginInfo, egretCallback);
         }
 
         export function getInfo(loginInfo:nest.user.LoginInfo, callback:Function) {

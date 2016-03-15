@@ -318,7 +318,7 @@ module nest.cm.user {
         nest.runtime.user.isSupport(info, callback);
     }
 
-    export function logout(loginInfo:nest.user.LoginInfo, callback:Function) {
+    export function logout(loginInfo:nest.user.LoginInfo, callback:(resultInfo:nest.core.ResultCallbackInfo)=>void) {
         nest.runtime.user.logout(loginInfo, callback);
     }
 }

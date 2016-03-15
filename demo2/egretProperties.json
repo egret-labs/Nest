@@ -23,7 +23,7 @@
 		},
 		{
 			"name": "nest",
-			"path": "../Nest/libsrc"
+			"path": "../libsrc"
 		}
 	],
 	"egret_version": "3.0.1"

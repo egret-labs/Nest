@@ -519,7 +519,7 @@ declare module nest.runtime {
         function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
         function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
         function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
-        function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function logout(loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.core.ResultCallbackInfo) => void): void;
         function getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void): void;
     }
     module iap {
@@ -577,7 +577,7 @@ declare module nest.cm.user {
      */
     function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
     function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
-    function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
+    function logout(loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.core.ResultCallbackInfo) => void): void;
 }
 declare module nest.cm.iap {
     /**
@@ -760,7 +760,7 @@ declare module nest.h5 {
         function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
         function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
         function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
-        function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function logout(loginInfo: nest.user.LoginInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
     }
     module iap {
         function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
@@ -790,7 +790,7 @@ declare module nest.h5_2 {
         function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
         function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
         function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
-        function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function logout(loginInfo: nest.user.LoginInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         function getInfo(loginInfo: nest.user.LoginInfo, callback: Function): void;
     }
     module iap {
