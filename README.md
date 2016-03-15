@@ -198,9 +198,10 @@
 		nest.user.logout({}, function (resultInfo:nest.user.LoginCallbackInfo) {
 		    if (resultInfo.result == 0) {
 		    	//登出成功
+        		//登出之后直到下次成功登录之前都不需要调用checkLogin接口，直接调用login进行登录即可
 		    }
 		    else {
-		        //登出失败
+		        //登出失败，有可能是该平台不支持登出接口
 		    }
 		});
 
@@ -214,8 +215,23 @@
 
 * 示例
 
-		nest.user.getInfo({}, function (resultInfo:Object) {
-		});
+		nest.user.getInfo({}, function (data) {
+		    if(data.result == 0) {
+		        //获取用户信息成功
+		         var msg = data.msg;              //传回的提示信息
+		         var nickName = data.nickName;    //昵称
+		         var avatarUrl = data.avatarUrl;  //头像
+		         var sex = data.sex;              //性别, 0未知，1男，2女
+		         var city = data.city;            //城市
+		         var language = data.language;    //语言
+		         var isVip = data.isVip;          //是否vip, 1是，0不是
+		         var province = data.province;    //省份
+		         var country = data.country;      //国家
+		    }
+		    else {
+		         //获取用户信息失败
+		    }
+		})
 
 
 ###### nest.iap.pay 支付
@@ -233,29 +249,213 @@
 
 * 示例
 
-		nest.iap.pay(payInfo, function (callInfo:nest.user.LoginCallbackInfo) {
-		    if (callInfo.result == 0) {
-		    	//支付成功，请验证支付额度是否正确
+		var info = {};
+		//购买物品id，在开放平台配置的物品id
+		info.goodsId = "1";
+		//购买数量，当前默认传1，暂不支持其他值
+		info.goodsNumber = "1";
+		//所在服
+		info.serverId = "1";
+		//透传参数
+		info.ext = "xx";
+		nest.iap.pay(info, function (data) {
+		     if(data.result == 0) {
+		         //支付成功
+		     }
+		     else if(data.result == -1) {
+		         //支付取消
 		    }
 		    else {
-		    	//支付失败
+		        //支付失败
 		    }
-		});
+		})
 
 
 
 ###### nest.share.isSupport 是否支持分享
+* 示例
+
+		nest.share.isSupport({}, function (data) {
+		    //获取是否支持nest.share.share接口，有该字段并且该字段值为1表示支持
+		    var share = data.share;
+		})
+	
+###### nest.share.setDefaultData 设置默认分享信息接口
+
+```该接口用于在某些渠道有游戏外点击分享的需求```
+
+* 示例
+
+		var info:any = {};
+		//分享标题
+		info.title = "title";
+		//分享文字内容
+		info.description = "descriscription";
+		//分享链接
+		info.url = "http://url";
+		//分享图片URL
+		info.image_url = "http://imageUrl";
+		//分享图片title
+		info.image_title = "image_title";
+		nest.share.setDefaultData(info, function (data) {
+		    if(data.result == 0) {
+		        //设置成功
+		    }
+		    else {
+		        //设置失败
+		    }
+		})
+		
 ###### nest.share.share 分享
 
+```调用此接口前请先使用 nest.share.isSupport 判断是否支持该功能```
+
+* 示例
+
+			var info:any = {};
+		//分享标题
+		info.title = "title";
+		//分享文字内容
+		info.description = "descriscription";
+		//分享链接
+		info.url = "http://url";
+		//分享图片URL
+		info.imageUrl = "http://imageUrl";
+		nest.share.share(info, function (data) {
+		    if(data.result == 0) {
+		        //分享成功
+		    }
+		    else if(data.result == -1) {
+		        //分享取消
+		    }
+		    else {
+		        //分享失败
+		    }
+		})	
+
+
 ###### nest.social.isSupport 社交相关支持
+
+* 示例
+
+		nest.social.isSupport({}, function (data) {
+		    //获取是否支持nest.social.openBBS接口，有该字段并且该字段值为1表示支持
+		    var openBBS = data.openBBS;
+		    var getFriends = data.getFriends;
+		})
+		
+		
 ###### nest.social.getFriends 获取好友列表
+
+```调用此接口前请先使用 nest.social.isSupport 判断是否支持该功能```
+
+* 示例
+
+		
 ###### nest.social.openBBS 打开论坛
 
+```调用此接口前请先使用 nest.social.isSupport 判断是否支持该功能```
+
+* 示例
+
+		nest.social.openBBS({}, function (data) {
+		    if(data.result == 0) {
+		        //打开成功
+		    }
+		    else {
+		        //打开失败
+		    }
+		})
+
 ###### nest.app.isSupport 是否支持特定功能
+
+* 示例
+
+		nest.app.isSupport({}, function (data) {
+		    //获取是否支持 nest.app.attention 接口，有该字段并且该字段值为1表示支持，0表示不支持，2表示已关注
+		    //已关注的信息在某些平台可能获取不到，请不要过渡依赖该信息，如果游戏有首次关注奖励可以自行在后台存储
+		    var attention = data.attention;
+		    //获取是否支持nest.app.exitGame接口，有该字段并且该字段值为1表示支持
+		    var exitGame = data.exitGame;
+		    //获取是否支持nest.app.sendToDesktop接口，有该字段并且该字段值为1表示支持
+		    var sendToDesktop = data.sendToDesktop;
+		    //获取是否支持nest.app.getInfo接口，有该字段并且该字段值为1表示支持
+		    var getInfo = data.getInfo;
+		})
+		
+		
 ###### nest.app.attention 关注
+
+```调用此接口前请先使用 nest.app.isSupport 判断是否支持该功能```
+
+* 示例
+
+		nest.app.attention({}, function (data) {
+		    if(data.result == 0) {
+		        //关注成功
+		    }
+		    else if(data.result == -1) {
+		        //关注取消
+		     }
+		    else {
+		        //关注失败
+		    }
+		})
+				
 ###### nest.app.exitGame 退出游戏，回到 App 界面
+
+```调用此接口前请先使用 nest.app.isSupport 判断是否支持该功能```
+
+* 示例
+
+		nest.app.exitGame({}, function (data) {
+		    if(data.result == 0) {
+		        //退出成功
+		    }
+		    else {
+		        //退出失败
+		    }
+		})
+				
 ###### nest.app.sendToDesktop 发送到桌面
+
+```调用此接口前请先使用 nest.app.isSupport 判断是否支持该功能```
+
+* 示例
+
+		nest.app.sendToDesktop({}, function (data) {
+		    if(data.result == 0) {
+		        //保存成功
+		    }
+		    else {
+		        //保存失败
+		    }
+		})
+		
 ###### nest.app.getInfo 获取客服信息
+
+```调用此接口前请先使用 nest.app.isSupport 判断是否支持该功能```
+
+* 示例
+
+		nest.app.getInfo({}, function (data) {
+		    if(data.result == 0) {
+		        //获取成功
+		        //获取联系方式
+		        var contact = data.contact;
+		        //获取qq联系方式，没有该字段表示没有可用的qq联系方式，请到开放平台进行配置。该字段为一个数组
+		        var qq = contact.qq;
+		        //获取qq群联系方式，没有该字段表示没有可用的qq群联系方式，请到开放平台进行配置。该字段为一个数组
+		        var qqgroup = contact.qqgroup;
+		        //获取微信联系方式，没有该字段表示没有可用的微信联系方式，请到开放平台进行配置。该字段为一个数组
+		        var weixin = contact.weixin;
+		        //获取邮件联系方式，没有该字段表示没有可用的邮件联系方式，请到开放平台进行配置。该字段为一个数组
+		        var email = contact.email;
+		    }
+		    else {
+		        //获取失败
+		    }
+		})
 
 
 
@@ -297,12 +497,8 @@
 
 ## 线上测试
 
-* 需要配置在平台以及渠道配置相关信息后方可测试。
+在开放平台注册游戏，获取游戏appId
+使用测试渠道9166进行测试，这里以appId为```88888```进行演示，将游戏测试链接后面加上相关参数：
+http://localhost:63342/HelloGUI/launcher/index.html?platInfo=open\_```88888```_9166&egret.runtime.spid=9166&appId=```88888```&channelId=9166&egretSdkDomain=http://api.egret-labs.org/v2&egretServerDomain=http://api.egret-labs.org/v2
+弹出登录窗之后选择其他方式登陆，用户名：```guest1```到```guest8```，密码：```123456```
 
-
-* runtime:（目前只支持qq\猎豹，且必须先确保游戏已经在对应的平台上配置过游戏信息，非h5信息）
-         http://runtime.egret-labs.org/nest/runtime.html?url=http://10.0.11.177/Egret/Nest/test/publishJson.html&id=88&orientation=portrait
-
-         url：为 游戏提供的runtime地址（返回的json数据的地址）
-         id：测试游戏的gameId
-         orientation：横竖屏设置 portrait 竖屏  landscape横屏
