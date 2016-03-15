@@ -2060,7 +2060,13 @@ var nest;
         var social;
         (function (social) {
             function isSupport(info, callback) {
-                callback.call(null, { "result": 0, "getFriends": 0, "openBBS": 0 });
+                var openBBS;
+                var openBBSCallback = function (data) {
+                    openBBS = data.result;
+                    var callbackInfo = { "result": 0, "getFriends": 0, "openBBS": openBBS };
+                    callback.call(null, callbackInfo);
+                };
+                EgretH5Sdk.isSupportAttention({}, openBBSCallback);
             }
             social.isSupport = isSupport;
             function getFriends(data, callback) {
@@ -2068,19 +2074,25 @@ var nest;
             }
             social.getFriends = getFriends;
             function openBBS(data, callback) {
-                callback.call(null, { "result": -2 });
+                EgretH5Sdk.openBBS(data, callback);
             }
             social.openBBS = openBBS;
         })(social = h5_2.social || (h5_2.social = {}));
         var app;
         (function (app) {
             function isSupport(info, callback) {
-                var egretH5SdkCallback = function (data) {
-                    var status = data.result;
-                    var loginCallbackInfo = { "attention": status, "getInfo": 1, "exitGame": 0, "sendToDesktop": 0 };
-                    callback.call(null, loginCallbackInfo);
+                var attention;
+                var sendToDesktop;
+                var attentionCallback = function (data) {
+                    attention = data.result;
+                    EgretH5Sdk.isSupportSendToDesktop({}, sendToDesktopCallback);
                 };
-                EgretH5Sdk.isSupportAttention({}, egretH5SdkCallback);
+                var sendToDesktopCallback = function (data) {
+                    sendToDesktop = data.result;
+                    var callbackInfo = { "attention": attention, "getInfo": 1, "exitGame": 0, "sendToDesktop": sendToDesktop };
+                    callback.call(null, callbackInfo);
+                };
+                EgretH5Sdk.isSupportAttention({}, attentionCallback);
             }
             app.isSupport = isSupport;
             function attention(appInfo, callback) {
@@ -2088,7 +2100,7 @@ var nest;
             }
             app.attention = attention;
             function sendToDesktop(appInfo, callback) {
-                callback.call(null, { "result": -2 });
+                EgretH5Sdk.isSupportSendToDesktop(appInfo, callback);
             }
             app.sendToDesktop = sendToDesktop;
             function exitGame(appInfo, callback) {

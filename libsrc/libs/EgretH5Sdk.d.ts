@@ -45,4 +45,9 @@ declare class EgretH5Sdk
     static isSupportAttention(data:any, callbackFun:Function);
     static setShareDefaultData(data:any, callbackFun:Function);
     static getLoginType(data:any, callbackFun:Function);
+
+    static isSupportOpenBBS(data:any, callbackFun:Function);
+    static openBBS(data:any, callbackFun:Function);
+    static isSupportSendToDesktop(data:any, callbackFun:Function);
+    static sendToDesktop(data:any, callbackFun:Function);
 }

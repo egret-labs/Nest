@@ -436,6 +436,16 @@ module nest {
             weixin?:string[];//微信联系方式数组[],如果没有响应联系方式将没有该字段
             email?:string[];//email联系方式数组[],如果没有响应联系方式将没有该字段
         }
+
+        /**
+         * 发送到桌面
+         */
+        export interface SendToDesktopInfo {
+            /**
+             * 透传参数
+             */
+            ext:string;
+        }
     }
 
     export interface app {
@@ -469,7 +479,7 @@ module nest {
          * @param callback
          * @param callback-param result 0表示添加桌面成功，-1表示添加失败
          */
-        sendToDesktop(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
+        sendToDesktop(appInfo:app.SendToDesktopInfo, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
         /**
          * 获取渠道信息
          * @param appInfo 获取信息参数,没有请传递{}

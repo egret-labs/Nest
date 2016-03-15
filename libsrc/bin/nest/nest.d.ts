@@ -371,6 +371,15 @@ declare module nest {
             weixin?: string[];
             email?: string[];
         }
+        /**
+         * 发送到桌面
+         */
+        interface SendToDesktopInfo {
+            /**
+             * 透传参数
+             */
+            ext: string;
+        }
     }
     interface app {
     }
@@ -401,7 +410,7 @@ declare module nest {
          * @param callback
          * @param callback-param result 0表示添加桌面成功，-1表示添加失败
          */
-        sendToDesktop(appInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
+        sendToDesktop(appInfo: app.SendToDesktopInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         /**
          * 获取渠道信息
          * @param appInfo 获取信息参数,没有请传递{}
