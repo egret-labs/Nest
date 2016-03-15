@@ -44,17 +44,24 @@
 * callback:(resultInfo:nest.core.ResultCallbackInfo)=>any)：方法回调函数，一个拥有参数为 resultInfo:nest.core.LoginCallbackInfo 返回值为 any 的函数。
 
 * 示例：
-
-		nest.core.startup({"egretAppId" : 88888, "version" : 2},
-			function(resultInfo:nest.core.ResultCallbackInfo) {
-		    	if (resultInfo.result == 0) {//成功
-
-		    	}
-		    	else {//失败
-
-		    	}
-			});
-
+ 
+~~~
+var info:any = {};
+//设置游戏id，这里是在测试步骤1中获取的游戏appId
+info.egretAppId = 88888;
+//设置使用 Nest 版本。默认为1，新版请传递2
+info.version = 2;
+//在debug模式下，请求nest接口会有日志输出。建议调试时开启
+info.debug = true;
+nest.core.startup(info, function (data) {
+    if(data.result == 0) {
+        //初始化成功，进入游戏
+    }
+    else {
+        //初始化失败，可能是url地址有问题，请联系官方解决
+    }
+})
+~~~
 
 
 ## api 详解
@@ -73,15 +80,24 @@
 
 * 示例
 
-		nest.core.startup({"egretAppId" : 88888, "version" : 2},
-			function(resultInfo:nest.core.ResultCallbackInfo) {
-		    	if (resultInfo.result == 0) {//成功
-
-		    	}
-		    	else {//失败
-
-		    	}
-			});
+		 
+~~~
+var info:any = {};
+//设置游戏id，这里是在测试步骤1中获取的游戏appId
+info.egretAppId = 88888;
+//设置使用 Nest 版本。默认为1，新版请传递2
+info.version = 2;
+//在debug模式下，请求nest接口会有日志输出。建议调试时开启
+info.debug = true;
+nest.core.startup(info, function (data) {
+    if(data.result == 0) {
+        //初始化成功，进入游戏
+    }
+    else {
+        //初始化失败，可能是url地址有问题，请联系官方解决
+    }
+})
+~~~
 
 ##### 2、nest.user.checkLogin 检测是否已经登录
 
@@ -96,39 +112,61 @@
 
 * 示例
 
-		nest.user.checkLogin({}, function(resultInfo:nest.user.LoginCallbackInfo) {
-		    if (resultInfo.result == 0) {
-		        //直接进入到游戏。
-		    }
-		    else {
-		    	//进行nest.user.isSupport获取判断
-		    }
-		});
+~~~
+nest.user.checkLogin({}, function (data) {
+     if(data.token) {
+         //用户已经登录过，获取用户token和用户id
+         //这时候就不需要显示登陆界面，直接进入游戏即可
+         var token = data.token;
+     }
+     else {
+         //用户没有登录，调用 nest.user.isSupport，根据loginType显示登陆按钮
+     }
+ })
+~~~
 
 ##### 3、nest.user.isSupport 检测支持何种登录方式
 * 参数说明
 
-		callback:(resultInfo:LoginCallbackInfo)=>any 回调结果函数
+		callback:(resultInfo:nest.user.UserSupportCallbackInfo)=>any 回调结果函数
 			resultInfo：回调函数的参数数据
-				|--- result 回调参数是否正确，0 正确，其他 错误
+				|--- loginTypes 登录方式，以QQ浏览器为例，返回 [{"loginType": "qq", "accInfo": {nickName : "name", avatarUrl :"a.png"}}]
 				|--- loginType 登录方式，以QQ浏览器为例，返回 ["qq","wx"]
 
 * 示例
 
-		nest.user.isSupport(function(resultInfo:nest.user.LoginCallbackInfo) {
-		    if (resultInfo.result == 0) {
-		        //resultInfo.loginType = ["qq", "wx"];
-		        if (resultInfo.loginType && resultInfo.loginType.length > 0) {
-		            //需要替换界面，显示根据 resultInfo.loginType 返回的类型显示的图标。
-		        }
-		        else {
-		            //调用无登陆类型 nest.user.login
-		        }
-		    }
-		    else {
-		        //调用无登陆类型 nest.user.login
-		    }
-		});
+~~~
+	nest.user.isSupport({}, function (data:nest.user.UserSupportCallbackInfo) {
+    //获取是否支持nest.user.getInfo接口，有该字段并且该字段值为1表示支持
+    var getInfo = data.getInfo;
+    //已经登录过的信息，该字段目前只有新版qq浏览器runtime有
+    //如果有该字段，请放弃使用loginType字段，并用该字段获取可用的登录方式以及登录信息
+    var loginTypes = data.loginTypes;
+    if(loginTypes && loginTypes.length) {
+        for(var i:number = 0 ; i < loginTypes.length ; i++) {
+            var info:any = loginTypes[i];
+            //登录类型
+            var infoLoginType:string = info.loginType;
+            //如果不为空，标识本地已有该类型的身份信息
+            var accInfo:any = info.accInfo;
+            if(accInfo) {
+                //昵称
+                var nickName = accInfo.nickName;
+                //头像
+                var avatarUrl = accInfo.avatarUrl;
+            }
+        }
+    }    
+    else if (data.loginType && data.loginType.length) {
+        //获取登录方式数组，如["qq","wx"]
+        //开发者应该主动判断登录方式，如果返回了 null ，则表示没有特殊登录方式
+        var loginType = data.loginType;
+    }
+    else {
+    	//直接调用 login，无需传参数
+    }
+})
+~~~
 
 ###### 4、nest.user.login 调用渠道登录接口
 * 参数说明
@@ -143,14 +181,20 @@
 
 * 示例
 
-		nest.user.login({"loginType" : "qq"}, function (resultInfo:nest.user.LoginCallbackInfo) {
-		    if (resultInfo.result == 0) {
-		    	//登陆成功 可以获取到 token
-		    }
-		    else {
-		        //登录失败
-		    }
-		});
+~~~
+//如果用户点击某个登录按钮，则传递loginType，否则不传
+nest.user.login({loginType:qq}, function (data) {
+    if(data.token) {
+        //登录成功，获取用户token，并根据token获取用户id，之后进入游戏
+        //获取id代码请看Nest工程中的LoginView文件，这个代码请务必放在服务端实现
+        var token = data.token;
+        
+    }
+    else {
+        //登录失败，需要重新登陆
+    }
+})
+~~~
 
 ###### nest.user.logout 登出
 * 参数说明
