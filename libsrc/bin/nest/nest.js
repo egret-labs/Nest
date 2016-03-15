@@ -233,7 +233,12 @@ var nest;
             for (var i = 0; i < arr.length; i++) {
                 var module = arr[i];
                 if (nest[version] && nest[version][module]) {
-                    nest[module] = nest[version][module];
+                    if (nest[module] == null) {
+                        nest[module] = {};
+                    }
+                    for (var key in nest[version][module]) {
+                        nest[module][key] = nest[version][module][key];
+                    }
                     for (var key in nest[module]) {
                         var fun = nest[module][key];
                         if (typeof fun == "function") {
@@ -413,6 +418,9 @@ if (nest.utils.$isRuntime) {
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var runtime;
@@ -939,6 +947,9 @@ var nest;
         })(iap = cm.iap || (cm.iap = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
@@ -1073,6 +1084,9 @@ var nest;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall;
@@ -1213,6 +1227,9 @@ var nest;
         qqhall.init = init;
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall;
@@ -1251,6 +1268,9 @@ var nest;
         })(user = qqhall.user || (qqhall.user = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall;
@@ -1301,6 +1321,9 @@ var nest;
         })(iap = qqhall.iap || (qqhall.iap = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall;
@@ -1338,6 +1361,9 @@ var nest;
         })(app = qqhall.app || (qqhall.app = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall;
@@ -1375,6 +1401,9 @@ var nest;
         })(share = qqhall.share || (qqhall.share = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall;
@@ -1430,6 +1459,9 @@ var nest;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall2;
@@ -2001,6 +2033,9 @@ var nest;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var h5;
@@ -2153,7 +2188,10 @@ var nest;
         })(app = h5.app || (h5.app = {}));
     })(h5 = nest.h5 || (nest.h5 = {}));
 })(nest || (nest = {}));
-//新版
+/**
+ * 新版
+ * @private
+ */
 var nest;
 (function (nest) {
     var h5_2;

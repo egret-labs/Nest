@@ -508,6 +508,9 @@ declare module nest.utils {
     function $getOption(key: string): string;
     function $log(msg: string): void;
 }
+/**
+ * @private
+ */
 declare module nest.runtime {
     module core {
         function callCustomMethod(customInfo: any, callback: Function): void;
@@ -584,6 +587,9 @@ declare module nest.cm.iap {
      */
     function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
 }
+/**
+ * @private
+ */
 declare module nest.cm.social {
     function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
     function getFriends(socialInfo: any, callback: Function): void;
@@ -629,6 +635,9 @@ declare module nest.cm.app {
      */
     function sendToDesktop(appInfo: any, callback: Function): void;
 }
+/**
+ * @private
+ */
 declare module nest.qqhall {
     var login_call_type: number;
     var login_back_call_type: number;
@@ -655,11 +664,17 @@ declare module nest.qqhall {
     function callHall(data: any): void;
     function init(): void;
 }
+/**
+ * @private
+ */
 declare module nest.qqhall.user {
     function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
     function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
     function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
 }
+/**
+ * @private
+ */
 declare module nest.qqhall.iap {
     function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
     /**
@@ -667,12 +682,18 @@ declare module nest.qqhall.iap {
      */
     function repay(): void;
 }
+/**
+ * @private
+ */
 declare module nest.qqhall.app {
     function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
     function exitGame(callback: Function): void;
     function attention(appInfo: any, callback: Function): void;
     function sendToDesktop(appInfo: any, callback: Function): void;
 }
+/**
+ * @private
+ */
 declare module nest.qqhall.share {
     function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
     /**
@@ -683,11 +704,17 @@ declare module nest.qqhall.share {
      */
     function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
 }
+/**
+ * @private
+ */
 declare module nest.qqhall.social {
     function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
     function getFriends(socialInfo: any, callback: Function): void;
     function openBBS(socialInfo: any, callback: Function): void;
 }
+/**
+ * @private
+ */
 declare module nest.qqhall2 {
     function init(): void;
     module user {
@@ -724,6 +751,9 @@ declare module nest.qqhall2 {
         function openBBS(socialInfo: any, callback: Function): void;
     }
 }
+/**
+ * @private
+ */
 declare module nest.h5 {
     var uid: number;
     module user {
@@ -751,6 +781,10 @@ declare module nest.h5 {
         function getInfo(appInfo: any, callback: Function): void;
     }
 }
+/**
+ * 新版
+ * @private
+ */
 declare module nest.h5_2 {
     module user {
         function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
