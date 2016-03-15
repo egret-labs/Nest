@@ -99,9 +99,7 @@ declare module nest {
             getInfo?: number;
         }
     }
-    interface user {
-    }
-    var user: {
+    module user {
         /**
          * 检测是否已登录
          * @param loginInfo 请传递一个{}
@@ -120,7 +118,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        checkLogin(loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => void): void;
+        var checkLogin: (loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => void) => void;
         /**
          * 调用渠道登录接口
          * @param loginInfo
@@ -139,7 +137,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        login(loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => void): void;
+        var login: (loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => void) => void;
         /**
          * 登出接口
          * @param loginInfo 登出参数,没有可以传递{}
@@ -158,7 +156,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        logout(loginInfo: nest.user.LoginInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
+        var logout: (loginInfo: nest.user.LoginInfo, callback: (resultInfo: core.ResultCallbackInfo) => void) => void;
         /**
          * 检测支持何种登录方式
          * @param info 请传递一个{}
@@ -176,7 +174,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+        var isSupport: (info: Object | userSupportCallbackType, callback?: userSupportCallbackType) => void;
         /**
          * 获取用户信息，目前只有qq浏览器runtime支持
          * @param callback 回调函数
@@ -197,8 +195,8 @@ declare module nest {
          *     });
          * </pre>
          */
-        getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void): void;
-    };
+        var getInfo: (loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void) => void;
+    }
     module iap {
         interface PayInfo {
             goodsId: string;
@@ -419,18 +417,81 @@ declare module nest {
         getInfo(appInfo: any, callback: (resultInfo: app.GetInfoCallbackInfo) => void): void;
     };
 }
-declare module nest.user {
-    interface ICreate {
-        loginTypes: Array<ILoginType>;
+declare module nest {
+    module user {
+        var $getInfo: number;
+        /**
+         * 登录页面相关按钮信息
+         */
+        interface ILoginTypes {
+            /**
+             * 登录页面所有的按钮相关信息
+             */
+            loginTypes: Array<ILoginType>;
+            /**
+             * 按钮点击后，需要调用此方法并传入相应的类型
+             * @param loginType
+             */
+            onChoose: (loginType: string) => void;
+        }
+        /**
+         * 单个按钮的信息
+         */
+        interface ILoginType {
+            /**
+             * 登录类型
+             */
+            loginType: string;
+            /**
+             * 不存在，则不需要显示具体的内容
+             */
+            accInfo?: {
+                nickName?: string;
+                avatarUrl?: string;
+            };
+        }
+        /**
+         * 登录相关信息
+         */
+        interface ILoginCallbacks {
+            /**
+             * 需要创建登录页面时回调，在接受到此回调后，需要根据回调参数去创建对应的登录按钮并显示到页面上。在各个按钮点击后，再调用 onChoose
+             *
+             * <pre>
+             * //此处为伪代码，请按实际情况创建并增加监听
+             * function onCreate(data:ILoginTypes):void {
+             *     for (var i:number = 0; i < data.loginTypes.length; i++) {
+             *         //根据 loginType 类型创建对应的按钮，如果能获取到 accInfo，则需要显示出头像，并且显示到舞台上
+             *         var btn;
+             *         btn.name = data.loginTypes[i].loginType;
+             *
+             *         btn.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
+             *             data.onChoose(this.name);//请确保传入的参数对应为点击的参数
+             *         }, btn);
+             *     }
+             * }
+             * </pre>
+             *
+             * @param data 登录类型信息
+             */
+            onCreate(data: ILoginTypes): void;
+            /**
+             * 登录成功后回调
+             * @param data 登录成功信息
+             */
+            onSuccess(data: nest.user.LoginCallbackInfo): void;
+            /**
+             * 登录失败后回调
+             * @param data 登录失败信息
+             */
+            onFail(data: nest.core.ResultCallbackInfo): void;
+        }
+        /**
+         * 登录
+         * @param loginInfo 登录传递的信息，需要对 onCreate，onSuccess，onFail 进行响应
+         */
+        function resLogin(loginInfo: ILoginCallbacks): void;
     }
-    interface ILoginType {
-        loginType: string;
-        accInfo?: {
-            nickName?: string;
-            avatarUrl?: string;
-        };
-    }
-    function resLogin(loginInfo1: any): void;
 }
 declare module nest.utils {
     var $API_DOMAIN: string;
