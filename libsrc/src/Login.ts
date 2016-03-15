@@ -30,6 +30,8 @@
 module nest {
     export module user {
 
+        export var $getInfo:number;
+
         /**
          * 登录页面相关按钮信息
          */
@@ -105,7 +107,12 @@ module nest {
 
                 nest.user.checkLogin({}, function (resultInfo:nest.user.LoginCallbackInfo) {
                     if (resultInfo.token) {
-                        onSuccess(resultInfo);
+                        if (isLogout()) {//登出
+                            callSupport();
+                        }
+                        else {
+                            onSuccess(resultInfo);
+                        }
                     }
                     else {
                         callSupport();
@@ -114,11 +121,6 @@ module nest {
             }
             else {
                 if ($loginTypes && $loginTypes.length) {
-                    for (var i:number = 0; i < $loginTypes.length; i++) {
-                        var info:ILoginType = $loginTypes[i];
-                        info.accInfo = null;
-                        $loginTypes[i] = info;
-                    }
                     onCreate($loginTypes);
                 }
                 else {
@@ -130,7 +132,8 @@ module nest {
         function callSupport():void {
             nest.user.isSupport({}, function (data) {
                 //获取是否支持nest.user.getInfo接口，有该字段并且该字段值为1表示支持
-                var getInfo = data.getInfo;
+                $getInfo = 1;
+
                 //已经登录过的信息，该字段目前只有新版qq浏览器runtime有
                 //如果有该字段，请放弃使用loginType字段，并用该字段获取可用的登录方式以及登录信息
                 var loginTypes = <Array<ILoginType>>data.loginTypes;
@@ -165,8 +168,7 @@ module nest {
             nest.user.login(loginTypeInfo, function (data) {
                 if(data.token) {
                     //登录成功，获取用户token，并根据token获取用户id，之后进入游戏
-                    //获取id代码请看Nest工程中的LoginView文件，这个代码请务必放在服务端实现
-                    var token = data.token;
+                    clearLogout();
 
                     onSuccess(data);
                 }
@@ -183,7 +185,17 @@ module nest {
                 $loginTypes = loginTypes;
             }
 
-            $loginInfo.onCreate({"loginTypes":loginTypes, onChoose:callLogin});
+            if (isLogout()) {
+                if ($loginTypes && $loginTypes.length) {
+                    for (var i:number = 0; i < $loginTypes.length; i++) {
+                        var info:ILoginType = $loginTypes[i];
+                        info.accInfo = null;
+                        $loginTypes[i] = info;
+                    }
+                }
+            }
+
+            $loginInfo.onCreate({"loginTypes":$loginTypes, onChoose:callLogin});
         }
 
         function onSuccess(data:nest.user.LoginCallbackInfo):void {
@@ -192,6 +204,24 @@ module nest {
 
         function onFail(data:nest.core.ResultCallbackInfo):void {
             $loginInfo.onFail(data);
+        }
+
+        function isLogout():boolean {
+            if (nest.utils.$isRuntime) {
+                return egret.localStorage.getItem("egret_logout");
+            }
+            else {
+                return window.localStorage.getItem("egret_logout");
+            }
+        }
+
+        function clearLogout():void {
+            if (nest.utils.$isRuntime) {
+                egret.localStorage.setItem("egret_logout", null);
+            }
+            else {
+                egret.localStorage.setItem("egret_logout", null);
+            }
         }
     }
 }

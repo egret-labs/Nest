@@ -43,18 +43,7 @@ module nest.runtime {
 
         export function checkLogin(loginInfo:nest.user.LoginInfo, callback:Function) {
             var data = {module: "user", action: "checkLogin", param: loginInfo};
-
-            var egretCallback = function () {
-                var isLogout:boolean = egret.localStorage.getItem("egret_logout") == "1";
-                if (isLogout) {
-                    callback.call(null, {"result" : -1});
-                }
-                else {
-                    callback.apply(null, arguments);
-                }
-            };
-
-            callRuntime(data, egretCallback);
+            callRuntime(data, callback);
         }
 
         export function login(loginInfo:nest.user.LoginInfo, callback:Function) {

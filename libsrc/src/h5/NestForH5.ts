@@ -53,19 +53,11 @@ module nest.h5 {
                 if (nest.h5.uid) {
                     status = 0;
                 }
-                var isLogout:boolean = window.localStorage.getItem("egret_logout") == "1";
-                if (isLogout) {
-                    callback.call(null, {"result" : -1});
-                }
-                else {
-                    var loginCallbackInfo:nest.user.LoginCallbackInfo = <nest.user.LoginCallbackInfo>{
-                        "result": status,
-                        "token": data.token
-                    };
-
-                    callback.call(null, loginCallbackInfo);
-                }
-
+                var loginCallbackInfo:nest.user.LoginCallbackInfo = <nest.user.LoginCallbackInfo>{
+                    "result": status,
+                    "token": data.token
+                };
+                callback.call(null, loginCallbackInfo);
             };
             EgretH5Sdk.checkLogin(egretH5SdkCallback, null);
         }
