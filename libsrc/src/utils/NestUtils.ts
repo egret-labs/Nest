@@ -55,7 +55,13 @@ module nest.utils {
         for (var i = 0; i < arr.length; i++) {
             var module = arr[i];
             if (nest[version] && nest[version][module]) {
-                nest[module] = nest[version][module];
+                if (nest[module] == null) {
+                    nest[module] = {};
+                }
+                for (var key in nest[version][module]) {
+                    nest[module][key] = nest[version][module][key];
+                }
+
                 for (var key in nest[module]) {
                     var fun = nest[module][key];
                     if (typeof fun == "function") {

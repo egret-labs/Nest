@@ -138,11 +138,7 @@ module nest {
         }
     }
 
-    export interface user {
-
-    }
-
-    export var user:{
+    export module user {
         /**
          * 检测是否已登录
          * @param loginInfo 请传递一个{}
@@ -161,7 +157,7 @@ module nest {
          *     });
          * </pre>
          */
-        checkLogin(loginInfo:nest.user.LoginInfo, callback:(resultInfo:nest.user.LoginCallbackInfo)=>void):void;
+        export var checkLogin:(loginInfo:nest.user.LoginInfo, callback:(resultInfo:nest.user.LoginCallbackInfo)=>void)=>void;
         /**
          * 调用渠道登录接口
          * @param loginInfo
@@ -180,7 +176,7 @@ module nest {
          *     });
          * </pre>
          */
-        login(loginInfo:nest.user.LoginInfo, callback:(resultInfo:nest.user.LoginCallbackInfo)=>void):void;
+        export var login:(loginInfo:nest.user.LoginInfo, callback:(resultInfo:nest.user.LoginCallbackInfo)=>void)=>void;
         /**
          * 登出接口
          * @param loginInfo 登出参数,没有可以传递{}
@@ -199,7 +195,7 @@ module nest {
          *     });
          * </pre>
          */
-        logout(loginInfo:nest.user.LoginInfo, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
+        export var logout:(loginInfo:nest.user.LoginInfo, callback:(resultInfo:core.ResultCallbackInfo)=>void)=>void;
         /**
          * 检测支持何种登录方式
          * @param info 请传递一个{}
@@ -217,7 +213,7 @@ module nest {
          *     });
          * </pre>
          */
-        isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType):void;
+        export var isSupport:(info:Object | userSupportCallbackType, callback?:userSupportCallbackType)=>void;
         /**
          * 获取用户信息，目前只有qq浏览器runtime支持
          * @param callback 回调函数
@@ -238,7 +234,7 @@ module nest {
          *     });
          * </pre>
          */
-        getInfo(loginInfo:nest.user.LoginInfo, callback:(resultInfo:Object)=>void):void;
+        export var getInfo:(loginInfo:nest.user.LoginInfo, callback:(resultInfo:Object)=>void)=>void;
     };
 
     export module iap {
