@@ -176,7 +176,7 @@ class QuickTest implements nest.user.ILoginCallbacks {
         var loginInfo:nest.user.LoginInfo = {};
 
         var self = this;
-        nest.user.logout(loginInfo, function (data) {
+        nest.user.resLogout(loginInfo, function (data) {
             this.addLog(JSON.stringify(data, null, 4));
             this.addLog("logout end");
 

@@ -87,11 +87,6 @@ module nest.h5 {
                 var status = data.status;
                 var result = status == 1 ? 0 : 1;
 
-                if (result == 1) {
-                    //登出保存登出状态
-                    window.localStorage.setItem("egret_logout", "1");
-                }
-
                 callback.call(null, {"result": result});
             };
             EgretH5Sdk.logout(egretH5SdkCallback, null);
@@ -212,11 +207,6 @@ module nest.h5_2 {
         export function logout(loginInfo:nest.user.LoginInfo, callback:(resultInfo:core.ResultCallbackInfo)=>void) {
             //登出保存登出状态
             var egretCallback = function (resultInfo:core.ResultCallbackInfo) {
-                if (resultInfo.result == 1) {
-                    //登出保存登出状态
-                    window.localStorage.setItem("egret_logout", "1");
-                }
-
                 callback.apply(null, arguments);
             };
 

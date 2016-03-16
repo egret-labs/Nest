@@ -240,4 +240,36 @@ module nest {
             }
         }
     }
+
+    export module user {
+        /**
+         * 登出接口
+         * @param loginInfo 登出参数,没有可以传递{}
+         * @param callback 回调函数
+         * @callback-param   { result : 0 };
+         * @example 以下代码调用渠道登出接口
+         * <pre>
+         *     nest.user.logout({}, function (data){
+         *         if(data.result == 0) {
+         *             //登出成功,需要显示登陆界面供玩家重新登录
+         *             //这里后续不需要继续调用nest.user.checkLogin
+         *         }
+         *         else {
+         *             //登出失败,可能相应渠道不支持登出
+         *         }
+         *     });
+         * </pre>
+         */
+        export function resLogout(loginInfo: nest.user.LoginInfo, callback:(data:nest.core.ResultCallbackInfo)=>void):void {
+            var egretH5SdkCallback = function (data:nest.core.ResultCallbackInfo):void {
+                if (data.result == 0) {
+                    //登出保存登出状态
+                    window.localStorage.setItem("egret_logout", "1");
+                }
+
+                callback(data);
+            };
+            nest.user.logout(loginInfo, egretH5SdkCallback);
+        }
+    }
 }

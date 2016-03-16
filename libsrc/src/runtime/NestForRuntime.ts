@@ -60,19 +60,12 @@ module nest.runtime {
                 var data = {module: "user", action: "logout", param: loginInfo};
 
                 var egretCallback = function (resultInfo:nest.core.ResultCallbackInfo) {
-                    if (resultInfo.result == 1) {
-                        //登出保存登出状态
-                        egret.localStorage.setItem("egret_logout", "1");
-                    }
-
                     callback.apply(null, arguments);
                 };
 
                 callRuntime(data, egretCallback);
             }
             else {
-                egret.localStorage.setItem("egret_logout", "1");
-
                 callback({"result": 0});
             }
         }
