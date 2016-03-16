@@ -199,8 +199,8 @@ var nest;
          */
         function $log(msg) {
             if (utils.$DEBUG_LOG) {
-                if (utils.$EGRET_SUPPORT) {
-                    egret.log(msg);
+                if (utils.$EGRET_SUPPORT && egret["log"]) {
+                    egret["log"](msg);
                 }
                 else {
                     console.log(msg);
@@ -208,6 +208,28 @@ var nest;
             }
         }
         utils.$log = $log;
+        function setProxy(url, postData, method, callback, errCallback) {
+            var cmpostdata = "";
+            for (var key in postData) {
+                cmpostdata += key + "=" + postData[key] + "&";
+            }
+            if (cmpostdata != "") {
+                cmpostdata = cmpostdata.substr(0, cmpostdata.length - 1);
+            }
+            var loader = new egret.URLLoader();
+            loader.addEventListener(egret.Event.COMPLETE, function () {
+                var jsonObj = JSON.parse(loader.data);
+                callback(jsonObj);
+            }, this);
+            loader.addEventListener(egret.IOErrorEvent.IO_ERROR, function () {
+                errCallback();
+            }, this);
+            var request = new egret.URLRequest(url);
+            request.method = method;
+            request.data = new egret.URLVariables(cmpostdata);
+            loader.load(request);
+        }
+        utils.setProxy = setProxy;
     })(utils = nest.utils || (nest.utils = {}));
 })(nest || (nest = {}));
 if (this["navigator"]) {
@@ -371,13 +393,12 @@ var nest;
             app.sendToDesktop = sendToDesktop;
             function getInfo(appInfo, callback) {
                 var url = nest.utils.$API_DOMAIN + "user/getCustomInfo";
-                url += "?appId=" + nest.utils.$APP_ID;
-                url += "&runtime=1";
-                url += "&egretChanId=" + nest.utils.$getSpid();
-                var request = new egret.HttpRequest();
-                request.open(url);
-                request.addEventListener(egret.Event.COMPLETE, function () {
-                    var data = JSON.parse(request.response);
+                var data = {
+                    appId: nest.utils.$APP_ID,
+                    runtime: 1,
+                    egretChanId: nest.utils.$getSpid()
+                };
+                nest.utils.setProxy(url, data, egret.URLRequestMethod.GET, function (data) {
                     var callbackData = data.data;
                     callbackData.result = 0;
                     if (data.code == 0) {
@@ -386,11 +407,9 @@ var nest;
                     else {
                         callback.call(null, { result: -2 });
                     }
-                }, this);
-                request.addEventListener(egret.IOErrorEvent.IO_ERROR, function () {
+                }, function () {
                     callback.call(null, { result: -2 });
-                }, this);
-                request.send();
+                });
             }
             app.getInfo = getInfo;
         })(app = runtime.app || (runtime.app = {}));
@@ -2100,7 +2119,7 @@ var nest;
             }
             app.attention = attention;
             function sendToDesktop(appInfo, callback) {
-                EgretH5Sdk.isSupportSendToDesktop(appInfo, callback);
+                EgretH5Sdk.sendToDesktop(appInfo, callback);
             }
             app.sendToDesktop = sendToDesktop;
             function exitGame(appInfo, callback) {

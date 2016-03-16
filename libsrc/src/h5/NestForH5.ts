@@ -274,7 +274,7 @@ module nest.h5_2 {
         }
 
         export function sendToDesktop(appInfo:any, callback:Function) {
-            EgretH5Sdk.isSupportSendToDesktop(appInfo, callback);
+            EgretH5Sdk.sendToDesktop(appInfo, callback);
         }
 
         export function exitGame(appInfo:any, callback:Function) {

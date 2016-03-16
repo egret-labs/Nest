@@ -442,6 +442,7 @@ declare module nest.utils {
     function $isTargetPlatform(target: number): boolean;
     function $getOption(key: string): string;
     function $log(msg: string): void;
+    function setProxy(url: string, postData: Object, method: string, callback: Function, errCallback: Function): void;
 }
 declare module nest.runtime {
     module core {
