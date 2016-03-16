@@ -28,6 +28,196 @@
 //////////////////////////////////////////////////////////////////////////////////////
 var nest;
 (function (nest) {
+    var user;
+    (function (user) {
+    })(user = nest.user || (nest.user = {}));
+    ;
+})(nest || (nest = {}));
+
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-2015, Egret Technology Inc.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+var nest;
+(function (nest) {
+    var user;
+    (function (user) {
+        var $loginInfo;
+        var isFirst = true;
+        var $loginTypes;
+        /**
+         * 登录
+         * @param loginInfo 登录传递的信息，需要对 onCreate，onSuccess，onFail 进行响应
+         * @private
+         */
+        function resLogin(loginInfo) {
+            $loginInfo = loginInfo;
+            //
+            if (isFirst) {
+                isFirst = false;
+                nest.user.checkLogin({}, function (resultInfo) {
+                    if (resultInfo.token) {
+                        if (isLogout()) {
+                            callSupport();
+                        }
+                        else {
+                            onSuccess(resultInfo);
+                        }
+                    }
+                    else {
+                        callSupport();
+                    }
+                });
+            }
+            else {
+                if ($loginTypes && $loginTypes.length) {
+                    onCreate($loginTypes);
+                }
+                else {
+                    callLogin("");
+                }
+            }
+        }
+        user.resLogin = resLogin;
+        function callSupport() {
+            nest.user.isSupport({}, function (data) {
+                //获取是否支持nest.user.getInfo接口，有该字段并且该字段值为1表示支持
+                user.$getInfo = 1;
+                //已经登录过的信息，该字段目前只有新版qq浏览器runtime有
+                //如果有该字段，请放弃使用loginType字段，并用该字段获取可用的登录方式以及登录信息
+                var loginTypes = data.loginTypes;
+                if (loginTypes && loginTypes.length) {
+                    onCreate(loginTypes);
+                }
+                else if (data.loginType && data.loginType.length) {
+                    //获取登录方式数组，如["qq","wx"]
+                    //开发者应该主动判断登录方式，如果返回了 null ，则表示没有特殊登录方式
+                    var loginType = data.loginType;
+                    var arr = [];
+                    for (var i = 0; i < loginType.length; i++) {
+                        arr.push({ "loginType": loginType[i] });
+                    }
+                    onCreate(arr);
+                }
+                else {
+                    callLogin("");
+                }
+            });
+        }
+        function callLogin(type) {
+            //如果用户点击某个登录按钮，则传递loginType，否则不传
+            var loginTypeInfo = {};
+            if (type && type != "") {
+                loginTypeInfo["loginType"] = type;
+            }
+            nest.user.login(loginTypeInfo, function (data) {
+                if (data.token) {
+                    //登录成功，获取用户token，并根据token获取用户id，之后进入游戏
+                    clearLogout();
+                    onSuccess(data);
+                }
+                else {
+                    //登录失败，需要重新登陆
+                    onFail(data);
+                }
+            });
+        }
+        //[{"loginType" : "qq", accInfo: {nickName: "user_name", "avatarUrl" : "a.png"}}]
+        function onCreate(loginTypes) {
+            if ($loginTypes == null) {
+                $loginTypes = loginTypes;
+            }
+            if (isLogout()) {
+                if ($loginTypes && $loginTypes.length) {
+                    for (var i = 0; i < $loginTypes.length; i++) {
+                        var info = $loginTypes[i];
+                        info.accInfo = null;
+                        $loginTypes[i] = info;
+                    }
+                }
+            }
+            $loginInfo.onCreate({ "loginTypes": $loginTypes, onChoose: callLogin });
+        }
+        function onSuccess(data) {
+            $loginInfo.onSuccess(data);
+        }
+        function onFail(data) {
+            $loginInfo.onFail(data);
+        }
+        function isLogout() {
+            if (nest.utils.$isRuntime) {
+                return egret.localStorage.getItem("egret_logout") == "1";
+            }
+            else {
+                return window.localStorage.getItem("egret_logout") == "1";
+            }
+        }
+        function clearLogout() {
+            if (nest.utils.$isRuntime) {
+                egret.localStorage.setItem("egret_logout", null);
+            }
+            else {
+                egret.localStorage.setItem("egret_logout", null);
+            }
+        }
+    })(user = nest.user || (nest.user = {}));
+    var user;
+    (function (user) {
+        /**
+         * 登出接口
+         * @param loginInfo 登出参数,没有可以传递{}
+         * @param callback 回调函数
+         * @callback-param   { result : 0 };
+         * @example 以下代码调用渠道登出接口
+         * <pre>
+         *     nest.user.logout({}, function (data){
+         *         if(data.result == 0) {
+         *             //登出成功,需要显示登陆界面供玩家重新登录
+         *             //这里后续不需要继续调用nest.user.checkLogin
+         *         }
+         *         else {
+         *             //登出失败,可能相应渠道不支持登出
+         *         }
+         *     });
+         * </pre>
+         * @private
+         */
+        function resLogout(loginInfo, callback) {
+            var egretH5SdkCallback = function (data) {
+                if (data.result == 0) {
+                    //登出保存登出状态
+                    window.localStorage.setItem("egret_logout", "1");
+                }
+                callback(data);
+            };
+            nest.user.logout(loginInfo, egretH5SdkCallback);
+        }
+        user.resLogout = resLogout;
+    })(user = nest.user || (nest.user = {}));
 })(nest || (nest = {}));
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +268,12 @@ var nest;
             for (var i = 0; i < arr.length; i++) {
                 var module = arr[i];
                 if (nest[version] && nest[version][module]) {
-                    nest[module] = nest[version][module];
+                    if (nest[module] == null) {
+                        nest[module] = {};
+                    }
+                    for (var key in nest[version][module]) {
+                        nest[module][key] = nest[version][module][key];
+                    }
                     for (var key in nest[module]) {
                         var fun = nest[module][key];
                         if (typeof fun == "function") {
@@ -280,6 +475,9 @@ if (nest.utils.$isRuntime) {
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var runtime;
@@ -797,6 +995,9 @@ var nest;
         })(iap = cm.iap || (cm.iap = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var cm;
@@ -931,6 +1132,9 @@ var nest;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall;
@@ -1071,6 +1275,9 @@ var nest;
         qqhall.init = init;
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall;
@@ -1109,6 +1316,9 @@ var nest;
         })(user = qqhall.user || (qqhall.user = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall;
@@ -1159,6 +1369,9 @@ var nest;
         })(iap = qqhall.iap || (qqhall.iap = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall;
@@ -1196,6 +1409,9 @@ var nest;
         })(app = qqhall.app || (qqhall.app = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall;
@@ -1233,6 +1449,9 @@ var nest;
         })(share = qqhall.share || (qqhall.share = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall;
@@ -1288,6 +1507,9 @@ var nest;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var qqhall2;
@@ -1859,6 +2081,9 @@ var nest;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var h5;
@@ -2010,6 +2235,9 @@ var nest;
     })(h5 = nest.h5 || (nest.h5 = {}));
 })(nest || (nest = {}));
 //新版
+/**
+ * @private
+ */
 var nest;
 (function (nest) {
     var h5_2;
