@@ -8,9 +8,9 @@ class LoginTypeView extends egret.gui.SkinnableComponent {
 
     public btnGroup:egret.gui.Group;
 
-    private loginType:nest.user.ILoginTypes;
+    private loginType:nest.easeuser.ILoginTypes;
 
-    public constructor(loginType:nest.user.ILoginTypes) {
+    public constructor(loginType:nest.easeuser.ILoginTypes) {
         super();
 
         this.loginType = loginType;
@@ -23,7 +23,7 @@ class LoginTypeView extends egret.gui.SkinnableComponent {
         var self = this;
 
         for (var i:number = 0; i < this.loginType.loginTypes.length; i++) {
-            var logT:nest.user.ILoginType = this.loginType.loginTypes[i];
+            var logT:nest.easeuser.ILoginType = this.loginType.loginTypes[i];
 
             var url = "";
             if (logT.accInfo && logT.accInfo.avatarUrl) {

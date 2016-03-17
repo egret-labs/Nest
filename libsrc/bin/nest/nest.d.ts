@@ -427,7 +427,7 @@ declare module nest {
     };
 }
 declare module nest {
-    module user {
+    module easeuser {
         var $getInfo: number;
         /**
          * 登录页面相关按钮信息
@@ -498,11 +498,10 @@ declare module nest {
         /**
          * 登录
          * @param loginInfo 登录传递的信息，需要对 onCreate，onSuccess，onFail 进行响应
-         * @private
          */
-        function resLogin(loginInfo: ILoginCallbacks): void;
+        function login(loginInfo: ILoginCallbacks): void;
     }
-    module user {
+    module easeuser {
         /**
          * 登出接口
          * @param loginInfo 登出参数,没有可以传递{}
@@ -510,7 +509,7 @@ declare module nest {
          * @callback-param   { result : 0 };
          * @example 以下代码调用渠道登出接口
          * <pre>
-         *     nest.user.logout({}, function (data){
+         *     nest.easeuser.logout({}, function (data){
          *         if(data.result == 0) {
          *             //登出成功,需要显示登陆界面供玩家重新登录
          *             //这里后续不需要继续调用nest.user.checkLogin
@@ -520,9 +519,53 @@ declare module nest {
          *         }
          *     });
          * </pre>
-         * @private
          */
-        function resLogout(loginInfo: nest.user.LoginInfo, callback: (data: nest.core.ResultCallbackInfo) => void): void;
+        function logout(loginInfo: nest.user.LoginInfo, callback: (data: nest.core.ResultCallbackInfo) => void): void;
+    }
+    module easeuser {
+        interface UserSupportCallbackInfo extends core.ResultCallbackInfo {
+            /**
+             * 是否支持获取用户信息
+             */
+            getInfo: number;
+        }
+        /**
+         * 检测支持何种登录方式
+         * @param info 请传递一个{}
+         * @param callback 回调函数
+         * @callback-param  @see nest.user.UserSupportCallbackInfo
+         * @example 以下代码进行检测支持何种登录方式
+         * <pre>
+         *     nest.user.isSupport({}, function (data){
+         *         if(data.result == 0) {
+         *             //获取渠道是否支持获得用户信息接口,如果支持可以使用nest.user.getInfo获取用户信息
+         *             var isSupportGetUserInfo = data.getInfo == 1;
+         *         }
+         *     });
+         * </pre>
+         */
+        function isSupport(callback: (resultInfo: easeuser.UserSupportCallbackInfo) => void): void;
+        /**
+         * 获取用户信息，目前只有qq浏览器runtime支持
+         * @param callback 回调函数
+         * @example 以下代码获取用户信息
+         * <pre>
+         *     nest.user.getInfo({}, function (data){
+         *         if(data.result == 0) {
+         *             var msg = data.msg;              //传回的提示信息
+         *             var nickName = data.nickName;     //昵称
+         *             var avatarUrl = data.avatarUrl;  //头像
+         *             var sex = data.sex;              //性别, 0未知，1男，2女
+         *             var city = data.city;            //城市
+         *             var language = data.language;    //语言
+         *             var isVip = data.isVip;          //是否vip, 1是，0不是
+         *             var province = data.province;    //省份
+         *             var country = data.country;      //国家
+         *         }
+         *     });
+         * </pre>
+         */
+        function getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void): void;
     }
 }
 declare module nest.utils {

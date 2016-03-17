@@ -2,7 +2,7 @@
  * Created by yjtx on 15-10-16.
  */
 
-class QuickTest implements nest.user.ILoginCallbacks {
+class QuickTest implements nest.easeuser.ILoginCallbacks {
 
     private logStr = "";
 
@@ -36,7 +36,7 @@ class QuickTest implements nest.user.ILoginCallbacks {
         this.text.text = this.logStr;
     }
 
-    public onCreate = (data: nest.user.ILoginTypes):void =>  {
+    public onCreate = (data: nest.easeuser.ILoginTypes):void =>  {
         utils.changeView(new LoginTypeView(data));
     };
 
@@ -54,7 +54,7 @@ class QuickTest implements nest.user.ILoginCallbacks {
     private checkLogin():void {
         this.addLog("checkLogin start");
 
-        nest.user.resLogin(this);
+        nest.easeuser.login(this);
     }
 
     private logData:nest.user.LoginCallbackInfo;
@@ -176,7 +176,7 @@ class QuickTest implements nest.user.ILoginCallbacks {
         var loginInfo:nest.user.LoginInfo = {};
 
         var self = this;
-        nest.user.resLogout(loginInfo, function (data) {
+        nest.easeuser.logout(loginInfo, function (data) {
             this.addLog(JSON.stringify(data, null, 4));
             this.addLog("logout end");
 

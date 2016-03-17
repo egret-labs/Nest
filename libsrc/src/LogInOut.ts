@@ -28,7 +28,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 module nest {
-    export module user {
+    export module easeuser {
 
         export var $getInfo:number;
 
@@ -113,9 +113,8 @@ module nest {
         /**
          * 登录
          * @param loginInfo 登录传递的信息，需要对 onCreate，onSuccess，onFail 进行响应
-         * @private
          */
-        export function resLogin(loginInfo:ILoginCallbacks):void {
+        export function login(loginInfo:ILoginCallbacks):void {
             $loginInfo = loginInfo;
 
             //
@@ -149,7 +148,7 @@ module nest {
         function callSupport():void {
             nest.user.isSupport({}, function (data) {
                 //获取是否支持nest.user.getInfo接口，有该字段并且该字段值为1表示支持
-                $getInfo = 1;
+                $getInfo = data.getInfo;
 
                 //已经登录过的信息，该字段目前只有新版qq浏览器runtime有
                 //如果有该字段，请放弃使用loginType字段，并用该字段获取可用的登录方式以及登录信息
@@ -237,12 +236,12 @@ module nest {
                 egret.localStorage.setItem("egret_logout", null);
             }
             else {
-                egret.localStorage.setItem("egret_logout", null);
+                window.localStorage.setItem("egret_logout", null);
             }
         }
     }
 
-    export module user {
+    export module easeuser {
         /**
          * 登出接口
          * @param loginInfo 登出参数,没有可以传递{}
@@ -250,7 +249,7 @@ module nest {
          * @callback-param   { result : 0 };
          * @example 以下代码调用渠道登出接口
          * <pre>
-         *     nest.user.logout({}, function (data){
+         *     nest.easeuser.logout({}, function (data){
          *         if(data.result == 0) {
          *             //登出成功,需要显示登陆界面供玩家重新登录
          *             //这里后续不需要继续调用nest.user.checkLogin
@@ -260,18 +259,76 @@ module nest {
          *         }
          *     });
          * </pre>
-         * @private
          */
-        export function resLogout(loginInfo: nest.user.LoginInfo, callback:(data:nest.core.ResultCallbackInfo)=>void):void {
+        export function logout(loginInfo: nest.user.LoginInfo, callback:(data:nest.core.ResultCallbackInfo)=>void):void {
             var egretH5SdkCallback = function (data:nest.core.ResultCallbackInfo):void {
                 if (data.result == 0) {
                     //登出保存登出状态
-                    window.localStorage.setItem("egret_logout", "1");
+                    if (nest.utils.$isRuntime) {
+                        egret.localStorage.setItem("egret_logout", "1");
+                    }
+                    else {
+                        window.localStorage.setItem("egret_logout", "1");
+                    }
                 }
 
                 callback(data);
             };
             nest.user.logout(loginInfo, egretH5SdkCallback);
+        }
+    }
+
+    export module easeuser {
+        export interface UserSupportCallbackInfo extends core.ResultCallbackInfo {
+            /**
+             * 是否支持获取用户信息
+             */
+            getInfo: number;
+        }
+
+        /**
+         * 检测支持何种登录方式
+         * @param info 请传递一个{}
+         * @param callback 回调函数
+         * @callback-param  @see nest.user.UserSupportCallbackInfo
+         * @example 以下代码进行检测支持何种登录方式
+         * <pre>
+         *     nest.user.isSupport({}, function (data){
+         *         if(data.result == 0) {
+         *             //获取渠道是否支持获得用户信息接口,如果支持可以使用nest.user.getInfo获取用户信息
+         *             var isSupportGetUserInfo = data.getInfo == 1;
+         *         }
+         *     });
+         * </pre>
+         */
+        export function isSupport(callback:(resultInfo:easeuser.UserSupportCallbackInfo)=>void):void {
+            var callbackInfo = {"result": 0, "getInfo": $getInfo};
+
+            callback(callbackInfo);
+        }
+
+        /**
+         * 获取用户信息，目前只有qq浏览器runtime支持
+         * @param callback 回调函数
+         * @example 以下代码获取用户信息
+         * <pre>
+         *     nest.user.getInfo({}, function (data){
+         *         if(data.result == 0) {
+         *             var msg = data.msg;              //传回的提示信息
+         *             var nickName = data.nickName;     //昵称
+         *             var avatarUrl = data.avatarUrl;  //头像
+         *             var sex = data.sex;              //性别, 0未知，1男，2女
+         *             var city = data.city;            //城市
+         *             var language = data.language;    //语言
+         *             var isVip = data.isVip;          //是否vip, 1是，0不是
+         *             var province = data.province;    //省份
+         *             var country = data.country;      //国家
+         *         }
+         *     });
+         * </pre>
+         */
+        export function getInfo(loginInfo:nest.user.LoginInfo, callback:(resultInfo:Object)=>void):void {
+            nest.user.getInfo(loginInfo, callback);
         }
     }
 }

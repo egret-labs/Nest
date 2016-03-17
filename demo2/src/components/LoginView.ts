@@ -3,7 +3,7 @@
  * @author 
  *
  */
-class LoginView extends egret.gui.SkinnableComponent implements nest.user.ILoginCallbacks{
+class LoginView extends egret.gui.SkinnableComponent implements nest.easeuser.ILoginCallbacks{
 	
     
     public info_txt: egret.gui.Label;
@@ -36,7 +36,7 @@ class LoginView extends egret.gui.SkinnableComponent implements nest.user.ILogin
         });
 	}
 
-    public onCreate = (data: nest.user.ILoginTypes):void =>  {
+    public onCreate = (data: nest.easeuser.ILoginTypes):void =>  {
         utils.changeView(new LoginTypeView(data));
     };
 
@@ -53,6 +53,6 @@ class LoginView extends egret.gui.SkinnableComponent implements nest.user.ILogin
 
         egret.log("checkLogin start");
 
-        nest.user.resLogin(this);
+        nest.easeuser.login(this);
 	}
 }
