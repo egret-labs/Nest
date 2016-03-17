@@ -301,7 +301,7 @@ module nest {
          *     });
          * </pre>
          */
-        export function isSupport(callback:(resultInfo:easeuser.UserSupportCallbackInfo)=>void):void {
+        export function isSupport(info:Object, callback:(resultInfo:easeuser.UserSupportCallbackInfo)=>void):void {
             var callbackInfo = {"result": 0, "getInfo": $getInfo};
 
             callback(callbackInfo);
