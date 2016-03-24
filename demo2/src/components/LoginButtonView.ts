@@ -71,6 +71,8 @@ class LoginButtonView extends egret.gui.SkinnableComponent{
             case "wb" :
                 str = "微博";
                 break;
+            default:
+                str = "默认";
         }
 
         if (hasUrl) {
