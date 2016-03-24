@@ -1,34 +1,24 @@
-# Nest
+#Nest
 
-最新 Nest 下载地址
+* nest [下载地址](https://github.com/egret-labs/Nest) 
 
-[Nest 2.5](https://github.com/egret-labs/Nest)
+	egret 引擎：下载完后按照 [第三方库接入流程](http://edn.egret.com/cn/index.php/article/index/id/172) 将Nest添加到项目中，path 指向到 ```nest/libsrc``` 下。
 
-[Nest 2.0](https://github.com/egret-labs/Nest/tree/2.0.x)
+	非 egret 引擎：下载完后，请将 ```libsrc/bin/nest/nest.min.js``` 文件按普通 js 一样加入到项目中。
 
+* 按钮资源
+  
+  可以使用 loginAssets 下默认的资源或者自行找对应的素材。
 
-## 接入
+## 新版说明
 
-   按照[第三方库接入流程](http://edn.egret.com/cn/index.php/article/index/id/172)将Nest添加到项目中
+```nest.easeuser.login``` 代替了老版本的 ```nest.user.checkLogin``` ```nest.user.isSupport```以及 ```nest.user.login```，登录只需要这个接口就可以。
 
-## 调用流程
-`请完全按照本步骤来，不要修改任何顺序`
+```nest.easeuser.logout``` 代替老版本的 ```nest.user.logout```
 
- * 登录功能逻辑：
+```nest.easeuser.getInfo``` 代替老版本的 ```nest.user.getInfo```
 
-		1.初始化项目数据
-		2.在游戏中展示一张登录背景界面
-		3.调用 checkLogin 函数判断是否已经登录过，如果登录过并且没有记录登出状态，进入步骤7，否则进入步骤4
-		4.调用 isSupport 函数判断支持的登录类型，根据登录类型显示对应的登录图标
-		5.用户点击登录图标后，调用 login 函数打开登录面板进行登录
- 		6.如果登录成功，进入步骤7
- 		7.退出登录界面，进入游戏，取消登出状态
-
- * 登出功能逻辑：
-
-		1.在游戏中放置一个“退出游戏”或者“切换账号”的按钮
-		2.用户点击“退出游戏”图标后，调用 logout 函数
-		3.在登出成功后，返回到登录逻辑的步骤4，并且手动记录登出状态
+```nest.easeuser.isSupport``` 简化成只判断有没有 ```getInfo``` 这个 api 调用
 
 ## api 参数说明
 
@@ -63,7 +53,9 @@
 
 ## api 详解
 
-##### 1、nest.core.startup 初始化项目数据
+##### nest.core.startup 初始化项目数据
+
+``` 这个是其他 api 调用的前提，请确保首先调用此 api ```
 
 * 参数说明
 
@@ -93,119 +85,56 @@
 		    }
 		})
 
-##### 2、nest.user.checkLogin 检测是否已经登录
+##### nest.easeuser.login 登录
+
+```请确保已经调用过  nest.core.startup ```
 
 * 参数说明
 
-		loginInfo:nest.user.LoginInfo 初始化信息。请填 {}
+		loginInfo:nest.easeuser.ILoginCallbacks 登录对象，此对象需要实现 onCreate，onSuccess，onFail 3个方法。
 
-		callback:(resultInfo:LoginCallbackInfo)=>any 回调结果函数
-			resultInfo：回调函数的参数数据
-				|--- result 回调参数是否正确，0 正确，其他 错误
-				|--- token 用户 token 信息，result 为 0 时才会有
-
-* 示例
-
-		nest.user.checkLogin({}, function (data) {
-		     if(data.token) {
-		         //用户已经登录过，获取用户token和用户id
-		         //这时候就不需要显示登陆界面，直接进入游戏即可
-		         var token = data.token;
-		     }
-		     else {
-		         //用户没有登录，调用 nest.user.isSupport，根据loginType显示登陆按钮
-		     }
-		 })
-
-##### 3、nest.user.isSupport 检测支持何种登录方式
+ 
+ 	* onCreate:(data:nest.easeuser.ILoginTypes):void 根据传入的参数需要创建对应的按钮（目前为止出现能为 qq（显示 qq 按钮）、wx（显示微信按钮）、default（显示一个游戏内的默认按钮），可能只有1个），并在触发点击事件后，回调 onChoose 函数。如果传入的参数带有 accInfo 信息，请根据 accInfo.avatarUrl 来显示头像，并修改名称为 XX一键登录。
+		
+		~~~
+		function onCreate(data:nest.easeuser.ILoginTypes):void {
+        	for (var i:number = 0; i < data.loginTypes.length; i++) {
+        		//根据 loginType 类型创建对应的按钮，如果能获取到 accInfo，则需要显示出头像，并且显示到舞台上
+             	var btn;
+             	btn.name = data.loginTypes[i].loginType;
+             	
+             	btn.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
+             		data.onChoose(this.name);//请确保传入的参数对应为点击的参数，这里只是一个示例，不是非要将类型放到 name 上，开发者可以根据自己的需求来写，只要确保传入的参数正确就行
+             		}, btn);
+             	}
+		}
+		~~~
+		
+		![image](btns.png)
+		
+	* onSuccess(data:nest.user.LoginCallbackInfo):void 登录成功，直接进入到游戏逻辑，如果有登录按钮显示，记得处理（看项目需求要不要单独删除）
+		
+	* onFail(data:nest.core.ResultCallbackInfo):void 登录失败。请查看失败原因。
+		
+##### nest.easeuser.isSupport 检测是否支持 getInfo 方法调用
 * 参数说明
-
-		callback:(resultInfo:nest.user.UserSupportCallbackInfo)=>any 回调结果函数
-			resultInfo：回调函数的参数数据
-				|--- loginTypes 登录方式，以QQ浏览器为例，返回 [{"loginType": "qq", "accInfo": {nickName : "name", avatarUrl :"a.png"}}]
-				|--- loginType 登录方式，以QQ浏览器为例，返回 ["qq","wx"]
+		
+		info:Object 请传递 {}
+		
+		callback:(resultInfo:nest.easeuser.UserSupportCallbackInfo)=>void 回调结果函数
+			getInfo：获取渠道是否支持获得用户信息接口，1是支持，其他不支持。如果支持可以使用nest.easeuser.getInfo获取用户信息
 
 * 示例
 
-		nest.user.isSupport({}, function (data:nest.user.UserSupportCallbackInfo) {
+		nest.easeuser.isSupport({}, function (data:nest.easeuser.UserSupportCallbackInfo) {
 		    //获取是否支持nest.user.getInfo接口，有该字段并且该字段值为1表示支持
 		    var getInfo = data.getInfo;
-		    //已经登录过的信息，该字段目前只有新版qq浏览器runtime有
-		    //如果有该字段，请放弃使用loginType字段，并用该字段获取可用的登录方式以及登录信息
-		    var loginTypes = data.loginTypes;
-		    if(loginTypes && loginTypes.length) {
-		        for(var i:number = 0 ; i < loginTypes.length ; i++) {
-		            var info:any = loginTypes[i];
-		            //登录类型
-		            var infoLoginType:string = info.loginType;
-		            //如果不为空，标识本地已有该类型的身份信息
-		            var accInfo:any = info.accInfo;
-		            if(accInfo) {
-		                //昵称
-		                var nickName = accInfo.nickName;
-		                //头像
-		                var avatarUrl = accInfo.avatarUrl;
-		            }
-		        }
-		    }    
-		    else if (data.loginType && data.loginType.length) {
-		        //获取登录方式数组，如["qq","wx"]
-		        //开发者应该主动判断登录方式，如果返回了 null ，则表示没有特殊登录方式
-		        var loginType = data.loginType;
-		    }
-		    else {
-		    	//直接调用 login，无需传参数
-		    }
 		})
 
-###### 4、nest.user.login 调用渠道登录接口
-* 参数说明
+###### nest.easeuser.getInfo 获取用户信息，目前只有qq浏览器支持
 
-		loginInfo:nest.user.LoginInfo 初始化信息。比如 {"loginType" : "qq"}，没有 loginType 则 {}
-		  |--- loginType 登陆类型，没有则不需要赋值
+```调用前，请确保 nest.easeuser.isSupport 返回结果支持调用```
 
-		callback:(resultInfo:ResultCallbackInfo)=>any。回调结果函数
-			resultInfo：回调函数的参数数据
-				|--- result 回调参数是否正确，0 正确，其他 错误
-				|--- token 用户 token 信息，result 为 0 时才会有
-
-* 示例
-
-		//如果是用户点击某个登录按钮，则传递loginType，否则不传
-		nest.user.login({loginType:qq}, function (data) {
-		    if(data.token) {
-		        //登录成功，获取用户token，并根据token获取用户id，之后进入游戏
-		        //获取id代码请看Nest工程中的LoginView文件，这个代码请务必放在服务端实现
-		        var token = data.token;
-		        
-		    }
-		    else {
-		        //登录失败，需要重新登陆
-		    }
-		})
-
-###### nest.user.logout 登出
-* 参数说明
-
-		loginInfo:nest.user.LoginInfo 请传入 {}
-
-		callback:(resultInfo:ResultCallbackInfo)=>any。回调结果函数
-			resultInfo：回调函数的参数数据
-				|--- result 回调参数是否正确，0 正确，其他 错误
-
-* 示例
-
-		nest.user.logout({}, function (resultInfo:nest.user.LoginCallbackInfo) {
-		    if (resultInfo.result == 0) {
-		    	//登出成功
-        		//登出之后直到下次成功登录之前都不需要调用checkLogin接口，直接调用login进行登录即可
-		    }
-		    else {
-		        //登出失败，有可能是该平台不支持登出接口
-		    }
-		});
-
-###### nest.user.getInfo 获取用户信息，目前只有qq浏览器支持
 * 参数说明
 
 		loginInfo:nest.user.LoginInfo 请传入 {}
@@ -215,7 +144,7 @@
 
 * 示例
 
-		nest.user.getInfo({}, function (data) {
+		nest.easeuser.getInfo({}, function (data) {
 		    if(data.result == 0) {
 		        //获取用户信息成功
 		         var msg = data.msg;              //传回的提示信息
@@ -234,6 +163,28 @@
 		})
 
 
+
+###### nest.easeuser.logout 登出
+* 参数说明
+
+		loginInfo:nest.user.LoginInfo 请传入 {}
+
+		callback:(resultInfo:nest.core.ResultCallbackInfo)=>any。回调结果函数
+			resultInfo：回调函数的参数数据
+				|--- result 回调参数是否正确，0 正确，其他 错误
+
+* 示例
+
+		nest.easeuser.logout({}, function (resultInfo:nest.core.ResultCallbackInfo) {
+		    if (resultInfo.result == 0) {
+		    	//登出成功，再次登录请使用直接按之前的登录方式登录 nest.easeuser.login
+        		
+		    }
+		    else {
+		        //登出失败，有可能是该平台不支持登出接口
+		    }
+		});
+		
 ###### nest.iap.pay 支付
 * 参数说明
 
@@ -503,3 +454,7 @@ http://localhost:63342/HelloGUI/launcher/index.html?platInfo=open\_```88888```_9
 
 弹出登录窗之后选择其他方式登陆，用户名：```guest1```到```guest8```，密码：```123456```
 
+
+## 注意
+* 请先使用nest.core.startup初始化Nest
+* runtime目前只支持android系统。
