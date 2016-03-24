@@ -123,7 +123,7 @@ var nest;
                     onCreate(arr);
                 }
                 else {
-                    callLogin("");
+                    onCreate([{ "loginType": "default" }]);
                 }
             });
         }
