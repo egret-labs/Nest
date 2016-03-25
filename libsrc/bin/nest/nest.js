@@ -130,7 +130,7 @@ var nest;
         function callLogin(type) {
             //如果用户点击某个登录按钮，则传递loginType，否则不传
             var loginTypeInfo = {};
-            if (type && type != "") {
+            if (type && type != "" && type != "default") {
                 loginTypeInfo["loginType"] = type;
             }
             nest.user.login(loginTypeInfo, function (data) {
