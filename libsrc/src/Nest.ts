@@ -420,6 +420,7 @@ module nest {
             attention?:number;
             sendToDesktop?:number;
             exitGame?:number;
+            getInfo?:number;
         }
 
         export interface GetInfoCallbackInfo extends core.ResultCallbackInfo {
