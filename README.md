@@ -36,9 +36,9 @@
 * 示例：
  
 		var info:any = {};
-		//设置游戏id，这里是在测试步骤1中获取的游戏appId
-		info.egretAppId = 88888;
-		//设置使用 Nest 版本。默认为1，新版请传递2
+		//设置游戏id。如果是通过开放平台接入，请在开放平台游戏信息-》基本信息-》游戏ID 找到。
+		info.egretApId = 88888;
+		//设置使用 Nest 版本。请传递2
 		info.version = 2;
 		//在debug模式下，请求nest接口会有日志输出。建议调试时开启
 		info.debug = true;
@@ -60,8 +60,8 @@
 * 参数说明
 
 		info:nest.core.StartupInfo 初始化信息。比如 {"egretAppId" : 88888, "version" : 2}
-		  |--- egretAppId egret 开放平台申请的游戏 id
-		  |--- version 使用的Nest版本,新版为2,可以不传
+		  |--- egretAppId 如果是通过开放平台接入，请在开放平台游戏信息-》基本信息-》游戏ID 找到。
+		  |--- version 使用的Nest版本，请传递2
 
 		callback:(resultInfo:ResultCallbackInfo)=>any。回调结果函数
 			resultInfo：回调函数的参数数据
@@ -70,9 +70,9 @@
 * 示例
 
 		var info:any = {};
-		//设置游戏id，这里是在测试步骤1中获取的游戏appId
+		//设置游戏id。如果是通过开放平台接入，请在开放平台游戏信息-》基本信息-》游戏ID 找到。
 		info.egretAppId = 88888;
-		//设置使用 Nest 版本。默认为1，新版请传递2
+		//设置使用 Nest 版本。请传递2
 		info.version = 2;
 		//在debug模式下，请求nest接口会有日志输出。建议调试时开启
 		info.debug = true;
