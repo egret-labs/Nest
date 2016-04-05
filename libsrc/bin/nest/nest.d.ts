@@ -359,6 +359,7 @@ declare module nest {
             attention?: number;
             sendToDesktop?: number;
             exitGame?: number;
+            getInfo?: number;
         }
         interface GetInfoCallbackInfo extends core.ResultCallbackInfo {
             contact: ContactInfo;
