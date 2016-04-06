@@ -97,7 +97,7 @@ var nest;
                     onCreate($loginTypes);
                 }
                 else {
-                    callLogin("");
+                    callSupport();
                 }
             }
         }

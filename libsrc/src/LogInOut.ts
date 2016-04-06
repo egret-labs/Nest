@@ -140,7 +140,7 @@ module nest {
                     onCreate($loginTypes);
                 }
                 else {
-                    callLogin("");
+                    callSupport();
                 }
             }
         }
