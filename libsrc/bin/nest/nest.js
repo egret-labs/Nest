@@ -97,12 +97,19 @@ var nest;
                     onCreate($loginTypes);
                 }
                 else {
-                    callSupport();
+                    if (hasSupport) {
+                        callLogin("");
+                    }
+                    else {
+                        callSupport();
+                    }
                 }
             }
         }
         easeuser.login = login;
+        var hasSupport = false;
         function callSupport() {
+            hasSupport = true;
             nest.user.isSupport({}, function (data) {
                 //获取是否支持nest.user.getInfo接口，有该字段并且该字段值为1表示支持
                 easeuser.$getInfo = data.getInfo;
@@ -123,7 +130,8 @@ var nest;
                     onCreate(arr);
                 }
                 else {
-                    onCreate([{ "loginType": "default" }]);
+                    //onCreate([]);
+                    callLogin("");
                 }
             });
         }

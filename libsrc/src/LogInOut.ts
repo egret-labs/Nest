@@ -140,13 +140,21 @@ module nest {
                     onCreate($loginTypes);
                 }
                 else {
-                    callSupport();
+                    if (hasSupport) {
+                        callLogin("");
+                    }
+                    else {
+                        callSupport();
+                    }
                 }
             }
         }
 
+        var hasSupport:boolean = false;
         function callSupport():void {
+            hasSupport = true;
             nest.user.isSupport({}, function (data) {
+
                 //获取是否支持nest.user.getInfo接口，有该字段并且该字段值为1表示支持
                 $getInfo = data.getInfo;
 
@@ -169,10 +177,8 @@ module nest {
                     onCreate(arr);
                 }
                 else {
-
-                    onCreate([{"loginType" : "default"}]);
-
-                    //callLogin("");
+                    //onCreate([]);
+                    callLogin("");
                 }
             })
         }
