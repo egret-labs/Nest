@@ -66,51 +66,29 @@ var nest;
 (function (nest) {
     var easeuser;
     (function (easeuser) {
-        var $loginInfo;
-        var isFirst = true;
-        var $loginTypes;
-        /**
-         * 登录
-         * @param loginInfo 登录传递的信息，需要对 onCreate，onSuccess，onFail 进行响应
-         */
-        function login(loginInfo) {
-            $loginInfo = loginInfo;
-            //
-            if (isFirst) {
-                isFirst = false;
-                nest.user.checkLogin({}, function (resultInfo) {
-                    if (resultInfo.token) {
-                        if (isLogout()) {
-                            callSupport();
-                        }
-                        else {
-                            onSuccess(resultInfo);
-                        }
-                    }
-                    else {
-                        callSupport();
-                    }
-                });
-            }
-            else {
-                if ($loginTypes && $loginTypes.length) {
-                    onCreate($loginTypes);
-                }
-                else {
-                    callSupport();
-                }
-            }
+        function startup(startupInfo, callback) {
+            nest.core.startup(startupInfo, function (resultInfo) {
+                callCheckLogin(callback);
+            });
         }
-        easeuser.login = login;
-        function callSupport() {
+        easeuser.startup = startup;
+        function callCheckLogin(callback) {
+            nest.user.checkLogin({}, function (resultInfo) {
+                $loginInfo = resultInfo;
+                callSupport(function () {
+                    callback({ "result": 0 });
+                });
+            });
+        }
+        function callSupport(callback) {
             nest.user.isSupport({}, function (data) {
                 //获取是否支持nest.user.getInfo接口，有该字段并且该字段值为1表示支持
-                easeuser.$getInfo = data.getInfo;
+                $getInfo = data.getInfo;
                 //已经登录过的信息，该字段目前只有新版qq浏览器runtime有
                 //如果有该字段，请放弃使用loginType字段，并用该字段获取可用的登录方式以及登录信息
                 var loginTypes = data.loginTypes;
                 if (loginTypes && loginTypes.length) {
-                    onCreate(loginTypes);
+                    $loginTypes = loginTypes;
                 }
                 else if (data.loginType && data.loginType.length) {
                     //获取登录方式数组，如["qq","wx"]
@@ -120,35 +98,17 @@ var nest;
                     for (var i = 0; i < loginType.length; i++) {
                         arr.push({ "loginType": loginType[i] });
                     }
-                    onCreate(arr);
+                    $loginTypes = arr;
                 }
                 else {
-                    onCreate([{ "loginType": "default" }]);
+                    $loginTypes = [{ "loginType": "default" }];
                 }
+                callback();
             });
         }
-        function callLogin(type) {
-            //如果用户点击某个登录按钮，则传递loginType，否则不传
-            var loginTypeInfo = {};
-            if (type && type != "" && type != "default") {
-                loginTypeInfo["loginType"] = type;
-            }
-            nest.user.login(loginTypeInfo, function (data) {
-                if (data.token) {
-                    //登录成功，获取用户token，并根据token获取用户id，之后进入游戏
-                    clearLogout();
-                    onSuccess(data);
-                }
-                else {
-                    //登录失败，需要重新登陆
-                    onFail(data);
-                }
-            });
-        }
-        //[{"loginType" : "qq", accInfo: {nickName: "user_name", "avatarUrl" : "a.png"}}]
-        function onCreate(loginTypes) {
-            if ($loginTypes == null) {
-                $loginTypes = loginTypes;
+        function getLoginTypes() {
+            if ($getInfo) {
+                return [{ "loginType": "default" }];
             }
             if (isLogout()) {
                 if ($loginTypes && $loginTypes.length) {
@@ -159,13 +119,53 @@ var nest;
                     }
                 }
             }
-            $loginInfo.onCreate({ "loginTypes": $loginTypes, onChoose: callLogin });
+            return $loginTypes.concat();
         }
-        function onSuccess(data) {
-            $loginInfo.onSuccess(data);
+        easeuser.getLoginTypes = getLoginTypes;
+        var $loginInfo;
+        var $getInfo;
+        var isFirst = true;
+        var $loginTypes;
+        /**
+         * 登录
+         * @param loginInfo 登录传递的信息，需要对 onCreate，onSuccess，onFail 进行响应
+         */
+        function login(loginInfo, callback) {
+            if (isFirst) {
+                isFirst = false;
+                if ($loginInfo && $loginInfo.token) {
+                    callback($loginInfo);
+                }
+                else {
+                    callLogin(loginInfo.loginType, callback);
+                }
+            }
+            else {
+                callLogin(loginInfo.loginType, callback);
+            }
         }
-        function onFail(data) {
-            $loginInfo.onFail(data);
+        easeuser.login = login;
+        function callLogin(type, callback) {
+            //如果用户点击某个登录按钮，则传递loginType，否则不传
+            var loginTypeInfo = {};
+            if (type && type != "" && type != "default") {
+                loginTypeInfo["loginType"] = type;
+            }
+            nest.user.login(loginTypeInfo, function (data) {
+                if (data.token) {
+                    //登录成功，获取用户token，并根据token获取用户id，之后进入游戏
+                    clearLogout();
+                    data.result = 0;
+                    callback(data);
+                }
+                else {
+                    //登录失败，需要重新登陆
+                    if (data.result == null) {
+                        data.result = -2;
+                    }
+                    callback(data);
+                }
+            });
         }
         function isLogout() {
             if (nest.utils.$isRuntime) {
@@ -183,9 +183,6 @@ var nest;
                 window.localStorage.setItem("egret_logout", null);
             }
         }
-    })(easeuser = nest.easeuser || (nest.easeuser = {}));
-    var easeuser;
-    (function (easeuser) {
         /**
          * 登出接口
          * @param loginInfo 登出参数,没有可以传递{}
@@ -207,6 +204,7 @@ var nest;
         function logout(loginInfo, callback) {
             var egretH5SdkCallback = function (data) {
                 if (data.result == 0) {
+                    $loginInfo = null;
                     //登出保存登出状态
                     if (nest.utils.$isRuntime) {
                         egret.localStorage.setItem("egret_logout", "1");
@@ -220,9 +218,6 @@ var nest;
             nest.user.logout(loginInfo, egretH5SdkCallback);
         }
         easeuser.logout = logout;
-    })(easeuser = nest.easeuser || (nest.easeuser = {}));
-    var easeuser;
-    (function (easeuser) {
         /**
          * 检测支持何种登录方式
          * @param info 请传递一个{}
@@ -239,7 +234,7 @@ var nest;
          * </pre>
          */
         function isSupport(info, callback) {
-            var callbackInfo = { "result": 0, "getInfo": easeuser.$getInfo };
+            var callbackInfo = { "result": 0, "getInfo": $getInfo };
             callback(callbackInfo);
         }
         easeuser.isSupport = isSupport;

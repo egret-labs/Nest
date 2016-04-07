@@ -3,7 +3,7 @@
  * @author 
  *
  */
-class LoginView extends egret.gui.SkinnableComponent implements nest.easeuser.ILoginCallbacks{
+class LoginView extends egret.gui.SkinnableComponent{
 	
     
     public info_txt: egret.gui.Label;
@@ -18,8 +18,10 @@ class LoginView extends egret.gui.SkinnableComponent implements nest.easeuser.IL
 	
 	public createChildren(){
         super.createChildren();  
-        this.login_button.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onTouchTapHandler,this);   
-        this.quickTest_btn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onQuickTestHandler,this);   
+        //this.login_button.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onTouchTapHandler,this);
+        //this.quickTest_btn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onQuickTestHandler,this);
+
+        this.onTouchTapHandler(null);
 	}
 	
 	private onQuickTestHandler(e:egret.TouchEvent):void {
@@ -29,30 +31,30 @@ class LoginView extends egret.gui.SkinnableComponent implements nest.easeuser.IL
 	private onTouchTapHandler(e:egret.TouchEvent):void{
 
         var self = this;
-        nest.core.startup({egretAppId : 88888, version : 2, debug:true}, function(resultInfo:nest.core.ResultCallbackInfo) {
+        nest.easeuser.startup({egretAppId : 88888, version : 2, debug:true}, function(resultInfo:nest.core.ResultCallbackInfo) {
             if (resultInfo.result == 0) {
                 self.checkLogin();
             }
         });
 	}
 
-    public onCreate = (data: nest.easeuser.ILoginTypes):void =>  {
-        utils.changeView(new LoginTypeView(data));
-    };
-
-    public onSuccess = (data: nest.user.LoginCallbackInfo):void => {
-        egret.log("log Success");
-        new Login().login(data);
-    };
-
-    public onFail = (data: nest.core.ResultCallbackInfo):void => {
-        egret.log("log Fail");
-    };
-
 	private checkLogin():void{
-
         egret.log("checkLogin start");
 
-        nest.easeuser.login(this);
+        var loginTypes:Array<nest.easeuser.ILoginType> = nest.easeuser.getLoginTypes();
+
+        var loginView:LoginTypeView = new LoginTypeView(loginTypes, function (logType:nest.easeuser.ILoginType) {
+            nest.easeuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
+                if (data.result == 0) {
+                    egret.log("log Success");
+                    new Login().login(data);
+                }
+                else {
+                    egret.log("log Fail");
+                }
+            });
+        });
+
+        utils.changeView(loginView);
 	}
 }
