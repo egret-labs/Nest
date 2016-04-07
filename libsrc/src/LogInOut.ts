@@ -151,7 +151,7 @@ module nest {
          *     });
          * </pre>
          */
-        export function login(loginInfo:ILoginType, callback:(resultInfo:nest.user.LoginCallbackInfo)=>void):void {
+        export function login(loginInfo:nest.user.LoginInfo, callback:(resultInfo:nest.user.LoginCallbackInfo)=>void):void {
             if (isFirst) {
                 isFirst = false;
 

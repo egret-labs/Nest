@@ -42,10 +42,24 @@ class QuickTest {
         self.addLog("checkLogin start");
 
         var loginTypes:Array<nest.easeuser.ILoginType> = nest.easeuser.getLoginTypes();
+        if (loginTypes.length) {
+            utils.changeView(new LoginTypeView(loginTypes, function (logType:nest.easeuser.ILoginType):void {
+                nest.easeuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
+                    if (data.result == 0) {
+                        egret.log("log Success");
 
-        utils.changeView(new LoginTypeView(loginTypes, function (logType:nest.easeuser.ILoginType):void {
+                        self.logData = data;
 
-            nest.easeuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
+                        self.getInfo();
+                    }
+                    else {
+                        egret.log("log Fail");
+                    }
+                });
+            }));
+        }
+        else {
+            nest.easeuser.login({}, function (data:nest.user.LoginCallbackInfo) {
                 if (data.result == 0) {
                     egret.log("log Success");
 
@@ -57,7 +71,8 @@ class QuickTest {
                     egret.log("log Fail");
                 }
             });
-        }));
+        }
+
     }
 
     private logData:nest.user.LoginCallbackInfo;

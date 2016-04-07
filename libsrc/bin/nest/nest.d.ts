@@ -480,7 +480,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        function login(loginInfo: ILoginType, callback: (resultInfo: nest.user.LoginCallbackInfo) => void): void;
+        function login(loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => void): void;
         /**
          * 登出接口
          * @param loginInfo 登出参数,没有可以传递{}

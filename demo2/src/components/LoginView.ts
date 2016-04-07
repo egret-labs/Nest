@@ -33,18 +33,33 @@ class LoginView extends egret.gui.SkinnableComponent{
         var self = this;
         nest.easeuser.startup({egretAppId : 88888, version : 2, debug:true}, function(resultInfo:nest.core.ResultCallbackInfo) {
             if (resultInfo.result == 0) {
-                self.checkLogin();
+                self.login();
             }
         });
 	}
 
-	private checkLogin():void{
-        egret.log("checkLogin start");
+	private login():void{
+        egret.log("login start");
 
         var loginTypes:Array<nest.easeuser.ILoginType> = nest.easeuser.getLoginTypes();
 
-        var loginView:LoginTypeView = new LoginTypeView(loginTypes, function (logType:nest.easeuser.ILoginType) {
-            nest.easeuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
+        if (loginTypes.length) {//需要显示对应的登录按钮
+            var loginView:LoginTypeView = new LoginTypeView(loginTypes, function (logType:nest.easeuser.ILoginType) {
+                nest.easeuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
+                    if (data.result == 0) {
+                        egret.log("log Success");
+                        new Login().login(data);
+                    }
+                    else {
+                        egret.log("log Fail");
+                    }
+                });
+            });
+
+            utils.changeView(loginView);
+        }
+        else {//不需要登录按钮，直接调用登录进游戏
+            nest.easeuser.login({}, function (data:nest.user.LoginCallbackInfo) {
                 if (data.result == 0) {
                     egret.log("log Success");
                     new Login().login(data);
@@ -53,8 +68,6 @@ class LoginView extends egret.gui.SkinnableComponent{
                     egret.log("log Fail");
                 }
             });
-        });
-
-        utils.changeView(loginView);
+        }
 	}
 }
