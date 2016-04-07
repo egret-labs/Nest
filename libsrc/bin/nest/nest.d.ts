@@ -429,7 +429,22 @@ declare module nest {
 }
 declare module nest {
     module easeuser {
+        /**
+         * 启动Nest
+         * @param startupInfo 启动参数
+         * @param callback 启动完成回调
+         * @example 以下代码设置appId为 88888,启动Nest
+         * <pre>
+         *     nest.core.startup({egretAppId:88888}, function (){
+         *         //do something
+         *     });
+         * </pre>
+         */
         function startup(startupInfo: nest.core.StartupInfo, callback: (data: core.ResultCallbackInfo) => any): void;
+        /**
+         * 获取登录按钮类型。登出后再次登录前此方法需要重新调用。
+         * 目前为止出现能为 qq（显示 qq 按钮）、wx（显示微信按钮）、default（显示一个游戏内的默认按钮），可能只有1个）
+         */
         function getLoginTypes(): Array<ILoginType>;
         /**
          * 单个按钮的信息
@@ -448,8 +463,22 @@ declare module nest {
             };
         }
         /**
-         * 登录
-         * @param loginInfo 登录传递的信息，需要对 onCreate，onSuccess，onFail 进行响应
+         * 调用渠道登录接口，调用登录接口前，请先根据 nest.easeuser.getLoginTypes 来获取实际显示的按钮类型。
+         * @param loginInfo
+         * @param callback
+         * @callback-param  @see nest.user.LoginCallbackInfo
+         * @example 以下代码调用渠道登录接口
+         * <pre>
+         *     nest.user.login({}, function (data){
+         *         if(data.result == 0) {
+         *             //登陆成功,获取用户token
+         *             var token = data.token;
+         *         }
+         *         else {
+         *             //登录失败,需要重新登录
+         *         }
+         *     });
+         * </pre>
          */
         function login(loginInfo: ILoginType, callback: (resultInfo: nest.user.LoginCallbackInfo) => void): void;
         /**

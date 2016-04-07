@@ -81,7 +81,7 @@ module nest {
                     $loginTypes = arr;
                 }
                 else {
-                    $loginTypes = [{"loginType" : "default"}];
+                    $loginTypes = [];
                 }
 
                 callback();
@@ -94,7 +94,7 @@ module nest {
          */
         export function getLoginTypes():Array<ILoginType> {
             if ($getInfo) {//刚开始登录过
-                return [{"loginType" : "default"}];
+                return [];
             }
             if (isLogout()) {//登出过，则需要去掉按钮内的信息
                 if ($loginTypes && $loginTypes.length) {
