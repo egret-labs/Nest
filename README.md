@@ -20,11 +20,21 @@
 
 ```nest.easeuser.isSupport``` 简化成只判断有没有 ```getInfo``` 这个 api 调用
 
+## 流程
+
+* nest.easeuser.startup 初始化 nest。
+
+* nest.easeuser.getLoginTypes 获取当前平台有几种登录方式，如果有则需要在进入游戏登录页面前先显示带有登录按钮方式的界面，如果没有则直接调用 nest.easeuser.login 进入到游戏。
+
+* nest.easeuser.login 如果有登录方式，则传入登录方式，如果没有，直接传入 {}
+
+* 
+
 ## api 参数说明
 
-在 Nest 中，使用了传参并通过回调函数返回数据，这里通过 nest.core.startup 来说明下各个参数的意思。
+在 Nest 中，使用了传参并通过回调函数返回数据，这里通过 nest.easeuser.startup 来说明下各个参数的意思。
 
-* nest.core.startup(info:nest.core.StartupInfo, callback:(resultInfo:nest.core.ResultCallbackInfo)=>any)： 开发者调用的 api 方法。
+* nest.easeuser.startup(info:nest.core.StartupInfo, callback:(resultInfo:nest.core.ResultCallbackInfo)=>any)： 开发者调用的 api 方法。
 
 * info:nest.core.StartupInfo：方法需要传入的参数，为 nest.core.StartupInfo 类型。
 
@@ -42,7 +52,7 @@
 		info.version = 2;
 		//在debug模式下，请求nest接口会有日志输出。建议调试时开启
 		info.debug = true;
-		nest.core.startup(info, function (data) {
+		nest.easeuser.startup(info, function (data) {
 		    if(data.result == 0) {
 		        //初始化成功，进入游戏
 		    }
@@ -53,7 +63,7 @@
 
 ## api 详解
 
-##### nest.core.startup 初始化项目数据
+##### nest.easeuser.startup 初始化项目数据
 
 ``` 这个是其他 api 调用的前提，请确保首先调用此 api ```
 
@@ -76,7 +86,7 @@
 		info.version = 2;
 		//在debug模式下，请求nest接口会有日志输出。建议调试时开启
 		info.debug = true;
-		nest.core.startup(info, function (data) {
+		nest.easeuser.startup(info, function (data) {
 		    if(data.result == 0) {
 		        //初始化成功，进入游戏
 		    }
@@ -85,38 +95,46 @@
 		    }
 		})
 
+##### nest.easeuser.getLoginTypes 获取当前平台有几种登录方式
+
+有则需要在进入游戏登录页面前先显示带有登录按钮方式的界面；没有则直接调用 ```nest.easeuser.login``` 进入到游戏。如果调用登出api后，需要重新调用此api获取登录方式
+
+
+* 示例
+		var loginTypes:Array<nest.easeuser.ILoginType> = nest.easeuser.getLoginTypes();
+        if (loginTypes.length) {//需要显示对应的登录按钮
+			//按照获取到的类型，显示全部的按钮，其中，qq（qq对应按钮）、 wx（微信对应按钮）、default（游戏内自己进入按钮），请可能兼容多种按钮同时存在的页面
+			//如果传入的参数带有 accInfo 信息，请根据 accInfo.avatarUrl 来显示头像，并修改名称为 XX一键登录。
+			//按钮点击后，请调用 nest.easeuser.login，并传入对应的登录类型
+        }
+		else {//直接调用 nest.easeuser.login，传入 {} 即可。
+			
+		}
+
 ##### nest.easeuser.login 登录
 
-```请确保已经调用过  nest.core.startup ```
+```请确保已经调用过  nest.easeuser.startup ```，并且需要调用根据 ```nest.easeuser.getLoginTypes();``` 来传入相应的参数。登录 api 的处理需要在进入游戏自己的第一页面前处理完（比如游戏默认的登录页面）。
 
 * 参数说明
+		
+		loginInfo: nest.user.LoginInfo 登录传入的类型方式。 如果没有获取到登录类型，请传递 {}
+		
+		callback:(resultInfo: nest.user.LoginCallbackInfo)=>void 回调结果函数
+			resultInfo：登录获取到的信息，根据 resultInfo.result == 0 来判断是否登录成功
 
-		loginInfo:nest.easeuser.ILoginCallbacks 登录对象，此对象需要实现 onCreate，onSuccess，onFail 3个方法。
+* 示例
 
- 
- 	* onCreate:(data:nest.easeuser.ILoginTypes):void 根据传入的参数需要创建对应的按钮（目前为止出现能为 qq（显示 qq 按钮）、wx（显示微信按钮）、default（显示一个游戏内的默认按钮），可能只有1个），并在触发点击事件后，回调 onChoose 函数。如果传入的参数带有 accInfo 信息，请根据 accInfo.avatarUrl 来显示头像，并修改名称为 XX一键登录。
-		
-		~~~
-		function onCreate(data:nest.easeuser.ILoginTypes):void {
-        	for (var i:number = 0; i < data.loginTypes.length; i++) {
-        		//根据 loginType 类型创建对应的按钮，如果能获取到 accInfo，则需要显示出头像，并且显示到舞台上
-             	var btn;
-             	btn.name = data.loginTypes[i].loginType;
-             	
-             	btn.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
-             		data.onChoose(this.name);//请确保传入的参数对应为点击的参数，这里只是一个示例，不是非要将类型放到 name 上，开发者可以根据自己的需求来写，只要确保传入的参数正确就行
-             		}, btn);
-             	}
-		}
-		~~~
-		
-		![image](btns.png)
-		
-	* onSuccess(data:nest.user.LoginCallbackInfo):void 登录成功，直接进入到游戏逻辑，如果有登录按钮显示，记得处理（看项目需求要不要单独删除）
-		
-	* onFail(data:nest.core.ResultCallbackInfo):void 登录失败。请查看失败原因。
-		
+		nest.easeuser.login({}, function (resultInfo:nest.user.LoginCallbackInfo) {
+		    if (resultInfo.result == 0) {//登录成功
+				
+			}
+			else {//登录失败
+				
+			}
+		})
+
 ##### nest.easeuser.isSupport 检测是否支持 getInfo 方法调用
+
 * 参数说明
 		
 		info:Object 请传递 {}
@@ -456,5 +474,5 @@ http://localhost:63342/HelloGUI/launcher/index.html?platInfo=open\_```88888```_9
 
 
 ## 注意
-* 请先使用nest.core.startup初始化Nest
+* 请先使用nest.easeuser.startup初始化Nest
 * runtime目前只支持android系统。
