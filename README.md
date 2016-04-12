@@ -101,6 +101,7 @@
 
 
 * 示例
+
 		var loginTypes:Array<nest.easeuser.ILoginType> = nest.easeuser.getLoginTypes();
         if (loginTypes.length) {//需要显示对应的登录按钮
 			//按照获取到的类型，显示全部的按钮，其中，qq（qq对应按钮）、 wx（微信对应按钮）、default（游戏内自己进入按钮），请可能兼容多种按钮同时存在的页面
@@ -110,6 +111,9 @@
 		else {//直接调用 nest.easeuser.login，传入 {} 即可。
 			
 		}
+![image](login3.jpg) ![image](login4.jpg)
+
+> 第二个图为游戏内第一个页面，第一个图为平台登录需求的页面，需要是全屏页面显示而不是简单的弹窗。
 
 ##### nest.easeuser.login 登录
 
