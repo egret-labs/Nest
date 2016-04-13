@@ -29,7 +29,7 @@ class GameView extends egret.gui.SkinnableComponent{
 
         var self = this;
         egret.log("logout start");
-        nest.easeuser.logout(loginInfo, function (data) {
+        nest.easyuser.logout(loginInfo, function (data) {
             egret.log(JSON.stringify(data));
             egret.log("logout end");
             if (data["result"] == 0) {

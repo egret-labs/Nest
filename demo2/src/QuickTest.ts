@@ -19,7 +19,7 @@ class QuickTest {
         }
 
         var self = this;
-        nest.easeuser.startup({
+        nest.easyuser.startup({
             egretAppId: 88888,
             version: 2,
             debug: true
@@ -41,10 +41,10 @@ class QuickTest {
 
         self.addLog("checkLogin start");
 
-        var loginTypes:Array<nest.easeuser.ILoginType> = nest.easeuser.getLoginTypes();
+        var loginTypes:Array<nest.easyuser.ILoginType> = nest.easyuser.getLoginTypes();
         if (loginTypes.length) {
-            utils.changeView(new LoginTypeView(loginTypes, function (logType:nest.easeuser.ILoginType):void {
-                nest.easeuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
+            utils.changeView(new LoginTypeView(loginTypes, function (logType:nest.easyuser.ILoginType):void {
+                nest.easyuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
                     if (data.result == 0) {
                         egret.log("log Success");
 
@@ -59,7 +59,7 @@ class QuickTest {
             }));
         }
         else {
-            nest.easeuser.login({}, function (data:nest.user.LoginCallbackInfo) {
+            nest.easyuser.login({}, function (data:nest.user.LoginCallbackInfo) {
                 if (data.result == 0) {
                     egret.log("log Success");
 
@@ -194,7 +194,7 @@ class QuickTest {
         var loginInfo:nest.user.LoginInfo = {};
 
         var self = this;
-        nest.easeuser.logout(loginInfo, function (data) {
+        nest.easyuser.logout(loginInfo, function (data) {
             this.addLog(JSON.stringify(data, null, 4));
             this.addLog("logout end");
 

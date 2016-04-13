@@ -31,7 +31,7 @@ class LoginView extends egret.gui.SkinnableComponent{
 	private onTouchTapHandler(e:egret.TouchEvent):void{
 
         var self = this;
-        nest.easeuser.startup({egretAppId : 88888, version : 2, debug:true}, function(resultInfo:nest.core.ResultCallbackInfo) {
+        nest.easyuser.startup({egretAppId : 88888, version : 2, debug:true}, function(resultInfo:nest.core.ResultCallbackInfo) {
             if (resultInfo.result == 0) {
                 self.login();
             }
@@ -41,11 +41,11 @@ class LoginView extends egret.gui.SkinnableComponent{
 	private login():void{
         egret.log("login start");
 
-        var loginTypes:Array<nest.easeuser.ILoginType> = nest.easeuser.getLoginTypes();
+        var loginTypes:Array<nest.easyuser.ILoginType> = nest.easyuser.getLoginTypes();
 
         if (loginTypes.length) {//需要显示对应的登录按钮
-            var loginView:LoginTypeView = new LoginTypeView(loginTypes, function (logType:nest.easeuser.ILoginType) {
-                nest.easeuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
+            var loginView:LoginTypeView = new LoginTypeView(loginTypes, function (logType:nest.easyuser.ILoginType) {
+                nest.easyuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
                     if (data.result == 0) {
                         egret.log("log Success");
                         new Login().login(data);
@@ -59,7 +59,7 @@ class LoginView extends egret.gui.SkinnableComponent{
             utils.changeView(loginView);
         }
         else {//不需要登录按钮，直接调用登录进游戏
-            nest.easeuser.login({}, function (data:nest.user.LoginCallbackInfo) {
+            nest.easyuser.login({}, function (data:nest.user.LoginCallbackInfo) {
                 if (data.result == 0) {
                     egret.log("log Success");
                     new Login().login(data);

@@ -28,7 +28,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 module nest {
-    export module easeuser {
+    export module easyuser {
         /**
          * 启动Nest
          * @param startupInfo 启动参数
@@ -73,7 +73,7 @@ module nest {
                     //开发者应该主动判断登录方式，如果返回了 null ，则表示没有特殊登录方式
                     var loginType = data.loginType;
 
-                    var arr:Array<easeuser.ILoginType> = [];
+                    var arr:Array<easyuser.ILoginType> = [];
                     for (var i:number = 0; i < loginType.length; i++) {
                         arr.push({"loginType" : loginType[i]});
                     }
@@ -134,7 +134,7 @@ module nest {
         var $loginTypes:Array<ILoginType>;
 
         /**
-         * 调用渠道登录接口，调用登录接口前，请先根据 nest.easeuser.getLoginTypes 来获取实际显示的按钮类型。
+         * 调用渠道登录接口，调用登录接口前，请先根据 nest.easyuser.getLoginTypes 来获取实际显示的按钮类型。
          * @param loginInfo
          * @param callback
          * @callback-param  @see nest.user.LoginCallbackInfo
@@ -216,7 +216,7 @@ module nest {
          * @callback-param   { result : 0 };
          * @example 以下代码调用渠道登出接口
          * <pre>
-         *     nest.easeuser.logout({}, function (data){
+         *     nest.easyuser.logout({}, function (data){
          *         if(data.result == 0) {
          *             //登出成功,需要显示登陆界面供玩家重新登录
          *             //这里后续不需要继续调用nest.user.checkLogin
@@ -267,7 +267,7 @@ module nest {
          *     });
          * </pre>
          */
-        export function isSupport(info:Object, callback:(resultInfo:easeuser.UserSupportCallbackInfo)=>void):void {
+        export function isSupport(info:Object, callback:(resultInfo:easyuser.UserSupportCallbackInfo)=>void):void {
             var callbackInfo = {"result": 0, "getInfo": $getInfo};
 
             callback(callbackInfo);

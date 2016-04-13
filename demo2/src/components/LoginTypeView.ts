@@ -8,11 +8,11 @@ class LoginTypeView extends egret.gui.SkinnableComponent {
 
     public btnGroup:egret.gui.Group;
 
-    private loginTypes:Array<nest.easeuser.ILoginType>;
+    private loginTypes:Array<nest.easyuser.ILoginType>;
 
-    private onChoose:(logType:nest.easeuser.ILoginType)=>void;
+    private onChoose:(logType:nest.easyuser.ILoginType)=>void;
 
-    public constructor(loginTypes:Array<nest.easeuser.ILoginType>, onChoose:(logType:nest.easeuser.ILoginType)=>void) {
+    public constructor(loginTypes:Array<nest.easyuser.ILoginType>, onChoose:(logType:nest.easyuser.ILoginType)=>void) {
         super();
 
         this.loginTypes = loginTypes;
@@ -26,7 +26,7 @@ class LoginTypeView extends egret.gui.SkinnableComponent {
         var self = this;
 
         for (var i:number = 0; i < this.loginTypes.length; i++) {
-            var logT:nest.easeuser.ILoginType = this.loginTypes[i];
+            var logT:nest.easyuser.ILoginType = this.loginTypes[i];
 
             var url = "";
             if (logT.accInfo && logT.accInfo.avatarUrl) {

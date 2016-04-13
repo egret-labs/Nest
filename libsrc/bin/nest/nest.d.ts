@@ -428,7 +428,7 @@ declare module nest {
     };
 }
 declare module nest {
-    module easeuser {
+    module easyuser {
         /**
          * 启动Nest
          * @param startupInfo 启动参数
@@ -463,7 +463,7 @@ declare module nest {
             };
         }
         /**
-         * 调用渠道登录接口，调用登录接口前，请先根据 nest.easeuser.getLoginTypes 来获取实际显示的按钮类型。
+         * 调用渠道登录接口，调用登录接口前，请先根据 nest.easyuser.getLoginTypes 来获取实际显示的按钮类型。
          * @param loginInfo
          * @param callback
          * @callback-param  @see nest.user.LoginCallbackInfo
@@ -488,7 +488,7 @@ declare module nest {
          * @callback-param   { result : 0 };
          * @example 以下代码调用渠道登出接口
          * <pre>
-         *     nest.easeuser.logout({}, function (data){
+         *     nest.easyuser.logout({}, function (data){
          *         if(data.result == 0) {
          *             //登出成功,需要显示登陆界面供玩家重新登录
          *             //这里后续不需要继续调用nest.user.checkLogin
@@ -521,7 +521,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        function isSupport(info: Object, callback: (resultInfo: easeuser.UserSupportCallbackInfo) => void): void;
+        function isSupport(info: Object, callback: (resultInfo: easyuser.UserSupportCallbackInfo) => void): void;
         /**
          * 获取用户信息，目前只有qq浏览器runtime支持
          * @param callback 回调函数
