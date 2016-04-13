@@ -64,60 +64,43 @@ var nest;
 //////////////////////////////////////////////////////////////////////////////////////
 var nest;
 (function (nest) {
-    var easeuser;
-    (function (easeuser) {
-        var $loginInfo;
-        var isFirst = true;
-        var $loginTypes;
+    var easyuser;
+    (function (easyuser) {
         /**
-         * 登录
-         * @param loginInfo 登录传递的信息，需要对 onCreate，onSuccess，onFail 进行响应
+         * 启动Nest
+         * @param startupInfo 启动参数
+         * @param callback 启动完成回调
+         * @example 以下代码设置appId为 88888,启动Nest
+         * <pre>
+         *     nest.core.startup({egretAppId:88888}, function (){
+         *         //do something
+         *     });
+         * </pre>
          */
-        function login(loginInfo) {
-            $loginInfo = loginInfo;
-            //
-            if (isFirst) {
-                isFirst = false;
-                nest.user.checkLogin({}, function (resultInfo) {
-                    if (resultInfo.token) {
-                        if (isLogout()) {
-                            callSupport();
-                        }
-                        else {
-                            onSuccess(resultInfo);
-                        }
-                    }
-                    else {
-                        callSupport();
-                    }
-                });
-            }
-            else {
-                if ($loginTypes && $loginTypes.length) {
-                    onCreate($loginTypes);
-                }
-                else {
-                    if (hasSupport) {
-                        callLogin("");
-                    }
-                    else {
-                        callSupport();
-                    }
-                }
-            }
+        function startup(startupInfo, callback) {
+            nest.core.startup(startupInfo, function (resultInfo) {
+                callCheckLogin(callback);
+            });
         }
-        easeuser.login = login;
-        var hasSupport = false;
-        function callSupport() {
-            hasSupport = true;
+        easyuser.startup = startup;
+        function callCheckLogin(callback) {
+            nest.user.checkLogin({}, function (resultInfo) {
+                $loginInfo = resultInfo;
+                $loginInfo.result = 0;
+                callSupport(function () {
+                    callback({ "result": 0 });
+                });
+            });
+        }
+        function callSupport(callback) {
             nest.user.isSupport({}, function (data) {
                 //获取是否支持nest.user.getInfo接口，有该字段并且该字段值为1表示支持
-                easeuser.$getInfo = data.getInfo;
+                $getInfo = data.getInfo;
                 //已经登录过的信息，该字段目前只有新版qq浏览器runtime有
                 //如果有该字段，请放弃使用loginType字段，并用该字段获取可用的登录方式以及登录信息
                 var loginTypes = data.loginTypes;
                 if (loginTypes && loginTypes.length) {
-                    onCreate(loginTypes);
+                    $loginTypes = loginTypes;
                 }
                 else if (data.loginType && data.loginType.length) {
                     //获取登录方式数组，如["qq","wx"]
@@ -127,36 +110,21 @@ var nest;
                     for (var i = 0; i < loginType.length; i++) {
                         arr.push({ "loginType": loginType[i] });
                     }
-                    onCreate(arr);
+                    $loginTypes = arr;
                 }
                 else {
-                    //onCreate([]);
-                    callLogin("");
+                    $loginTypes = [];
                 }
+                callback();
             });
         }
-        function callLogin(type) {
-            //如果用户点击某个登录按钮，则传递loginType，否则不传
-            var loginTypeInfo = {};
-            if (type && type != "" && type != "default") {
-                loginTypeInfo["loginType"] = type;
-            }
-            nest.user.login(loginTypeInfo, function (data) {
-                if (data.token) {
-                    //登录成功，获取用户token，并根据token获取用户id，之后进入游戏
-                    clearLogout();
-                    onSuccess(data);
-                }
-                else {
-                    //登录失败，需要重新登陆
-                    onFail(data);
-                }
-            });
-        }
-        //[{"loginType" : "qq", accInfo: {nickName: "user_name", "avatarUrl" : "a.png"}}]
-        function onCreate(loginTypes) {
-            if ($loginTypes == null) {
-                $loginTypes = loginTypes;
+        /**
+         * 获取登录按钮类型。登出后再次登录前此方法需要重新调用。
+         * 目前为止出现能为 qq（显示 qq 按钮）、wx（显示微信按钮）、default（显示一个游戏内的默认按钮），可能只有1个）
+         */
+        function getLoginTypes() {
+            if ($getInfo) {
+                return [];
             }
             if (isLogout()) {
                 if ($loginTypes && $loginTypes.length) {
@@ -167,13 +135,67 @@ var nest;
                     }
                 }
             }
-            $loginInfo.onCreate({ "loginTypes": $loginTypes, onChoose: callLogin });
+            return $loginTypes.concat();
         }
-        function onSuccess(data) {
-            $loginInfo.onSuccess(data);
+        easyuser.getLoginTypes = getLoginTypes;
+        var $loginInfo;
+        var $getInfo;
+        var isFirst = true;
+        var $loginTypes;
+        /**
+         * 调用渠道登录接口，调用登录接口前，请先根据 nest.easyuser.getLoginTypes 来获取实际显示的按钮类型。
+         * @param loginInfo
+         * @param callback
+         * @callback-param  @see nest.user.LoginCallbackInfo
+         * @example 以下代码调用渠道登录接口
+         * <pre>
+         *     nest.user.login({}, function (data){
+         *         if(data.result == 0) {
+         *             //登陆成功,获取用户token
+         *             var token = data.token;
+         *         }
+         *         else {
+         *             //登录失败,需要重新登录
+         *         }
+         *     });
+         * </pre>
+         */
+        function login(loginInfo, callback) {
+            if (isFirst) {
+                isFirst = false;
+                if ($loginInfo && $loginInfo.token) {
+                    callback($loginInfo);
+                }
+                else {
+                    callLogin(loginInfo.loginType, callback);
+                }
+            }
+            else {
+                callLogin(loginInfo.loginType, callback);
+            }
         }
-        function onFail(data) {
-            $loginInfo.onFail(data);
+        easyuser.login = login;
+        function callLogin(type, callback) {
+            //如果用户点击某个登录按钮，则传递loginType，否则不传
+            var loginTypeInfo = {};
+            if (type && type != "" && type != "default") {
+                loginTypeInfo["loginType"] = type;
+            }
+            nest.user.login(loginTypeInfo, function (data) {
+                if (data.token) {
+                    //登录成功，获取用户token，并根据token获取用户id，之后进入游戏
+                    clearLogout();
+                    data.result = 0;
+                    callback(data);
+                }
+                else {
+                    //登录失败，需要重新登陆
+                    if (data.result == null) {
+                        data.result = -2;
+                    }
+                    callback(data);
+                }
+            });
         }
         function isLogout() {
             if (nest.utils.$isRuntime) {
@@ -191,9 +213,6 @@ var nest;
                 window.localStorage.setItem("egret_logout", null);
             }
         }
-    })(easeuser = nest.easeuser || (nest.easeuser = {}));
-    var easeuser;
-    (function (easeuser) {
         /**
          * 登出接口
          * @param loginInfo 登出参数,没有可以传递{}
@@ -201,7 +220,7 @@ var nest;
          * @callback-param   { result : 0 };
          * @example 以下代码调用渠道登出接口
          * <pre>
-         *     nest.easeuser.logout({}, function (data){
+         *     nest.easyuser.logout({}, function (data){
          *         if(data.result == 0) {
          *             //登出成功,需要显示登陆界面供玩家重新登录
          *             //这里后续不需要继续调用nest.user.checkLogin
@@ -215,6 +234,7 @@ var nest;
         function logout(loginInfo, callback) {
             var egretH5SdkCallback = function (data) {
                 if (data.result == 0) {
+                    $loginInfo = null;
                     //登出保存登出状态
                     if (nest.utils.$isRuntime) {
                         egret.localStorage.setItem("egret_logout", "1");
@@ -227,10 +247,7 @@ var nest;
             };
             nest.user.logout(loginInfo, egretH5SdkCallback);
         }
-        easeuser.logout = logout;
-    })(easeuser = nest.easeuser || (nest.easeuser = {}));
-    var easeuser;
-    (function (easeuser) {
+        easyuser.logout = logout;
         /**
          * 检测支持何种登录方式
          * @param info 请传递一个{}
@@ -247,10 +264,10 @@ var nest;
          * </pre>
          */
         function isSupport(info, callback) {
-            var callbackInfo = { "result": 0, "getInfo": easeuser.$getInfo };
+            var callbackInfo = { "result": 0, "getInfo": $getInfo };
             callback(callbackInfo);
         }
-        easeuser.isSupport = isSupport;
+        easyuser.isSupport = isSupport;
         /**
          * 获取用户信息，目前只有qq浏览器runtime支持
          * @param callback 回调函数
@@ -274,8 +291,8 @@ var nest;
         function getInfo(loginInfo, callback) {
             nest.user.getInfo(loginInfo, callback);
         }
-        easeuser.getInfo = getInfo;
-    })(easeuser = nest.easeuser || (nest.easeuser = {}));
+        easyuser.getInfo = getInfo;
+    })(easyuser = nest.easyuser || (nest.easyuser = {}));
 })(nest || (nest = {}));
 
 //////////////////////////////////////////////////////////////////////////////////////

@@ -2,7 +2,7 @@
  * Created by yjtx on 15-10-16.
  */
 
-class QuickTest implements nest.easeuser.ILoginCallbacks {
+class QuickTest {
 
     private logStr = "";
 
@@ -19,7 +19,7 @@ class QuickTest implements nest.easeuser.ILoginCallbacks {
         }
 
         var self = this;
-        nest.core.startup({
+        nest.easyuser.startup({
             egretAppId: 88888,
             version: 2,
             debug: true
@@ -36,25 +36,43 @@ class QuickTest implements nest.easeuser.ILoginCallbacks {
         this.text.text = this.logStr;
     }
 
-    public onCreate = (data: nest.easeuser.ILoginTypes):void =>  {
-        utils.changeView(new LoginTypeView(data));
-    };
-
-    public onSuccess = (data: nest.user.LoginCallbackInfo):void => {
-        this.logData = data;
-        egret.log("log Success");
-
-        this.getInfo();
-    };
-
-    public onFail = (data: nest.core.ResultCallbackInfo):void => {
-        egret.log("log Fail");
-    };
-
     private checkLogin():void {
-        this.addLog("checkLogin start");
+        var self = this;
 
-        nest.easeuser.login(this);
+        self.addLog("checkLogin start");
+
+        var loginTypes:Array<nest.easyuser.ILoginType> = nest.easyuser.getLoginTypes();
+        if (loginTypes.length) {
+            utils.changeView(new LoginTypeView(loginTypes, function (logType:nest.easyuser.ILoginType):void {
+                nest.easyuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
+                    if (data.result == 0) {
+                        egret.log("log Success");
+
+                        self.logData = data;
+
+                        self.getInfo();
+                    }
+                    else {
+                        egret.log("log Fail");
+                    }
+                });
+            }));
+        }
+        else {
+            nest.easyuser.login({}, function (data:nest.user.LoginCallbackInfo) {
+                if (data.result == 0) {
+                    egret.log("log Success");
+
+                    self.logData = data;
+
+                    self.getInfo();
+                }
+                else {
+                    egret.log("log Fail");
+                }
+            });
+        }
+
     }
 
     private logData:nest.user.LoginCallbackInfo;
@@ -176,7 +194,7 @@ class QuickTest implements nest.easeuser.ILoginCallbacks {
         var loginInfo:nest.user.LoginInfo = {};
 
         var self = this;
-        nest.easeuser.logout(loginInfo, function (data) {
+        nest.easyuser.logout(loginInfo, function (data) {
             this.addLog(JSON.stringify(data, null, 4));
             this.addLog("logout end");
 

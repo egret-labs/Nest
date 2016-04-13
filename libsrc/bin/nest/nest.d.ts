@@ -428,22 +428,24 @@ declare module nest {
     };
 }
 declare module nest {
-    module easeuser {
-        var $getInfo: number;
+    module easyuser {
         /**
-         * 登录页面相关按钮信息
+         * 启动Nest
+         * @param startupInfo 启动参数
+         * @param callback 启动完成回调
+         * @example 以下代码设置appId为 88888,启动Nest
+         * <pre>
+         *     nest.core.startup({egretAppId:88888}, function (){
+         *         //do something
+         *     });
+         * </pre>
          */
-        interface ILoginTypes {
-            /**
-             * 登录页面所有的按钮相关信息
-             */
-            loginTypes: Array<ILoginType>;
-            /**
-             * 按钮点击后，需要调用此方法并传入相应的类型
-             * @param loginType
-             */
-            onChoose: (loginType: string) => void;
-        }
+        function startup(startupInfo: nest.core.StartupInfo, callback: (data: core.ResultCallbackInfo) => any): void;
+        /**
+         * 获取登录按钮类型。登出后再次登录前此方法需要重新调用。
+         * 目前为止出现能为 qq（显示 qq 按钮）、wx（显示微信按钮）、default（显示一个游戏内的默认按钮），可能只有1个）
+         */
+        function getLoginTypes(): Array<ILoginType>;
         /**
          * 单个按钮的信息
          */
@@ -461,48 +463,24 @@ declare module nest {
             };
         }
         /**
-         * 登录相关信息
+         * 调用渠道登录接口，调用登录接口前，请先根据 nest.easyuser.getLoginTypes 来获取实际显示的按钮类型。
+         * @param loginInfo
+         * @param callback
+         * @callback-param  @see nest.user.LoginCallbackInfo
+         * @example 以下代码调用渠道登录接口
+         * <pre>
+         *     nest.user.login({}, function (data){
+         *         if(data.result == 0) {
+         *             //登陆成功,获取用户token
+         *             var token = data.token;
+         *         }
+         *         else {
+         *             //登录失败,需要重新登录
+         *         }
+         *     });
+         * </pre>
          */
-        interface ILoginCallbacks {
-            /**
-             * 需要创建登录页面时回调，在接受到此回调后，需要根据回调参数去创建对应的登录按钮并显示到页面上。在各个按钮点击后，再调用 onChoose
-             *
-             * <pre>
-             * //此处为伪代码，请按实际情况创建并增加监听
-             * function onCreate(data:ILoginTypes):void {
-             *     for (var i:number = 0; i < data.loginTypes.length; i++) {
-             *         //根据 loginType 类型创建对应的按钮，如果能获取到 accInfo，则需要显示出头像，并且显示到舞台上
-             *         var btn;
-             *         btn.name = data.loginTypes[i].loginType;
-             *
-             *         btn.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
-             *             data.onChoose(this.name);//请确保传入的参数对应为点击的参数
-             *         }, btn);
-             *     }
-             * }
-             * </pre>
-             *
-             * @param data 登录类型信息
-             */
-            onCreate(data: ILoginTypes): void;
-            /**
-             * 登录成功后回调
-             * @param data 登录成功信息
-             */
-            onSuccess(data: nest.user.LoginCallbackInfo): void;
-            /**
-             * 登录失败后回调
-             * @param data 登录失败信息
-             */
-            onFail(data: nest.core.ResultCallbackInfo): void;
-        }
-        /**
-         * 登录
-         * @param loginInfo 登录传递的信息，需要对 onCreate，onSuccess，onFail 进行响应
-         */
-        function login(loginInfo: ILoginCallbacks): void;
-    }
-    module easeuser {
+        function login(loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => void): void;
         /**
          * 登出接口
          * @param loginInfo 登出参数,没有可以传递{}
@@ -510,7 +488,7 @@ declare module nest {
          * @callback-param   { result : 0 };
          * @example 以下代码调用渠道登出接口
          * <pre>
-         *     nest.easeuser.logout({}, function (data){
+         *     nest.easyuser.logout({}, function (data){
          *         if(data.result == 0) {
          *             //登出成功,需要显示登陆界面供玩家重新登录
          *             //这里后续不需要继续调用nest.user.checkLogin
@@ -522,8 +500,6 @@ declare module nest {
          * </pre>
          */
         function logout(loginInfo: nest.user.LoginInfo, callback: (data: nest.core.ResultCallbackInfo) => void): void;
-    }
-    module easeuser {
         interface UserSupportCallbackInfo extends core.ResultCallbackInfo {
             /**
              * 是否支持获取用户信息
@@ -545,7 +521,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        function isSupport(info: Object, callback: (resultInfo: easeuser.UserSupportCallbackInfo) => void): void;
+        function isSupport(info: Object, callback: (resultInfo: easyuser.UserSupportCallbackInfo) => void): void;
         /**
          * 获取用户信息，目前只有qq浏览器runtime支持
          * @param callback 回调函数
