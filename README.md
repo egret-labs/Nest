@@ -434,40 +434,7 @@
 ## 本地测试 （使用测试gameId 88888 测试）
 
 
-###### h5
-
-* http://10.0.4.160/Egret/Nest/launcher/index.html?platInfo=open_88888_9166
- 选择其他登陆，测试账号 guest/123456
-
-###### runtime
-
-* runtime目前只支持android系统。
-
-* 下载 egret runtime 的测试包  http://arena.egret.com/Egret_Guidance/EgretRuntimeCheck.zip
-
-* 提供一个可以返回类似如下数据的地址（即 runtime 测试地址）比如 http://pay.csgj.egret-labs.org:12000/main.php。
-
-~~~
- {
-	 //游戏代码包路径
-	 "code_url":"http://your-cdn-domain/game/version_1/game_code.zip",
-	 //游戏资源前缀路径
-	 "update_url":"http://your-cdn-domain/game/version_1/",
-	 //游戏代码公钥，在默认情况下请勿填写此字段
-	 "password":"your-code-password",
-	 //游戏参数
-	 "customParams":
-	 {
-		 //使用自定义Loading功能，在默认情况下请勿填写此字段
-		 "customLoading":1
-	 }
- }
- ~~~
-
-* 用软件扫码扫描上述地址，测试 game id  88888，点击启动游戏即可
-
-
-## 测试
+###### h5测试
 
 * 步骤
 
@@ -486,6 +453,30 @@ platInfo=open\_```my_appId```_9166&egret.runtime.spid=9166&appId=```my_appId```&
 	http://localhost:63342/HelloGUI/launcher/index.html?platInfo=open\_```88888```_9166&egret.runtime.spid=9166&appId=```88888```&channelId=9166&egretSdkDomain=http://api.egret-labs.org/v2&egretServerDomain=http://api.egret-labs.org/v2
 
 
+
+
+###### runtime
+
+* runtime目前只支持android系统。
+
+* 下载 egret runtime 的测试包  http://arena.egret.com/Egret_Guidance/EgretRuntimeCheck.zip
+
+* 提供一个可以返回类似如下数据的地址（即 runtime 测试地址）比如 http://pay.csgj.egret-labs.org:12000/main.php。
+
+~~~
+ {
+	 //游戏代码包路径
+	 "code_url":"http://your-cdn-domain/game/version_1/game_code.zip",
+	 //游戏资源前缀路径
+	 "update_url":"http://your-cdn-domain/game/version_1/",
+	 //游戏参数
+	 "customParams":
+	 {
+	 }
+ }
+ ~~~
+
+* 用软件扫码扫描上述地址，测试 game id  88888，点击启动游戏即可
 
 ## 注意
 * 请先使用nest.easyuser.startup初始化Nest
