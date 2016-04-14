@@ -467,14 +467,23 @@
 * 用软件扫码扫描上述地址，测试 game id  88888，点击启动游戏即可
 
 
-## 线上测试
+## 测试
 
-在开放平台注册游戏，获取游戏appId
-使用测试渠道9166进行测试，这里以appId为```88888```进行演示，将游戏测试链接后面加上相关参数：
+1、在开放平台注册游戏，获取游戏appId。在 游戏信息-》基本信息-》游戏ID 中找到。
+
+2、打开游戏地址，比如 `http://localhost:63342/HelloGUI/launcher/index.html`
+
+3、在游戏地址后面加入平台测试需要的参数，`请务必加上`
+
+platInfo=open\_```my_appId```_9166&egret.runtime.spid=9166&appId=```my_appId```&channelId=9166&egretSdkDomain=http://api.egret-labs.org/v2&egretServerDomain=http://api.egret-labs.org/v2
+
+4、弹出登录窗之后请选择`其他方式登陆`，用户名：```guest1```到```guest8```，密码：```123456```。qq、微博暂不可以测试。
+
+
+* 下面以游戏Id `88888` 为例代替上面从 `my_appId`，最后测试的网址应该是 
 
 http://localhost:63342/HelloGUI/launcher/index.html?platInfo=open\_```88888```_9166&egret.runtime.spid=9166&appId=```88888```&channelId=9166&egretSdkDomain=http://api.egret-labs.org/v2&egretServerDomain=http://api.egret-labs.org/v2
 
-弹出登录窗之后选择其他方式登陆，用户名：```guest1```到```guest8```，密码：```123456```
 
 
 ## 注意
