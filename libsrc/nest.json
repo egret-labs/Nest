@@ -8,6 +8,7 @@
 		"cm/CMGAME_SDK_EGRET.js",
 		"../libs/CMGAME_SDK_EGRET.d.ts",
 		"Nest.ts",
+		"LogInOut.ts",
 		"runtime/NestForRuntime.ts",
 		"cm/NestForCM.ts",
 		"h5/NestForH5.ts",
