@@ -123,9 +123,6 @@ var nest;
          * 目前为止出现能为 qq（显示 qq 按钮）、wx（显示微信按钮）、default（显示一个游戏内的默认按钮），可能只有1个）
          */
         function getLoginTypes() {
-            if ($getInfo) {
-                return [];
-            }
             if (isLogout()) {
                 if ($loginTypes && $loginTypes.length) {
                     for (var i = 0; i < $loginTypes.length; i++) {

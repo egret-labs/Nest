@@ -12,6 +12,8 @@
 
 ## 新版说明
 
+```nest.easyuser.startup``` 代替老版本的 ```nest.user.startup```
+
 ```nest.easyuser.login``` 代替了老版本的 ```nest.user.checkLogin``` ```nest.user.isSupport```以及 ```nest.user.login```，登录只需要这个接口就可以。
 
 ```nest.easyuser.logout``` 代替老版本的 ```nest.user.logout```
