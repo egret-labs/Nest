@@ -483,3 +483,4 @@ platInfo=open\_```my_appId```_9166&egret.runtime.spid=9166&appId=```my_appId```&
 ## 注意
 * 请先使用nest.easyuser.startup初始化Nest
 * runtime目前只支持android系统。
+* 具体测试 demo 请参考 demo2.
