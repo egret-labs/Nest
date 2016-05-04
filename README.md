@@ -444,7 +444,7 @@
 
 	2、打开游戏地址，比如 `http://localhost:63342/HelloGUI/launcher/index.html`
 
-	3、在游戏地址后面加入平台测试需要的参数（如下），`请务必加上`
+	3、在游戏地址后面加入平台测试需要的参数（如下），`请务必加上，并且务必把下面 2 处 my_appId 换成自己的 appId，否则测试不会通过`
 platInfo=open\_```my_appId```_9166&egret.runtime.spid=9166&appId=```my_appId```&channelId=9166&egretSdkDomain=http://api.egret-labs.org/v2&egretServerDomain=http://api.egret-labs.org/v2
 
 	4、弹出登录窗之后请选择`其他方式登陆`，用户名：```guest1```到```guest8```，密码：```123456```。qq、微博暂不可以测试。
