@@ -1,4 +1,4 @@
-#Nest
+# Nest
 
 * nest [下载地址](https://github.com/egret-labs/Nest) 
 
@@ -12,7 +12,7 @@
 
 ## 新版说明
 
-```nest.easyuser.startup``` 代替老版本的 ```nest.user.startup```
+```nest.easyuser.startup``` 代替老版本的 ```nest.core.startup```
 
 ```nest.easyuser.login``` 代替了老版本的 ```nest.user.checkLogin``` ```nest.user.isSupport```以及 ```nest.user.login```，登录只需要这个接口就可以。
 
