@@ -995,7 +995,9 @@ var nest;
             }
             user.login = login;
             function isSupport(info, callback) {
-                nest.runtime.user.isSupport(info, callback);
+                console.log("cm old nest isSupport start");
+                callback({ getInfo: 0, loginType: null, loginTypes: null, result: 0 });
+                // nest.runtime.user.isSupport(info, callback);
             }
             user.isSupport = isSupport;
             function logout(loginInfo, callback) {

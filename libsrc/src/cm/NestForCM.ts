@@ -315,7 +315,10 @@ module nest.cm.user {
     }
 
     export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
-        nest.runtime.user.isSupport(info, callback);
+        console.log("cm old nest isSupport start");
+        
+        callback({getInfo:0, loginType:null, loginTypes:null, result:0});
+        // nest.runtime.user.isSupport(info, callback);
     }
 
     export function logout(loginInfo:nest.user.LoginInfo, callback:Function) {
