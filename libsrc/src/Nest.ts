@@ -36,7 +36,7 @@ module nest {
     export module core {
         export interface ResultCallbackInfo {
             /**
-             * 回调参数是否正确，0 正确，-1 用户取消操作, -2 失败, 其他 未知错误
+             * 回调参数是否正确，0 正确，-1 用户取消操作, -2 失败，-3 平台登陆账号被踢掉，需要重新登陆, 其他 未知错误
              */
             result:number;
         }
