@@ -134,6 +134,9 @@
 		    if (resultInfo.result == 0) {//登录成功
 				
 			}
+			else if (resultInfo.result == -3) {//平台登陆账号被踢掉，需要重新登陆
+			
+			}
 			else {//登录失败
 				
 			}
@@ -181,6 +184,9 @@
 		         var province = data.province;    //省份
 		         var country = data.country;      //国家
 		    }
+			else if (data.result == -3) {//平台登陆账号被踢掉，需要重新登陆
+			
+			}
 		    else {
 		         //获取用户信息失败
 		    }
@@ -204,6 +210,9 @@
 		    	//登出成功，再次登录请使用直接按之前的登录方式登录 nest.easyuser.login
         		
 		    }
+			else if (resultInfo.result == -3) {//平台登陆账号被踢掉，需要重新登陆
+			
+			}
 		    else {
 		        //登出失败，有可能是该平台不支持登出接口
 		    }
@@ -240,6 +249,9 @@
 		     else if(data.result == -1) {
 		         //支付取消
 		    }
+			else if (data.result == -3) {//平台登陆账号被踢掉，需要重新登陆
+			
+			}
 		    else {
 		        //支付失败
 		    }
@@ -275,6 +287,9 @@
 		    if(data.result == 0) {
 		        //设置成功
 		    }
+			else if (data.result == -3) {//平台登陆账号被踢掉，需要重新登陆
+			
+			}
 		    else {
 		        //设置失败
 		    }
@@ -302,6 +317,9 @@
 		    else if(data.result == -1) {
 		        //分享取消
 		    }
+			else if (data.result == -3) {//平台登陆账号被踢掉，需要重新登陆
+			
+			}
 		    else {
 		        //分享失败
 		    }
@@ -336,6 +354,9 @@
 		    if(data.result == 0) {
 		        //打开成功
 		    }
+			else if (data.result == -3) {//平台登陆账号被踢掉，需要重新登陆
+			
+			}
 		    else {
 		        //打开失败
 		    }
@@ -371,6 +392,9 @@
 		    else if(data.result == -1) {
 		        //关注取消
 		     }
+			else if (data.result == -3) {//平台登陆账号被踢掉，需要重新登陆
+			
+			}
 		    else {
 		        //关注失败
 		    }
@@ -401,6 +425,9 @@
 		    if(data.result == 0) {
 		        //保存成功
 		    }
+			else if (data.result == -3) {//平台登陆账号被踢掉，需要重新登陆
+			
+			}
 		    else {
 		        //保存失败
 		    }
