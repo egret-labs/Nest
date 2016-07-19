@@ -43,7 +43,21 @@ class LoginView extends egret.gui.SkinnableComponent{
 
         var loginTypes:Array<nest.easyuser.ILoginType> = nest.easyuser.getLoginTypes();
 
-        if (loginTypes.length) {//需要显示对应的登录按钮
+        if (loginTypes.length == 1) {
+            var typeInfo:nest.easyuser.ILoginType = loginTypes[0];
+            if (typeInfo.loginType == "wx" || typeInfo.loginType == "qq") {
+                nest.easyuser.login(typeInfo, function (data:nest.user.LoginCallbackInfo) {
+                    if (data.result == 0) {
+                        egret.log("log Success");
+                        new Login().login(data);
+                    }
+                    else {
+                        egret.log("log Fail");
+                    }
+                });
+            }
+        }
+        else if (loginTypes.length) {//需要显示对应的登录按钮
             var loginView:LoginTypeView = new LoginTypeView(loginTypes, function (logType:nest.easyuser.ILoginType) {
                 nest.easyuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
                     if (data.result == 0) {
