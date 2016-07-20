@@ -43,9 +43,9 @@ class LoginView extends egret.gui.SkinnableComponent{
 
         var loginTypes:Array<nest.easyuser.ILoginType> = nest.easyuser.getLoginTypes();
 
-        if (loginTypes.length == 1) {
+        if (loginTypes.length) {//需要显示对应的登录按钮
             var typeInfo:nest.easyuser.ILoginType = loginTypes[0];
-            if (typeInfo.loginType == "wx" || typeInfo.loginType == "qq") {
+            if (loginTypes.length == 1 && (typeInfo.loginType == "wx" || typeInfo.loginType == "qq")) {
                 nest.easyuser.login(typeInfo, function (data:nest.user.LoginCallbackInfo) {
                     if (data.result == 0) {
                         egret.log("log Success");
@@ -56,21 +56,21 @@ class LoginView extends egret.gui.SkinnableComponent{
                     }
                 });
             }
-        }
-        else if (loginTypes.length) {//需要显示对应的登录按钮
-            var loginView:LoginTypeView = new LoginTypeView(loginTypes, function (logType:nest.easyuser.ILoginType) {
-                nest.easyuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
-                    if (data.result == 0) {
-                        egret.log("log Success");
-                        new Login().login(data);
-                    }
-                    else {
-                        egret.log("log Fail");
-                    }
+            else {
+                var loginView:LoginTypeView = new LoginTypeView(loginTypes, function (logType:nest.easyuser.ILoginType) {
+                    nest.easyuser.login(logType, function (data:nest.user.LoginCallbackInfo) {
+                        if (data.result == 0) {
+                            egret.log("log Success");
+                            new Login().login(data);
+                        }
+                        else {
+                            egret.log("log Fail");
+                        }
+                    });
                 });
-            });
 
-            utils.changeView(loginView);
+                utils.changeView(loginView);
+            }
         }
         else {//不需要登录按钮，直接调用登录进游戏
             nest.easyuser.login({}, function (data:nest.user.LoginCallbackInfo) {
