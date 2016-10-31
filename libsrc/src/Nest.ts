@@ -135,6 +135,11 @@ module nest {
              * 是否支持获取用户信息
              */
             getInfo?:number;
+
+            /**
+             * 是否支持登出
+             */
+            logout?:number;
         }
     }
 

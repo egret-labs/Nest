@@ -566,7 +566,16 @@ var nest;
         (function (user) {
             function isSupport(info, callback) {
                 var data = { module: "user", action: "isSupport", param: info };
-                callRuntime(data, callback);
+                if (nest.utils.$isQQBrowser()) {
+                    var cb = function (data) {
+                        data.logout = 1;
+                        callback.call(null, data);
+                    };
+                    callRuntime(data, cb);
+                }
+                else {
+                    callRuntime(data, callback);
+                }
             }
             user.isSupport = isSupport;
             function checkLogin(loginInfo, callback) {

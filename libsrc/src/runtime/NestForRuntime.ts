@@ -42,7 +42,18 @@ module nest.runtime {
     export module user {
         export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
             var data = {module: "user", action: "isSupport", param: info};
-            callRuntime(data, callback);
+            //登出逻辑特殊处理
+            //todo 等qq浏览器更新后删除
+            if(nest.utils.$isQQBrowser()) {
+                var cb = function (data) {
+                    data.logout = 1;
+                    callback.call(null, data);
+                }
+                callRuntime(data, cb);
+            }
+            else {
+                callRuntime(data, callback);
+            }
         }
 
         export function checkLogin(loginInfo:nest.user.LoginInfo, callback:Function) {
