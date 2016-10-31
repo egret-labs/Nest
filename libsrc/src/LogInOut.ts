@@ -93,6 +93,9 @@ module nest {
          * 目前为止出现能为 qq（显示 qq 按钮）、wx（显示微信按钮）、default（显示一个游戏内的默认按钮），可能只有1个）
          */
         export function getLoginTypes():Array<ILoginType> {
+            if ($loginInfo && $loginInfo.token) {//第一次直接进入到游戏
+                return [];
+            }
             if (isLogout()) {//登出过，则需要去掉按钮内的信息
                 if ($loginTypes && $loginTypes.length) {
                     for (var i:number = 0; i < $loginTypes.length; i++) {
