@@ -569,6 +569,8 @@ var nest;
         (function (user) {
             function isSupport(info, callback) {
                 var data = { module: "user", action: "isSupport", param: info };
+                //登出逻辑特殊处理
+                //todo 等qq浏览器更新后删除
                 if (nest.utils.$isQQBrowser()) {
                     var cb = function (data) {
                         data.logout = 1;
