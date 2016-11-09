@@ -198,20 +198,10 @@ var nest;
             });
         }
         function isLogout() {
-            if (nest.utils.$isRuntime) {
-                return egret.localStorage.getItem("egret_logout") == "1";
-            }
-            else {
-                return window.localStorage.getItem("egret_logout") == "1";
-            }
+            return nest.utils.localStorage.getItem("egret_logout") == "1";
         }
         function clearLogout() {
-            if (nest.utils.$isRuntime) {
-                egret.localStorage.setItem("egret_logout", null);
-            }
-            else {
-                window.localStorage.setItem("egret_logout", null);
-            }
+            return nest.utils.localStorage.setItem("egret_logout", null);
         }
         /**
          * 登出接口
@@ -236,12 +226,7 @@ var nest;
                 if (data.result == 0) {
                     $loginInfo = null;
                     //登出保存登出状态
-                    if (nest.utils.$isRuntime) {
-                        egret.localStorage.setItem("egret_logout", "1");
-                    }
-                    else {
-                        window.localStorage.setItem("egret_logout", "1");
-                    }
+                    nest.utils.localStorage.setItem("egret_logout", "1");
                 }
                 callback(data);
             };
@@ -500,6 +485,42 @@ var nest;
             loader.load(request);
         }
         utils.setProxy = setProxy;
+    })(utils = nest.utils || (nest.utils = {}));
+})(nest || (nest = {}));
+var nest;
+(function (nest) {
+    var utils;
+    (function (utils) {
+        var localStorage;
+        (function (localStorage) {
+            function setItem(key, value) {
+                if (utils.$isRuntime) {
+                    egret.localStorage.setItem(key, value);
+                }
+                else {
+                    try {
+                        window.localStorage.setItem(key, value);
+                    }
+                    catch (e) {
+                    }
+                }
+            }
+            localStorage.setItem = setItem;
+            function getItem(key) {
+                if (utils.$isRuntime) {
+                    return egret.localStorage.getItem(key);
+                }
+                else {
+                    try {
+                        return window.localStorage.getItem(key);
+                    }
+                    catch (e) {
+                        return undefined;
+                    }
+                }
+            }
+            localStorage.getItem = getItem;
+        })(localStorage = utils.localStorage || (utils.localStorage = {}));
     })(utils = nest.utils || (nest.utils = {}));
 })(nest || (nest = {}));
 if (this["navigator"]) {

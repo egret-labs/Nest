@@ -192,21 +192,11 @@ module nest {
         }
 
         function isLogout():boolean {
-            if (nest.utils.$isRuntime) {
-                return egret.localStorage.getItem("egret_logout") == "1";
-            }
-            else {
-                return window.localStorage.getItem("egret_logout") == "1";
-            }
+            return utils.localStorage.getItem("egret_logout") == "1";
         }
 
         function clearLogout():void {
-            if (nest.utils.$isRuntime) {
-                egret.localStorage.setItem("egret_logout", null);
-            }
-            else {
-                window.localStorage.setItem("egret_logout", null);
-            }
+            return utils.localStorage.setItem("egret_logout", null);
         }
 
         /**
@@ -232,12 +222,7 @@ module nest {
                 if (data.result == 0) {
                     $loginInfo = null;
                     //登出保存登出状态
-                    if (nest.utils.$isRuntime) {
-                        egret.localStorage.setItem("egret_logout", "1");
-                    }
-                    else {
-                        window.localStorage.setItem("egret_logout", "1");
-                    }
+                    utils.localStorage.setItem("egret_logout", "1");
                 }
 
                 callback(data);

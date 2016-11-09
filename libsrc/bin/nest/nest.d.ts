@@ -565,6 +565,10 @@ declare module nest.utils {
     function $log(msg: string): void;
     function setProxy(url: string, postData: Object, method: string, callback: Function, errCallback: Function): void;
 }
+declare module nest.utils.localStorage {
+    function setItem(key: string, value: string): void;
+    function getItem(key: string): string;
+}
 /**
  * @private
  */

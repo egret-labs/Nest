@@ -223,6 +223,36 @@ module nest.utils {
     }
 }
 
+module nest.utils.localStorage {
+    export function setItem(key:string, value:string):void {
+        if ($isRuntime) {
+            egret.localStorage.setItem(key, value);
+        }
+        else {
+            try {
+                window.localStorage.setItem(key, value);
+            }
+            catch(e){
+                
+            }
+        }
+    }
+
+    export function getItem(key:string):string {
+        if ($isRuntime) {
+            return egret.localStorage.getItem(key);
+        }
+        else {
+            try {
+                return window.localStorage.getItem(key);
+            }
+            catch(e){
+                return undefined;
+            }
+        }
+    }
+}
+
 if (this["navigator"]) {
     nest.utils.$isRuntime = false;
 }
