@@ -37,6 +37,14 @@ module nest.runtime {
             var data = {module: "core", action: "callCustomMethod", param: customInfo};
             callRuntime(data, callback);
         }
+
+        export function addCallback(callback:(callbackInfo:nest.core.CallbackInfo)=>void) {
+            var tag = "nest_callback";
+            egret.ExternalInterface.addCallback(tag, function (data) {
+                var obj = JSON.parse(data);
+                callback(obj);
+            });
+        };
     }
 
     export module user {

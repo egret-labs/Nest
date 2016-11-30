@@ -25,6 +25,12 @@ declare module nest {
              */
             debug?: boolean;
         }
+        interface CallbackInfo {
+            /**
+             * 登陆状态改变，1为已登录，2为未登录
+             */
+            loginState?: number;
+        }
     }
     interface core {
     }
@@ -42,6 +48,12 @@ declare module nest {
          */
         startup(startupInfo: nest.core.StartupInfo, callback: (resultInfo: nest.core.ResultCallbackInfo) => void): void;
         callCustomMethod(customInfo: any, callback: Function): void;
+        /**
+         * 添加回调函数
+         * 渠道有可能有自己的逻辑进行一些操作，这时候会把操作带来的变化回调回来
+         * @param callback 回调
+         */
+        addCallback(callback: (callbackInfo: nest.core.CallbackInfo) => void): void;
     };
     /**
      * 登录功能逻辑：
@@ -575,6 +587,7 @@ declare module nest.utils.localStorage {
 declare module nest.runtime {
     module core {
         function callCustomMethod(customInfo: any, callback: Function): void;
+        function addCallback(callback: (callbackInfo: nest.core.CallbackInfo) => void): void;
     }
     module user {
         function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;

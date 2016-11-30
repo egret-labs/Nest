@@ -28,6 +28,8 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 nest.core = nest.core || <any>{};
+//给一个默认空实现
+nest.core.addCallback = function (){};
 nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
     try {
         new egret.HashObject();

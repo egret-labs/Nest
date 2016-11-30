@@ -324,7 +324,7 @@ var nest;
          */
         function $changeMethod(version) {
             //console.log("[Nest]use module : " + version);
-            var arr = ["user", "iap", "share", "social", "app"];
+            var arr = ["core", "user", "iap", "share", "social", "app"];
             for (var i = 0; i < arr.length; i++) {
                 var module = arr[i];
                 if (nest[version] && nest[version][module]) {
@@ -585,6 +585,15 @@ var nest;
                 callRuntime(data, callback);
             }
             core.callCustomMethod = callCustomMethod;
+            function addCallback(callback) {
+                var tag = "nest_callback";
+                egret.ExternalInterface.addCallback(tag, function (data) {
+                    var obj = JSON.parse(data);
+                    callback(obj);
+                });
+            }
+            core.addCallback = addCallback;
+            ;
         })(core = runtime.core || (runtime.core = {}));
         var user;
         (function (user) {
@@ -2500,6 +2509,8 @@ var nest;
 //
 //////////////////////////////////////////////////////////////////////////////////////
 nest.core = nest.core || {};
+//给一个默认空实现
+nest.core.addCallback = function () { };
 nest.core.startup = function (info, callback) {
     try {
         new egret.HashObject();
