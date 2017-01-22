@@ -108,13 +108,13 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
             }
             s.src = url;
             s.id = "egreth5sdk";
-            s.addEventListener('load', function () {
-                this.removeEventListener('load', arguments.callee, false);
+            s.addEventListener('load', function f1() {
+                this.removeEventListener('load', f1, false);
                 EgretH5Sdk.init({}, callback);
             }, false);
-            s.addEventListener('error', function () {
+            s.addEventListener('error', function f2() {
                 s.parentNode.removeChild(s);
-                this.removeEventListener('error', arguments.callee, false);
+                this.removeEventListener('error', f2, false);
                 callback({"result": -2});
             }, false);
             document.head.appendChild(s);

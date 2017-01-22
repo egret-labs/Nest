@@ -28,6 +28,10 @@
 //////////////////////////////////////////////////////////////////////////////////////
 var nest;
 (function (nest) {
+    /**
+     *
+     * @private
+     */
     var user;
     (function (user) {
     })(user = nest.user || (nest.user = {}));
@@ -487,7 +491,9 @@ var nest;
         utils.setProxy = setProxy;
     })(utils = nest.utils || (nest.utils = {}));
 })(nest || (nest = {}));
-var nest;
+/**
+ * @private
+ */
 (function (nest) {
     var utils;
     (function (utils) {
@@ -941,7 +947,6 @@ var nest;
 /*
  * @private
  */
-var nest;
 (function (nest) {
     var cm;
     (function (cm) {
@@ -1054,7 +1059,6 @@ var nest;
 /*
  * @private
  */
-var nest;
 (function (nest) {
     var cm;
     (function (cm) {
@@ -1116,7 +1120,6 @@ var nest;
 /**
  * @private
  */
-var nest;
 (function (nest) {
     var cm;
     (function (cm) {
@@ -1140,7 +1143,6 @@ var nest;
 /*
  * @private
  */
-var nest;
 (function (nest) {
     var cm;
     (function (cm) {
@@ -1162,7 +1164,6 @@ var nest;
 /*
  * @private
  */
-var nest;
 (function (nest) {
     var cm;
     (function (cm) {
@@ -1396,7 +1397,6 @@ var nest;
 /**
  * @private
  */
-var nest;
 (function (nest) {
     var qqhall;
     (function (qqhall) {
@@ -1437,7 +1437,6 @@ var nest;
 /**
  * @private
  */
-var nest;
 (function (nest) {
     var qqhall;
     (function (qqhall) {
@@ -1490,7 +1489,6 @@ var nest;
 /**
  * @private
  */
-var nest;
 (function (nest) {
     var qqhall;
     (function (qqhall) {
@@ -1530,7 +1528,6 @@ var nest;
 /**
  * @private
  */
-var nest;
 (function (nest) {
     var qqhall;
     (function (qqhall) {
@@ -1570,7 +1567,6 @@ var nest;
 /**
  * @private
  */
-var nest;
 (function (nest) {
     var qqhall;
     (function (qqhall) {
@@ -2356,7 +2352,6 @@ var nest;
 /**
  * @private
  */
-var nest;
 (function (nest) {
     var h5_2;
     (function (h5_2) {
@@ -2583,13 +2578,13 @@ nest.core.startup = function (info, callback) {
             }
             s.src = url;
             s.id = "egreth5sdk";
-            s.addEventListener('load', function () {
-                this.removeEventListener('load', arguments.callee, false);
+            s.addEventListener('load', function f1() {
+                this.removeEventListener('load', f1, false);
                 EgretH5Sdk.init({}, callback);
             }, false);
-            s.addEventListener('error', function () {
+            s.addEventListener('error', function f2() {
                 s.parentNode.removeChild(s);
-                this.removeEventListener('error', arguments.callee, false);
+                this.removeEventListener('error', f2, false);
                 callback({ "result": -2 });
             }, false);
             document.head.appendChild(s);

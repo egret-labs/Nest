@@ -69,35 +69,6 @@ module nest {
         }
     }
 
-    export interface core {
-
-    }
-
-    export var core:{
-        /**
-         * 启动Nest
-         * @param startupInfo 启动参数
-         * @param callback 启动完成回调
-         * @example 以下代码设置appId为 88888,启动Nest
-         * <pre>
-         *     nest.core.startup({egretAppId:88888}, function (){
-         *         //do something
-         *     });
-         * </pre>
-         * @private
-         */
-        startup(startupInfo:nest.core.StartupInfo, callback:(resultInfo:nest.core.ResultCallbackInfo)=>void):void;
-
-        callCustomMethod(customInfo:any, callback:Function):void;
-
-        /**
-         * 添加回调函数
-         * 渠道有可能有自己的逻辑进行一些操作，这时候会把操作带来的变化回调回来
-         * @param callback 回调
-         */
-        addCallback(callback:(callbackInfo:nest.core.CallbackInfo)=>void):void;
-    };
-
     /**
      * 登录功能逻辑：
      * 1.初始化项目数据
@@ -283,30 +254,6 @@ module nest {
         }
     }
 
-    export interface iap {
-
-    }
-
-    export var iap:{
-        /**
-         * 支付
-         * @param payInfo 支付信息
-         * @param callback 支付回调
-         * @example 以下代码进行支付
-         * <pre>
-         *     nest.iap.pay({goodsId:"1",goodsNumber:"1",serverId:"1",ext:"msg"}, function (data){
-         *         if(data.result == 0) {
-         *             //支付成功
-         *         }
-         *         else {
-         *             //支付失败
-         *         }
-         *     });
-         * </pre>
-         */
-        pay(payInfo:nest.iap.PayInfo, callback:(result:nest.iap.PayCallbackInfo)=>void):void;
-    };
-
     export module share {
         /**
          * 分享接口传递参数
@@ -342,56 +289,6 @@ module nest {
         }
     }
 
-    export interface share {
-
-    }
-
-    export var share:{
-        /**
-         * 是否支持分享
-         * @param info 请传递一个{}
-         * @param callback 回调函数
-         * @example 以下代码获取是否支持分享
-         * <pre>
-         *     nest.share.isSupport({}, function (data){
-         *         if(data.result == 0) {
-         *             //获取是否支持分享
-         *             var share = data.share == 1;
-         *         }
-         *     });
-         * </pre>
-         */
-        isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType):void;
-
-        /**
-         * 设置默认分享内容,以便某些渠道在游戏外点击分享按钮时显示分享内容
-         * @param shareInfo
-         * @param callback
-         * @callback-param result 0 表示成功，-2表示失败
-         */
-        setDefaultData(shareInfo:nest.share.ShareInfo, callback:Function):void;
-
-        /**
-         * 分享
-         * @param shareInfo 分享参数
-         * @param callback 回调函数
-         * @callback-param result 0 表示分享成功，-1表示用户取消
-         * @example 以下代码获取是否支持分享
-         * <pre>
-         *     var shareInfo = {title:"title", description:"description", img_title:"img_title", img_url:"http://www.example.com/example.jpg", url:"http://www.example.com"};;
-         *     nest.share.share(shareInfo, function (data) {
-         *         if(data.result == 0) {
-         *             //分享成功
-         *         }
-         *         else {
-         *             //分享失败
-         *         }
-         *     });
-         * </pre>
-         */
-        share(shareInfo:share.ShareInfo, callback:(resultInfo:share.ShareCallbackInfo)=>void):void;
-    };
-
     export module social {
         /**
          * social接口传递参数
@@ -401,48 +298,6 @@ module nest {
             openBBS?:number;
         }
     }
-
-    export interface social {
-
-    }
-
-    export var social:{
-        /**
-         * social接口支持
-         * @param info 请传递一个{}
-         * @param callback 回调函数
-         * @example 以下代码获取是否支持
-         * <pre>
-         *     nest.social.isSupport({}, function (data){
-         *         if(data.result == 0) {
-         *             //获取是否支持获得好友列表
-         *             var getFriends = data.getFriends == 1;
-         *             //获取是否支持打开BBS
-         *             var openBBS = data.openBBS == 1;
-         *         }
-         *     });
-         * </pre>
-         */
-        isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType):void;
-        getFriends(socialInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
-        /**
-         * 打开BBS
-         * @param socialInfo 请传递一个{}
-         * @param callback 回调
-         * @example 以下代码进行打开BBS
-         * <pre>
-         *     nest.social.openBBS({}, function (data){
-         *         if(data.result == 0) {
-         *             //打开成功
-         *         }
-         *         else {
-         *             //打开失败
-         *         }
-         *     });
-         * </pre>
-         */
-        openBBS(socialInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
-    };
 
     export module app {
         export interface AppSupportCallbackInfo extends core.ResultCallbackInfo{
@@ -474,11 +329,140 @@ module nest {
         }
     }
 
-    export interface app {
+}
 
+declare module nest {
+
+    module core {
+        /**
+         * 启动Nest
+         * @param startupInfo 启动参数
+         * @param callback 启动完成回调
+         * @example 以下代码设置appId为 88888,启动Nest
+         * <pre>
+         *     nest.core.startup({egretAppId:88888}, function (){
+         *         //do something
+         *     });
+         * </pre>
+         * @private
+         */
+        function startup(startupInfo:nest.core.StartupInfo, callback:(resultInfo:nest.core.ResultCallbackInfo)=>void):void;
+
+        function callCustomMethod(customInfo:any, callback:Function):void;
+
+        /**
+         * 添加回调函数
+         * 渠道有可能有自己的逻辑进行一些操作，这时候会把操作带来的变化回调回来
+         * @param callback 回调
+         */
+        function addCallback(callback:(callbackInfo:nest.core.CallbackInfo)=>void):void;
+    }
+    
+    module iap {
+        /**
+         * 支付
+         * @param payInfo 支付信息
+         * @param callback 支付回调
+         * @example 以下代码进行支付
+         * <pre>
+         *     nest.iap.pay({goodsId:"1",goodsNumber:"1",serverId:"1",ext:"msg"}, function (data){
+         *         if(data.result == 0) {
+         *             //支付成功
+         *         }
+         *         else {
+         *             //支付失败
+         *         }
+         *     });
+         * </pre>
+         */
+       function pay(payInfo:nest.iap.PayInfo, callback:(result:nest.iap.PayCallbackInfo)=>void):void;
     }
 
-    export var app:{
+    module share {
+        /**
+         * 是否支持分享
+         * @param info 请传递一个{}
+         * @param callback 回调函数
+         * @example 以下代码获取是否支持分享
+         * <pre>
+         *     nest.share.isSupport({}, function (data){
+         *         if(data.result == 0) {
+         *             //获取是否支持分享
+         *             var share = data.share == 1;
+         *         }
+         *     });
+         * </pre>
+         */
+        function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType):void;
+
+        /**
+         * 设置默认分享内容,以便某些渠道在游戏外点击分享按钮时显示分享内容
+         * @param shareInfo
+         * @param callback
+         * @callback-param result 0 表示成功，-2表示失败
+         */
+        function setDefaultData(shareInfo:nest.share.ShareInfo, callback:Function):void;
+
+        /**
+         * 分享
+         * @param shareInfo 分享参数
+         * @param callback 回调函数
+         * @callback-param result 0 表示分享成功，-1表示用户取消
+         * @example 以下代码获取是否支持分享
+         * <pre>
+         *     var shareInfo = {title:"title", description:"description", img_title:"img_title", img_url:"http://www.example.com/example.jpg", url:"http://www.example.com"};;
+         *     nest.share.share(shareInfo, function (data) {
+         *         if(data.result == 0) {
+         *             //分享成功
+         *         }
+         *         else {
+         *             //分享失败
+         *         }
+         *     });
+         * </pre>
+         */
+        function share(shareInfo:share.ShareInfo, callback:(resultInfo:share.ShareCallbackInfo)=>void):void;
+    }
+
+    module social {
+        /**
+         * social接口支持
+         * @param info 请传递一个{}
+         * @param callback 回调函数
+         * @example 以下代码获取是否支持
+         * <pre>
+         *     nest.social.isSupport({}, function (data){
+         *         if(data.result == 0) {
+         *             //获取是否支持获得好友列表
+         *             var getFriends = data.getFriends == 1;
+         *             //获取是否支持打开BBS
+         *             var openBBS = data.openBBS == 1;
+         *         }
+         *     });
+         * </pre>
+         */
+        function isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType):void;
+        function getFriends(socialInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
+        /**
+         * 打开BBS
+         * @param socialInfo 请传递一个{}
+         * @param callback 回调
+         * @example 以下代码进行打开BBS
+         * <pre>
+         *     nest.social.openBBS({}, function (data){
+         *         if(data.result == 0) {
+         *             //打开成功
+         *         }
+         *         else {
+         *             //打开失败
+         *         }
+         *     });
+         * </pre>
+         */
+        function openBBS(socialInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
+    }
+
+    module app {
         /**
          * 是否支持特定功能
          * @param info 请传递一个{}
@@ -486,26 +470,26 @@ module nest {
          * @callback-param  { result:"0" , attention :"1" , sendToDesktop : "1" , exitGame : "1" , getInfo : "1"}
          * attention|sendToDesktop|exitGame|getInfo 1支持 0不支持
          */
-        isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType):void;
+        function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType):void;
         /**
          * 关注
          * @param appInfo
          * @param callback
          */
-        attention(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
+        function attention(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
         /**
          * 退出游戏，回到 App 界面
          * @param appInfo
          * @param callback
          */
-        exitGame(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
+        function exitGame(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
         /**
          * 发送到桌面
          * @param appInfo
          * @param callback
          * @param callback-param result 0表示添加桌面成功，-1表示添加失败
          */
-        sendToDesktop(appInfo:app.SendToDesktopInfo, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
+        function sendToDesktop(appInfo:app.SendToDesktopInfo, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
         /**
          * 获取渠道信息
          * @param appInfo 获取信息参数,没有请传递{}
@@ -520,6 +504,6 @@ module nest {
 	     *   "email": //email联系方式数组[],如果没有响应联系方式将没有该字段
 	     * }
          */
-        getInfo(appInfo:any, callback:(resultInfo:app.GetInfoCallbackInfo)=>void):void;
-    };
+        function getInfo(appInfo:any, callback:(resultInfo:app.GetInfoCallbackInfo)=>void):void;
+    }
 }

@@ -232,9 +232,14 @@ module nest {
 
         export interface UserSupportCallbackInfo extends core.ResultCallbackInfo {
             /**
-             * 是否支持获取用户信息
+             * 是否支持获取用户信息，值为 1 时支持获取用户信息
              */
             getInfo: number;
+
+            /**
+             * 是否支持登出，值为 1 时支持登出
+             */
+            logout?:number;
         }
 
         /**
