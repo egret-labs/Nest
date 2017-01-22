@@ -84,6 +84,7 @@ module nest {
          *         //do something
          *     });
          * </pre>
+         * @private
          */
         startup(startupInfo:nest.core.StartupInfo, callback:(resultInfo:nest.core.ResultCallbackInfo)=>void):void;
 
@@ -111,6 +112,7 @@ module nest {
      * 1.在游戏中放置一个“退出游戏”或者“切换账号”的按钮
      * 2.用户点击“退出游戏”图标后，调用 logout 函数
      * 3.在登出成功后，返回到登录逻辑的步骤4
+     * @private
      */
     export module user {
         /**
@@ -161,6 +163,10 @@ module nest {
         }
     }
 
+    /**
+     * 
+     * @private
+     */
     export module user {
         /**
          * 检测是否已登录

@@ -223,6 +223,9 @@ module nest.utils {
     }
 }
 
+/**
+ * @private
+ */
 module nest.utils.localStorage {
     export function setItem(key:string, value:string):void {
         if ($isRuntime) {
