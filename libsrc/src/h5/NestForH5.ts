@@ -156,6 +156,32 @@ module nest.h5 {
         }
     }
 
+    export module createRole {
+        export function isSupport(info:Object | createRoleSupportCallbackType, callback?:createRoleSupportCallbackType) {
+            var egretH5SdkCallback = function (data) {
+                var status = data.status;
+                var createRoleCallbackInfo = {"createRole": status};
+                callback.call(null, createRoleCallbackInfo);
+            };
+            EgretH5Sdk.isOpenCreateRole(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+        }
+
+        export function createRole(createRoleInfo:nest.createRole.CreateRoleInfo, callback:Function) {
+            var egretH5SdkCallback = function (data) {
+                var status = data.status;
+                if (status == 0) {
+                    status = -1;
+                }
+                else if (status == 1) {
+                    status = 0;
+                }
+                var createRoleCallbackInfo = {"status": status, "result": status};
+                callback.call(null, createRoleCallbackInfo);
+            };
+            EgretH5Sdk.share(nest.utils.$APP_ID, nest.h5.uid, createRoleInfo, egretH5SdkCallback, null);
+        }
+    }
+
     export module social {
         export function isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType) {
             callback.call(null, {"result": 0, "getFriends": 0, "openBBS": 0});
@@ -280,6 +306,22 @@ module nest.h5_2 {
         export function invite(inviteInfo:nest.invite.InviteInfo, callback:Function) {
             inviteInfo["imgUrl"] = inviteInfo.img_url;
             EgretH5Sdk.invite(inviteInfo, callback);
+        }
+    }
+
+    export module createRole {
+        export function isSupport(info:Object | createRoleSupportCallbackType, callback?:createRoleSupportCallbackType) {
+            var supportCreateRoleCallback = function (data) {
+                var status = data.result;
+                var createRoleCallbackInfo = {"createRole": status, "msg":data.msg};
+                callback.call(null, createRoleCallbackInfo);
+            };
+            EgretH5Sdk.isSupportCreateRole({}, supportCreateRoleCallback);
+        }
+
+        export function createRole(createRoleInfo:nest.createRole.CreateRoleInfo, callback:Function) {
+            createRoleInfo["data"] = createRoleInfo.data;
+            EgretH5Sdk.createRole(createRoleInfo, callback);
         }
     }
 

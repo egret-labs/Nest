@@ -328,7 +328,7 @@ var nest;
          */
         function $changeMethod(version) {
             //console.log("[Nest]use module : " + version);
-            var arr = ["core", "user", "iap", "share", "social", "app", "invite"];
+            var arr = ["core", "user", "iap", "share", "social", "app", "invite", "createRole"];
             for (var i = 0; i < arr.length; i++) {
                 var module = arr[i];
                 if (nest[version] && nest[version][module]) {
@@ -2340,6 +2340,33 @@ var nest;
             }
             invite_1.invite = invite;
         })(invite = h5.invite || (h5.invite = {}));
+        var createRole;
+        (function (createRole_1) {
+            function isSupport(info, callback) {
+                var egretH5SdkCallback = function (data) {
+                    var status = data.status;
+                    var createRoleCallbackInfo = { "createRole": status };
+                    callback.call(null, createRoleCallbackInfo);
+                };
+                EgretH5Sdk.isOpenCreateRole(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+            }
+            createRole_1.isSupport = isSupport;
+            function createRole(createRoleInfo, callback) {
+                var egretH5SdkCallback = function (data) {
+                    var status = data.status;
+                    if (status == 0) {
+                        status = -1;
+                    }
+                    else if (status == 1) {
+                        status = 0;
+                    }
+                    var createRoleCallbackInfo = { "status": status, "result": status };
+                    callback.call(null, createRoleCallbackInfo);
+                };
+                EgretH5Sdk.share(nest.utils.$APP_ID, nest.h5.uid, createRoleInfo, egretH5SdkCallback, null);
+            }
+            createRole_1.createRole = createRole;
+        })(createRole = h5.createRole || (h5.createRole = {}));
         var social;
         (function (social) {
             function isSupport(info, callback) {
@@ -2473,6 +2500,23 @@ var nest;
             }
             invite_2.invite = invite;
         })(invite = h5_2.invite || (h5_2.invite = {}));
+        var createRole;
+        (function (createRole_2) {
+            function isSupport(info, callback) {
+                var supportCreateRoleCallback = function (data) {
+                    var status = data.result;
+                    var createRoleCallbackInfo = { "createRole": status, "msg": data.msg };
+                    callback.call(null, createRoleCallbackInfo);
+                };
+                EgretH5Sdk.isSupportCreateRole({}, supportCreateRoleCallback);
+            }
+            createRole_2.isSupport = isSupport;
+            function createRole(createRoleInfo, callback) {
+                createRoleInfo["data"] = createRoleInfo.data;
+                EgretH5Sdk.createRole(createRoleInfo, callback);
+            }
+            createRole_2.createRole = createRole;
+        })(createRole = h5_2.createRole || (h5_2.createRole = {}));
         var social;
         (function (social) {
             function isSupport(info, callback) {
@@ -2570,7 +2614,7 @@ nest.core.startup = function (info, callback) {
     catch (e) {
         nest.utils.$EGRET_SUPPORT = false;
     }
-    var api = "http://api.gz.1251278653.clb.myqcloud.com/v2/";
+    var api = "http://api.egret-labs.org/v2/";
     nest.utils.$APP_ID = info.egretAppId;
     nest.utils.$DEBUG_LOG = info.debug;
     if (nest.utils.$isRuntime) {
@@ -2627,7 +2671,7 @@ nest.core.startup = function (info, callback) {
             //新版api
             nest.utils.$changeMethod("h5_2");
             //加载h5sdk
-            var url = sdkDomain + "/misc/scripts/egreth5sdkwb.js";
+            var url = sdkDomain + "/misc/scripts/egreth5sdk.js";
             var s = document.createElement('script');
             if (s.hasOwnProperty("async")) {
                 s.async = false;

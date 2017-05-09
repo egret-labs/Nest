@@ -2,6 +2,7 @@ declare module nest {
     type userSupportCallbackType = (resultInfo: nest.user.UserSupportCallbackInfo) => void;
     type shareSupportCallbackType = (resultInfo: nest.share.ShareSupportCallbackInfo) => void;
     type inviteSupportCallbackType = (resultInfo: nest.invite.InviteSupportCallbackInfo) => void;
+    type createRoleSupportCallbackType = (resultInfo: nest.invite.InviteSupportCallbackInfo) => void;
     type socialSupportCallbackType = (resultInfo: nest.social.SocialSupportCallbackInfo) => void;
     type appSupportCallbackType = (resultInfo: nest.app.AppSupportCallbackInfo) => void;
     module core {
@@ -269,6 +270,21 @@ declare module nest {
         }
         interface InviteSupportCallbackInfo extends core.ResultCallbackInfo {
             invite: number;
+        }
+    }
+    module createRole {
+        /**
+         * 创角接口传递参数
+         */
+        interface CreateRoleInfo {
+            /**
+             * 角色信息
+             */
+            data: any;
+        }
+        interface CreateRoleCallbackInfo extends core.ResultCallbackInfo {
+        }
+        interface CreateRoleSupportCallbackInfo extends core.ResultCallbackInfo {
         }
     }
     module social {
@@ -921,6 +937,10 @@ declare module nest.h5 {
         function isSupport(info: Object | inviteSupportCallbackType, callback?: inviteSupportCallbackType): void;
         function invite(inviteInfo: nest.invite.InviteInfo, callback: Function): void;
     }
+    module createRole {
+        function isSupport(info: Object | createRoleSupportCallbackType, callback?: createRoleSupportCallbackType): void;
+        function createRole(createRoleInfo: nest.createRole.CreateRoleInfo, callback: Function): void;
+    }
     module social {
         function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
         function getFriends(data: any, callback: Function): void;
@@ -955,6 +975,10 @@ declare module nest.h5_2 {
     module invite {
         function isSupport(info: Object | inviteSupportCallbackType, callback?: inviteSupportCallbackType): void;
         function invite(inviteInfo: nest.invite.InviteInfo, callback: Function): void;
+    }
+    module createRole {
+        function isSupport(info: Object | createRoleSupportCallbackType, callback?: createRoleSupportCallbackType): void;
+        function createRole(createRoleInfo: nest.createRole.CreateRoleInfo, callback: Function): void;
     }
     module social {
         function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;

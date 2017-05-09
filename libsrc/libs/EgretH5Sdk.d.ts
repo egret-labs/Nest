@@ -40,11 +40,14 @@ declare class EgretH5Sdk
     static share(appId:any, id:any, shareTxt?:any, callbackFun?:Function, callbackFunClass?:any);
     static isOpenInvite(appId:any, id:any, callbackFun:Function, callbackFunClass:any);
     static invite(appId:any, id:any, inviteTxt?:any, callbackFun?:Function, callbackFunClass?:any);
+    static isOpenCreateRole(appId:any, id:any, callbackFun:Function, callbackFunClass:any);
+    static createRole(appId:any, id:any, callbackFun?:Function, callbackFunClass?:any);
 
     //以下为v2版本新增接口
     static init(data:any, callbackFun:Function);
     static isSupportShare(data:any, callbackFun:Function);
     static isSupportInvite(data:any, callbackFun:Function);
+    static isSupportCreateRole(data:any, callbackFun:Function);
     static isSupportAttention(data:any, callbackFun:Function);
     static setShareDefaultData(data:any, callbackFun:Function);
     static getLoginType(data:any, callbackFun:Function);

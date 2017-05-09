@@ -31,6 +31,7 @@ module nest {
     export type userSupportCallbackType = (resultInfo:nest.user.UserSupportCallbackInfo)=>void;
     export type shareSupportCallbackType = (resultInfo:nest.share.ShareSupportCallbackInfo)=>void;
     export type inviteSupportCallbackType = (resultInfo:nest.invite.InviteSupportCallbackInfo)=>void;
+    export type createRoleSupportCallbackType = (resultInfo:nest.invite.InviteSupportCallbackInfo)=>void;
     export type socialSupportCallbackType = (resultInfo:nest.social.SocialSupportCallbackInfo)=>void;
     export type appSupportCallbackType = (resultInfo:nest.app.AppSupportCallbackInfo)=>void;
 
@@ -322,6 +323,24 @@ module nest {
 
         export interface InviteSupportCallbackInfo extends core.ResultCallbackInfo{
             invite:number;
+        }
+    }
+
+    export module createRole {
+        /**
+         * 创角接口传递参数
+         */
+        export interface CreateRoleInfo {
+            /**
+             * 角色信息
+             */
+            data:any;
+        }
+
+        export interface CreateRoleCallbackInfo extends core.ResultCallbackInfo{
+        }
+
+        export interface CreateRoleSupportCallbackInfo extends core.ResultCallbackInfo{
         }
     }
 
