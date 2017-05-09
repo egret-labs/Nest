@@ -130,6 +130,32 @@ module nest.h5 {
         }
     }
 
+    export module invite {
+        export function isSupport(info:Object | inviteSupportCallbackType, callback?:inviteSupportCallbackType) {
+            var egretH5SdkCallback = function (data) {
+                var status = data.status;
+                var loginCallbackInfo = {"invite": status};
+                callback.call(null, loginCallbackInfo);
+            };
+            EgretH5Sdk.isOpenInvite(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+        }
+
+        export function invite(inviteInfo:nest.invite.InviteInfo, callback:Function) {
+            var egretH5SdkCallback = function (data) {
+                var status = data.status;
+                if (status == 0) {
+                    status = -1;
+                }
+                else if (status == 1) {
+                    status = 0;
+                }
+                var loginCallbackInfo = {"status": status, "result": status};
+                callback.call(null, loginCallbackInfo);
+            };
+            EgretH5Sdk.invite(nest.utils.$APP_ID, nest.h5.uid, inviteInfo, egretH5SdkCallback, null);
+        }
+    }
+
     export module social {
         export function isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType) {
             callback.call(null, {"result": 0, "getFriends": 0, "openBBS": 0});
@@ -238,6 +264,22 @@ module nest.h5_2 {
         export function share(shareInfo:nest.share.ShareInfo, callback:Function) {
             shareInfo["imgUrl"] = shareInfo.img_url;
             EgretH5Sdk.share(shareInfo, callback);
+        }
+    }
+
+    export module invite {
+        export function isSupport(info:Object | inviteSupportCallbackType, callback?:inviteSupportCallbackType) {
+            var supportInviteCallback = function (data) {
+                var status = data.result;
+                var inviteCallbackInfo = {"invite": status, "msg":data.msg};
+                callback.call(null, inviteCallbackInfo);
+            };
+            EgretH5Sdk.isSupportInvite({}, supportInviteCallback);
+        }
+
+        export function invite(inviteInfo:nest.invite.InviteInfo, callback:Function) {
+            inviteInfo["imgUrl"] = inviteInfo.img_url;
+            EgretH5Sdk.invite(inviteInfo, callback);
         }
     }
 

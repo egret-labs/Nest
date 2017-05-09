@@ -328,7 +328,7 @@ var nest;
          */
         function $changeMethod(version) {
             //console.log("[Nest]use module : " + version);
-            var arr = ["core", "user", "iap", "share", "social", "app"];
+            var arr = ["core", "user", "iap", "share", "social", "app", "invite"];
             for (var i = 0; i < arr.length; i++) {
                 var module = arr[i];
                 if (nest[version] && nest[version][module]) {
@@ -494,6 +494,7 @@ var nest;
 /**
  * @private
  */
+var nest;
 (function (nest) {
     var utils;
     (function (utils) {
@@ -947,6 +948,7 @@ var nest;
 /*
  * @private
  */
+var nest;
 (function (nest) {
     var cm;
     (function (cm) {
@@ -1059,6 +1061,7 @@ var nest;
 /*
  * @private
  */
+var nest;
 (function (nest) {
     var cm;
     (function (cm) {
@@ -1120,6 +1123,7 @@ var nest;
 /**
  * @private
  */
+var nest;
 (function (nest) {
     var cm;
     (function (cm) {
@@ -1143,6 +1147,7 @@ var nest;
 /*
  * @private
  */
+var nest;
 (function (nest) {
     var cm;
     (function (cm) {
@@ -1164,6 +1169,7 @@ var nest;
 /*
  * @private
  */
+var nest;
 (function (nest) {
     var cm;
     (function (cm) {
@@ -1397,6 +1403,7 @@ var nest;
 /**
  * @private
  */
+var nest;
 (function (nest) {
     var qqhall;
     (function (qqhall) {
@@ -1437,6 +1444,7 @@ var nest;
 /**
  * @private
  */
+var nest;
 (function (nest) {
     var qqhall;
     (function (qqhall) {
@@ -1489,6 +1497,7 @@ var nest;
 /**
  * @private
  */
+var nest;
 (function (nest) {
     var qqhall;
     (function (qqhall) {
@@ -1528,6 +1537,7 @@ var nest;
 /**
  * @private
  */
+var nest;
 (function (nest) {
     var qqhall;
     (function (qqhall) {
@@ -1567,6 +1577,7 @@ var nest;
 /**
  * @private
  */
+var nest;
 (function (nest) {
     var qqhall;
     (function (qqhall) {
@@ -2302,6 +2313,33 @@ var nest;
             }
             share_1.share = share;
         })(share = h5.share || (h5.share = {}));
+        var invite;
+        (function (invite_1) {
+            function isSupport(info, callback) {
+                var egretH5SdkCallback = function (data) {
+                    var status = data.status;
+                    var loginCallbackInfo = { "invite": status };
+                    callback.call(null, loginCallbackInfo);
+                };
+                EgretH5Sdk.isOpenInvite(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+            }
+            invite_1.isSupport = isSupport;
+            function invite(inviteInfo, callback) {
+                var egretH5SdkCallback = function (data) {
+                    var status = data.status;
+                    if (status == 0) {
+                        status = -1;
+                    }
+                    else if (status == 1) {
+                        status = 0;
+                    }
+                    var loginCallbackInfo = { "status": status, "result": status };
+                    callback.call(null, loginCallbackInfo);
+                };
+                EgretH5Sdk.invite(nest.utils.$APP_ID, nest.h5.uid, inviteInfo, egretH5SdkCallback, null);
+            }
+            invite_1.invite = invite;
+        })(invite = h5.invite || (h5.invite = {}));
         var social;
         (function (social) {
             function isSupport(info, callback) {
@@ -2352,6 +2390,7 @@ var nest;
 /**
  * @private
  */
+var nest;
 (function (nest) {
     var h5_2;
     (function (h5_2) {
@@ -2417,6 +2456,23 @@ var nest;
             }
             share_2.share = share;
         })(share = h5_2.share || (h5_2.share = {}));
+        var invite;
+        (function (invite_2) {
+            function isSupport(info, callback) {
+                var supportInviteCallback = function (data) {
+                    var status = data.result;
+                    var inviteCallbackInfo = { "invite": status, "msg": data.msg };
+                    callback.call(null, inviteCallbackInfo);
+                };
+                EgretH5Sdk.isSupportInvite({}, supportInviteCallback);
+            }
+            invite_2.isSupport = isSupport;
+            function invite(inviteInfo, callback) {
+                inviteInfo["imgUrl"] = inviteInfo.img_url;
+                EgretH5Sdk.invite(inviteInfo, callback);
+            }
+            invite_2.invite = invite;
+        })(invite = h5_2.invite || (h5_2.invite = {}));
         var social;
         (function (social) {
             function isSupport(info, callback) {
@@ -2514,7 +2570,7 @@ nest.core.startup = function (info, callback) {
     catch (e) {
         nest.utils.$EGRET_SUPPORT = false;
     }
-    var api = "http://api.egret-labs.org/v2/";
+    var api = "http://api.gz.1251278653.clb.myqcloud.com/v2/";
     nest.utils.$APP_ID = info.egretAppId;
     nest.utils.$DEBUG_LOG = info.debug;
     if (nest.utils.$isRuntime) {
@@ -2571,7 +2627,7 @@ nest.core.startup = function (info, callback) {
             //新版api
             nest.utils.$changeMethod("h5_2");
             //加载h5sdk
-            var url = sdkDomain + "/misc/scripts/egreth5sdk.js";
+            var url = sdkDomain + "/misc/scripts/egreth5sdkwb.js";
             var s = document.createElement('script');
             if (s.hasOwnProperty("async")) {
                 s.async = false;

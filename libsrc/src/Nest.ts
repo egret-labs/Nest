@@ -30,6 +30,7 @@
 module nest {
     export type userSupportCallbackType = (resultInfo:nest.user.UserSupportCallbackInfo)=>void;
     export type shareSupportCallbackType = (resultInfo:nest.share.ShareSupportCallbackInfo)=>void;
+    export type inviteSupportCallbackType = (resultInfo:nest.invite.InviteSupportCallbackInfo)=>void;
     export type socialSupportCallbackType = (resultInfo:nest.social.SocialSupportCallbackInfo)=>void;
     export type appSupportCallbackType = (resultInfo:nest.app.AppSupportCallbackInfo)=>void;
 
@@ -289,6 +290,41 @@ module nest {
         }
     }
 
+    export module invite {
+        /**
+         * 邀请接口传递参数
+         */
+        export interface InviteInfo {
+            /**
+             * 邀请标题
+             */
+            title:string;
+            /**
+             * 邀请文字内容
+             */
+            description:string;
+            /**
+             * 邀请图片标题
+             */
+            img_title:string;
+            /**
+             * 邀请图标地址
+             */
+            img_url:string;
+            /**
+             * 邀请地址
+             */
+            url:string;
+        }
+
+        export interface InviteCallbackInfo extends core.ResultCallbackInfo{
+        }
+
+        export interface InviteSupportCallbackInfo extends core.ResultCallbackInfo{
+            invite:number;
+        }
+    }
+
     export module social {
         /**
          * social接口传递参数
@@ -422,6 +458,44 @@ declare module nest {
          * </pre>
          */
         function share(shareInfo:share.ShareInfo, callback:(resultInfo:share.ShareCallbackInfo)=>void):void;
+    }
+
+    module invite {
+        /**
+         * 是否支持邀请
+         * @param info 请传递一个{}
+         * @param callback 回调函数
+         * @example 以下代码获取是否支持邀请
+         * <pre>
+         *     nest.invite.isSupport({}, function (data){
+         *         if(data.result == 0) {
+         *             //获取是否支持邀请
+         *             var invite = data.invite == 1;
+         *         }
+         *     });
+         * </pre>
+         */
+        function isSupport(info:Object | inviteSupportCallbackType, callback?:inviteSupportCallbackType):void;
+
+        /**
+         * 邀请
+         * @param inviteInfo 邀请参数
+         * @param callback 回调函数
+         * @callback-param result 0 表示邀请成功，-1表示用户取消
+         * @example 以下代码获取是否支持邀请
+         * <pre>
+         *     var inviteInfo = {title:"title", description:"description", img_title:"img_title", img_url:"http://www.example.com/example.jpg", url:"http://www.example.com"};;
+         *     nest.invite.invite(inviteInfo, function (data) {
+         *         if(data.result == 0) {
+         *             //邀请成功
+         *         }
+         *         else {
+         *             //邀请失败
+         *         }
+         *     });
+         * </pre>
+         */
+        function invite(inviteInfo:invite.InviteInfo, callback:(resultInfo:invite.InviteCallbackInfo)=>void):void;
     }
 
     module social {
