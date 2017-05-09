@@ -2363,7 +2363,7 @@ var nest;
                     var createRoleCallbackInfo = { "status": status, "result": status };
                     callback.call(null, createRoleCallbackInfo);
                 };
-                EgretH5Sdk.share(nest.utils.$APP_ID, nest.h5.uid, createRoleInfo, egretH5SdkCallback, null);
+                EgretH5Sdk.createRole(nest.utils.$APP_ID, nest.h5.uid, createRoleInfo, egretH5SdkCallback, null);
             }
             createRole_1.createRole = createRole;
         })(createRole = h5.createRole || (h5.createRole = {}));

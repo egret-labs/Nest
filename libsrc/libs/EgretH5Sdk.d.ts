@@ -41,7 +41,7 @@ declare class EgretH5Sdk
     static isOpenInvite(appId:any, id:any, callbackFun:Function, callbackFunClass:any);
     static invite(appId:any, id:any, inviteTxt?:any, callbackFun?:Function, callbackFunClass?:any);
     static isOpenCreateRole(appId:any, id:any, callbackFun:Function, callbackFunClass:any);
-    static createRole(appId:any, id:any, callbackFun?:Function, callbackFunClass?:any);
+    static createRole(appId:any, id:any, data?:any, callbackFun?:Function, callbackFunClass?:any);
 
     //以下为v2版本新增接口
     static init(data:any, callbackFun:Function);
