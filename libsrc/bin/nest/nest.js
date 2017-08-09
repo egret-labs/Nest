@@ -2239,7 +2239,7 @@ var nest;
         var externalArr = [];
         function callRuntime(data, callback, parallel) {
             if (parallel === void 0) { parallel = false; }
-            var tag = "@nest";
+            var tag = "nest";
             if (parallel) {
                 egret.ExternalInterface.addCallback(tag, function (data) {
                     var obj = JSON.parse(data);
@@ -2261,7 +2261,7 @@ var nest;
                 }
                 isRunning = true;
                 var info = externalArr.shift();
-                var tag = "@nest";
+                var tag = "nest";
                 egret.ExternalInterface.addCallback(tag, function (data) {
                     var obj = JSON.parse(data);
                     info["callback"](obj.data);
