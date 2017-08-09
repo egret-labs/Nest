@@ -479,6 +479,33 @@ declare module nest {
         function share(shareInfo:share.ShareInfo, callback:(resultInfo:share.ShareCallbackInfo)=>void):void;
     }
 
+    module createRole {
+        /**
+         * 是否支持创建角色
+         * @param info 请传递一个{}
+         * @param callback 回调函数
+         * @example 以下代码获取是否支持创建角色
+         * <pre>
+         *     nest.share.isSupport({}, function (data){
+         *         if(data.result == 0) {
+         *             //获取是否支持分享
+         *             var share = data.share == 1;
+         *         }
+         *     });
+         * </pre>
+         */
+        function isSupport(info:Object | createRoleSupportCallbackType, callback?:createRoleSupportCallbackType):void;
+
+        /**
+         * 创建角色
+         * @param shareInfo 创建角色参数
+         * @param callback 回调函数
+         * @callback-param result
+         */
+        function createRole(createRoleInfo:nest.createRole.CreateRoleInfo, callback:Function):void;
+
+    }
+
     module invite {
         /**
          * 是否支持邀请
