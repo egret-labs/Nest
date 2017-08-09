@@ -563,6 +563,29 @@ declare module nest {
         function getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void): void;
     }
 }
+declare module nest.utils {
+    var $API_DOMAIN: string;
+    var $APP_ID: number;
+    var $DEBUG_LOG: boolean;
+    var $EGRET_SUPPORT: boolean;
+    function $changeMethod(version: string): void;
+    var $isRuntime: boolean;
+    var $spid: number;
+    function $getSpid(): number;
+    function $getChannelTag(): string;
+    function $isQQBrowser(): boolean;
+    function $isTargetPlatform(target: number): boolean;
+    function $getOption(key: string): string;
+    function $log(msg: string): void;
+    function setProxy(url: string, postData: Object, method: string, callback: Function, errCallback: Function): void;
+}
+/**
+ * @private
+ */
+declare module nest.utils.localStorage {
+    function setItem(key: string, value: string): void;
+    function getItem(key: string): string;
+}
 /**
  * @private
  */
@@ -868,27 +891,4 @@ declare module nest.h5_2 {
         function exitGame(appInfo: any, callback: Function): void;
         function getInfo(appInfo: any, callback: Function): void;
     }
-}
-declare module nest.utils {
-    var $API_DOMAIN: string;
-    var $APP_ID: number;
-    var $DEBUG_LOG: boolean;
-    var $EGRET_SUPPORT: boolean;
-    function $changeMethod(version: string): void;
-    var $isRuntime: boolean;
-    var $spid: number;
-    function $getSpid(): number;
-    function $getChannelTag(): string;
-    function $isQQBrowser(): boolean;
-    function $isTargetPlatform(target: number): boolean;
-    function $getOption(key: string): string;
-    function $log(msg: string): void;
-    function setProxy(url: string, postData: Object, method: string, callback: Function, errCallback: Function): void;
-}
-/**
- * @private
- */
-declare module nest.utils.localStorage {
-    function setItem(key: string, value: string): void;
-    function getItem(key: string): string;
 }
