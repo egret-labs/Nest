@@ -43,7 +43,13 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
 
     nest.utils.$DEBUG_LOG = info.debug;
 
-    if (nest.utils.$isRuntime) {
+    // rt2
+    if (nest.utils.$getOption("egretnative") == "true") {
+        console.log("is egretnative");
+        nest.utils.$changeMethod("native");
+    }
+    // rt1
+    else if (nest.utils.$isRuntime) {
         //qq渠道换为腾讯云
         if (nest.utils.$isQQBrowser() || nest.utils.$isTargetPlatform(10080) || nest.utils.$isTargetPlatform(10835) || nest.utils.$isTargetPlatform(20546)) {
             api = "http://api.gz.1251278653.clb.myqcloud.com/v2/";

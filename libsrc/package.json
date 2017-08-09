@@ -15,6 +15,7 @@
 				"qqhall/NestForQQHall.ts",
 				"qqhall/NestForQQHallV2.ts",
 				"h5/NestForH5.ts",
+				"native/NestForNative.ts",
 				"utils/NestEntry.ts"
 			],
 			"root": "src"

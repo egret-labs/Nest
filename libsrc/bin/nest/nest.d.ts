@@ -441,128 +441,6 @@ declare module nest {
         function getInfo(appInfo: any, callback: (resultInfo: app.GetInfoCallbackInfo) => void): void;
     }
 }
-declare module nest {
-    module easyuser {
-        /**
-         * 启动Nest
-         * @param startupInfo 启动参数
-         * @param callback 启动完成回调
-         * @example 以下代码设置appId为 88888,启动Nest
-         * <pre>
-         *     nest.core.startup({egretAppId:88888}, function (){
-         *         //do something
-         *     });
-         * </pre>
-         */
-        function startup(startupInfo: nest.core.StartupInfo, callback: (data: core.ResultCallbackInfo) => any): void;
-        /**
-         * 获取登录按钮类型。登出后再次登录前此方法需要重新调用。
-         * 目前为止出现能为 qq（显示 qq 按钮）、wx（显示微信按钮）、default（显示一个游戏内的默认按钮），可能只有1个）
-         */
-        function getLoginTypes(): Array<ILoginType>;
-        /**
-         * 单个按钮的信息
-         */
-        interface ILoginType {
-            /**
-             * 登录类型
-             */
-            loginType: string;
-            /**
-             * 不存在，则不需要显示具体的内容
-             */
-            accInfo?: {
-                nickName?: string;
-                avatarUrl?: string;
-            };
-        }
-        /**
-         * 调用渠道登录接口，调用登录接口前，请先根据 nest.easyuser.getLoginTypes 来获取实际显示的按钮类型。
-         * @param loginInfo
-         * @param callback
-         * @callback-param  @see nest.user.LoginCallbackInfo
-         * @example 以下代码调用渠道登录接口
-         * <pre>
-         *     nest.user.login({}, function (data){
-         *         if(data.result == 0) {
-         *             //登陆成功,获取用户token
-         *             var token = data.token;
-         *         }
-         *         else {
-         *             //登录失败,需要重新登录
-         *         }
-         *     });
-         * </pre>
-         */
-        function login(loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => void): void;
-        /**
-         * 登出接口
-         * @param loginInfo 登出参数,没有可以传递{}
-         * @param callback 回调函数
-         * @callback-param   { result : 0 };
-         * @example 以下代码调用渠道登出接口
-         * <pre>
-         *     nest.easyuser.logout({}, function (data){
-         *         if(data.result == 0) {
-         *             //登出成功,需要显示登陆界面供玩家重新登录
-         *             //这里后续不需要继续调用nest.user.checkLogin
-         *         }
-         *         else {
-         *             //登出失败,可能相应渠道不支持登出
-         *         }
-         *     });
-         * </pre>
-         */
-        function logout(loginInfo: nest.user.LoginInfo, callback: (data: nest.core.ResultCallbackInfo) => void): void;
-        interface UserSupportCallbackInfo extends core.ResultCallbackInfo {
-            /**
-             * 是否支持获取用户信息，值为 1 时支持获取用户信息
-             */
-            getInfo: number;
-            /**
-             * 是否支持登出，值为 1 时支持登出
-             */
-            logout?: number;
-        }
-        /**
-         * 检测支持何种登录方式
-         * @param info 请传递一个{}
-         * @param callback 回调函数
-         * @callback-param  @see nest.user.UserSupportCallbackInfo
-         * @example 以下代码进行检测支持何种登录方式
-         * <pre>
-         *     nest.user.isSupport({}, function (data){
-         *         if(data.result == 0) {
-         *             //获取渠道是否支持获得用户信息接口,如果支持可以使用nest.user.getInfo获取用户信息
-         *             var isSupportGetUserInfo = data.getInfo == 1;
-         *         }
-         *     });
-         * </pre>
-         */
-        function isSupport(info: Object, callback: (resultInfo: easyuser.UserSupportCallbackInfo) => void): void;
-        /**
-         * 获取用户信息，目前只有qq浏览器runtime支持
-         * @param callback 回调函数
-         * @example 以下代码获取用户信息
-         * <pre>
-         *     nest.user.getInfo({}, function (data){
-         *         if(data.result == 0) {
-         *             var msg = data.msg;              //传回的提示信息
-         *             var nickName = data.nickName;     //昵称
-         *             var avatarUrl = data.avatarUrl;  //头像
-         *             var sex = data.sex;              //性别, 0未知，1男，2女
-         *             var city = data.city;            //城市
-         *             var language = data.language;    //语言
-         *             var isVip = data.isVip;          //是否vip, 1是，0不是
-         *             var province = data.province;    //省份
-         *             var country = data.country;      //国家
-         *         }
-         *     });
-         * </pre>
-         */
-        function getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void): void;
-    }
-}
 declare module nest.utils {
     var $API_DOMAIN: string;
     var $APP_ID: number;
@@ -714,82 +592,127 @@ declare module nest.cm.app {
      */
     function sendToDesktop(appInfo: any, callback: Function): void;
 }
-/**
- * @private
- */
-declare module nest.qqhall {
-    var login_call_type: number;
-    var login_back_call_type: number;
-    var pay_call_type: number;
-    var share_call_type: number;
-    var login_callback_type: number;
-    var pay_callback_type: number;
-    var share_callback_type: number;
-    var loginCallback: Function;
-    var payCallback: Function;
-    var shareCallback: Function;
-    var version: string;
-    var loginNum: number;
-    var gameType: any;
-    var gameVersion: any;
-    var OpenId: any;
-    var OpenKey: any;
-    var enterType: any;
-    var enterId: any;
-    var payToken: any;
-    var userId: any;
-    var payOrderInfo: any;
-    function payBefore(orderInfo: nest.iap.PayInfo, callback: any): void;
-    function callHall(data: any): void;
-    function init(): void;
-}
-/**
- * @private
- */
-declare module nest.qqhall.user {
-    function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
-    function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
-    function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
-}
-/**
- * @private
- */
-declare module nest.qqhall.iap {
-    function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
-    /**
-     * 大厅充值成功后，再次调用付费接口
-     */
-    function repay(): void;
-}
-/**
- * @private
- */
-declare module nest.qqhall.app {
-    function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
-    function exitGame(callback: Function): void;
-    function attention(appInfo: any, callback: Function): void;
-    function sendToDesktop(appInfo: any, callback: Function): void;
-}
-/**
- * @private
- */
-declare module nest.qqhall.share {
-    function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
-    /**
-     * 分享
-     * @param shareInfo
-     * @param callback
-     * @callback-param result 0 表示分享成功，-1表示用户取消
-     */
-    function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
-}
-/**
- * @private
- */
-declare module nest.qqhall.social {
-    function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
-    function getFriends(socialInfo: any, callback: Function): void;
-    function openBBS(socialInfo: any, callback: Function): void;
+declare module nest {
+    module easyuser {
+        /**
+         * 启动Nest
+         * @param startupInfo 启动参数
+         * @param callback 启动完成回调
+         * @example 以下代码设置appId为 88888,启动Nest
+         * <pre>
+         *     nest.core.startup({egretAppId:88888}, function (){
+         *         //do something
+         *     });
+         * </pre>
+         */
+        function startup(startupInfo: nest.core.StartupInfo, callback: (data: core.ResultCallbackInfo) => any): void;
+        /**
+         * 获取登录按钮类型。登出后再次登录前此方法需要重新调用。
+         * 目前为止出现能为 qq（显示 qq 按钮）、wx（显示微信按钮）、default（显示一个游戏内的默认按钮），可能只有1个）
+         */
+        function getLoginTypes(): Array<ILoginType>;
+        /**
+         * 单个按钮的信息
+         */
+        interface ILoginType {
+            /**
+             * 登录类型
+             */
+            loginType: string;
+            /**
+             * 不存在，则不需要显示具体的内容
+             */
+            accInfo?: {
+                nickName?: string;
+                avatarUrl?: string;
+            };
+        }
+        /**
+         * 调用渠道登录接口，调用登录接口前，请先根据 nest.easyuser.getLoginTypes 来获取实际显示的按钮类型。
+         * @param loginInfo
+         * @param callback
+         * @callback-param  @see nest.user.LoginCallbackInfo
+         * @example 以下代码调用渠道登录接口
+         * <pre>
+         *     nest.user.login({}, function (data){
+         *         if(data.result == 0) {
+         *             //登陆成功,获取用户token
+         *             var token = data.token;
+         *         }
+         *         else {
+         *             //登录失败,需要重新登录
+         *         }
+         *     });
+         * </pre>
+         */
+        function login(loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => void): void;
+        /**
+         * 登出接口
+         * @param loginInfo 登出参数,没有可以传递{}
+         * @param callback 回调函数
+         * @callback-param   { result : 0 };
+         * @example 以下代码调用渠道登出接口
+         * <pre>
+         *     nest.easyuser.logout({}, function (data){
+         *         if(data.result == 0) {
+         *             //登出成功,需要显示登陆界面供玩家重新登录
+         *             //这里后续不需要继续调用nest.user.checkLogin
+         *         }
+         *         else {
+         *             //登出失败,可能相应渠道不支持登出
+         *         }
+         *     });
+         * </pre>
+         */
+        function logout(loginInfo: nest.user.LoginInfo, callback: (data: nest.core.ResultCallbackInfo) => void): void;
+        interface UserSupportCallbackInfo extends core.ResultCallbackInfo {
+            /**
+             * 是否支持获取用户信息，值为 1 时支持获取用户信息
+             */
+            getInfo: number;
+            /**
+             * 是否支持登出，值为 1 时支持登出
+             */
+            logout?: number;
+        }
+        /**
+         * 检测支持何种登录方式
+         * @param info 请传递一个{}
+         * @param callback 回调函数
+         * @callback-param  @see nest.user.UserSupportCallbackInfo
+         * @example 以下代码进行检测支持何种登录方式
+         * <pre>
+         *     nest.user.isSupport({}, function (data){
+         *         if(data.result == 0) {
+         *             //获取渠道是否支持获得用户信息接口,如果支持可以使用nest.user.getInfo获取用户信息
+         *             var isSupportGetUserInfo = data.getInfo == 1;
+         *         }
+         *     });
+         * </pre>
+         */
+        function isSupport(info: Object, callback: (resultInfo: easyuser.UserSupportCallbackInfo) => void): void;
+        /**
+         * 获取用户信息，目前只有qq浏览器runtime支持
+         * @param callback 回调函数
+         * @example 以下代码获取用户信息
+         * <pre>
+         *     nest.user.getInfo({}, function (data){
+         *         if(data.result == 0) {
+         *             var msg = data.msg;              //传回的提示信息
+         *             var nickName = data.nickName;     //昵称
+         *             var avatarUrl = data.avatarUrl;  //头像
+         *             var sex = data.sex;              //性别, 0未知，1男，2女
+         *             var city = data.city;            //城市
+         *             var language = data.language;    //语言
+         *             var isVip = data.isVip;          //是否vip, 1是，0不是
+         *             var province = data.province;    //省份
+         *             var country = data.country;      //国家
+         *         }
+         *     });
+         * </pre>
+         */
+        function getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void): void;
+    }
 }
 /**
  * @private
@@ -891,4 +814,124 @@ declare module nest.h5_2 {
         function exitGame(appInfo: any, callback: Function): void;
         function getInfo(appInfo: any, callback: Function): void;
     }
+}
+/**
+ * @private
+ */
+declare module nest.native {
+    module core {
+        function callCustomMethod(customInfo: any, callback: Function): void;
+        function addCallback(callback: (callbackInfo: nest.core.CallbackInfo) => void): void;
+    }
+    module user {
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+        function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void): void;
+    }
+    module iap {
+        function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+    }
+    module share {
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+        function setDefaultData(shareInfo: nest.share.ShareInfo, callback: Function): void;
+        function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
+    }
+    module social {
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+        function getFriends(socialInfo: any, callback: Function): void;
+        function openBBS(socialInfo: any, callback: Function): void;
+    }
+    module app {
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+        function attention(appInfo: any, callback: Function): void;
+        function exitGame(appInfo: any, callback: Function): void;
+        function sendToDesktop(appInfo: any, callback: Function): void;
+        function getInfo(appInfo: any, callback: Function): void;
+    }
+    interface NestData {
+        module: string;
+        action: string;
+        param?: any;
+    }
+    function callRuntime(data: NestData, callback: any, parallel?: boolean): void;
+    function _getData(): void;
+}
+/**
+ * @private
+ */
+declare module nest.qqhall {
+    var login_call_type: number;
+    var login_back_call_type: number;
+    var pay_call_type: number;
+    var share_call_type: number;
+    var login_callback_type: number;
+    var pay_callback_type: number;
+    var share_callback_type: number;
+    var loginCallback: Function;
+    var payCallback: Function;
+    var shareCallback: Function;
+    var version: string;
+    var loginNum: number;
+    var gameType: any;
+    var gameVersion: any;
+    var OpenId: any;
+    var OpenKey: any;
+    var enterType: any;
+    var enterId: any;
+    var payToken: any;
+    var userId: any;
+    var payOrderInfo: any;
+    function payBefore(orderInfo: nest.iap.PayInfo, callback: any): void;
+    function callHall(data: any): void;
+    function init(): void;
+}
+/**
+ * @private
+ */
+declare module nest.qqhall.user {
+    function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+    function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
+    function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+}
+/**
+ * @private
+ */
+declare module nest.qqhall.iap {
+    function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+    /**
+     * 大厅充值成功后，再次调用付费接口
+     */
+    function repay(): void;
+}
+/**
+ * @private
+ */
+declare module nest.qqhall.app {
+    function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
+    function exitGame(callback: Function): void;
+    function attention(appInfo: any, callback: Function): void;
+    function sendToDesktop(appInfo: any, callback: Function): void;
+}
+/**
+ * @private
+ */
+declare module nest.qqhall.share {
+    function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
+    /**
+     * 分享
+     * @param shareInfo
+     * @param callback
+     * @callback-param result 0 表示分享成功，-1表示用户取消
+     */
+    function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
+}
+/**
+ * @private
+ */
+declare module nest.qqhall.social {
+    function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
+    function getFriends(socialInfo: any, callback: Function): void;
+    function openBBS(socialInfo: any, callback: Function): void;
 }
