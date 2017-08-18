@@ -28,19 +28,19 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 module nest {
-    export type userSupportCallbackType = (resultInfo:nest.user.UserSupportCallbackInfo)=>void;
-    export type shareSupportCallbackType = (resultInfo:nest.share.ShareSupportCallbackInfo)=>void;
-    export type inviteSupportCallbackType = (resultInfo:nest.invite.InviteSupportCallbackInfo)=>void;
-    export type createRoleSupportCallbackType = (resultInfo:nest.invite.InviteSupportCallbackInfo)=>void;
-    export type socialSupportCallbackType = (resultInfo:nest.social.SocialSupportCallbackInfo)=>void;
-    export type appSupportCallbackType = (resultInfo:nest.app.AppSupportCallbackInfo)=>void;
+    export type userSupportCallbackType = (resultInfo: nest.user.UserSupportCallbackInfo) => void;
+    export type shareSupportCallbackType = (resultInfo: nest.share.ShareSupportCallbackInfo) => void;
+    export type inviteSupportCallbackType = (resultInfo: nest.invite.InviteSupportCallbackInfo) => void;
+    export type roleSupportCallbackType = (resultInfo: nest.role.CreateRoleSupportCallbackInfo) => void;
+    export type socialSupportCallbackType = (resultInfo: nest.social.SocialSupportCallbackInfo) => void;
+    export type appSupportCallbackType = (resultInfo: nest.app.AppSupportCallbackInfo) => void;
 
     export module core {
         export interface ResultCallbackInfo {
             /**
              * 回调参数是否正确，0 正确，-1 用户取消操作, -2 失败，-3 平台登陆账号被踢掉，需要重新登陆, 其他 未知错误
              */
-            result:number;
+            result: number;
         }
 
         export interface StartupInfo {
@@ -52,18 +52,18 @@ module nest {
              * 使用的 Nest 版本,默认为1
              * 使用新版 Nest 接口请传2
              */
-            version?:number;
+            version?: number;
             /**
              * 是否是debug模式,debug模式在调用各个接口均有日志输出
              */
-            debug?:boolean;
+            debug?: boolean;
         }
 
         export interface CallbackInfo {
             /**
              * 登陆状态改变，1为已登录，2为未登录
              */
-            loginState?:number;
+            loginState?: number;
             // /**
             //  * 用户信息改变
             //  */
@@ -97,16 +97,16 @@ module nest {
              * 登录类型：如 <code>qq</code>表示QQ登录，<code>wx</code>表示微信支付。
              * 如果没有，则不需要赋值
              */
-            loginType?:string;
+            loginType?: string;
         }
         export interface LoginCallbackInfo extends core.ResultCallbackInfo {
             /**
              * checkLogin , login 函数返回。
              * 用户 token 信息，如果checkLogin函数中没有token则表示用户尚未登录
              */
-            token:string;
+            token: string;
         }
-        export interface UserSupportCallbackInfo extends core.ResultCallbackInfo{
+        export interface UserSupportCallbackInfo extends core.ResultCallbackInfo {
             /**
              * isSupport 函数返回。
              * 登录方式。
@@ -114,7 +114,7 @@ module nest {
              * 开发者应该主动判断登录方式，如果返回了 null ，则表示没有特殊登录方式
              * 需要优先判断loginTypes,如果有loginTypes用loginTypes里面的值
              */
-            loginType:Array<string>;
+            loginType: Array<string>;
 
             /**
              * isSupport 函数返回。
@@ -122,17 +122,17 @@ module nest {
              * 以QQ浏览器为例，返回 [{loginType:"qq",accInfo:{nickName:"",avatarUrl:""}},{loginType:"wx",accInfo:{nickName:"",avatarUrl:""}}]
              * 开发者应该主动判断登录方式，如果返回了 null ，则表示没有特殊登录方式
              */
-            loginTypes:Array<Object>;
+            loginTypes: Array<Object>;
 
             /**
              * 是否支持获取用户信息
              */
-            getInfo?:number;
+            getInfo?: number;
 
             /**
              * 是否支持登出
              */
-            logout?:number;
+            logout?: number;
         }
     }
 
@@ -159,7 +159,7 @@ module nest {
          *     });
          * </pre>
          */
-        export var checkLogin:(loginInfo:nest.user.LoginInfo, callback:(resultInfo:nest.user.LoginCallbackInfo)=>void)=>void;
+        export var checkLogin: (loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => void) => void;
         /**
          * 调用渠道登录接口
          * @param loginInfo
@@ -178,7 +178,7 @@ module nest {
          *     });
          * </pre>
          */
-        export var login:(loginInfo:nest.user.LoginInfo, callback:(resultInfo:nest.user.LoginCallbackInfo)=>void)=>void;
+        export var login: (loginInfo: nest.user.LoginInfo, callback: (resultInfo: nest.user.LoginCallbackInfo) => void) => void;
         /**
          * 登出接口
          * @param loginInfo 登出参数,没有可以传递{}
@@ -197,7 +197,7 @@ module nest {
          *     });
          * </pre>
          */
-        export var logout:(loginInfo:nest.user.LoginInfo, callback:(resultInfo:core.ResultCallbackInfo)=>void)=>void;
+        export var logout: (loginInfo: nest.user.LoginInfo, callback: (resultInfo: core.ResultCallbackInfo) => void) => void;
         /**
          * 检测支持何种登录方式
          * @param info 请传递一个{}
@@ -215,7 +215,7 @@ module nest {
          *     });
          * </pre>
          */
-        export var isSupport:(info:Object | userSupportCallbackType, callback?:userSupportCallbackType)=>void;
+        export var isSupport: (info: Object | userSupportCallbackType, callback?: userSupportCallbackType) => void;
         /**
          * 获取用户信息，目前只有qq浏览器runtime支持
          * @param callback 回调函数
@@ -236,23 +236,23 @@ module nest {
          *     });
          * </pre>
          */
-        export var getInfo:(loginInfo:nest.user.LoginInfo, callback:(resultInfo:Object)=>void)=>void;
+        export var getInfo: (loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void) => void;
     };
 
     export module iap {
         export interface PayInfo {
             //配置id
-            goodsId:string;
+            goodsId: string;
             //购买数量
-            goodsNumber:string;
+            goodsNumber: string;
             //哪个服
-            serverId:string;
+            serverId: string;
             //透传参数
-            ext:string;
+            ext: string;
         }
 
         export interface PayCallbackInfo extends core.ResultCallbackInfo {
-            ext?:string;
+            ext?: string;
         }
     }
 
@@ -264,30 +264,30 @@ module nest {
             /**
              * 分享标题
              */
-            title:string;
+            title: string;
             /**
              * 分享文字内容
              */
-            description:string;
+            description: string;
             /**
              * 分享图片标题
              */
-            img_title:string;
+            img_title: string;
             /**
              * 分享图标地址
              */
-            img_url:string;
+            img_url: string;
             /**
              * 分享地址
              */
-            url:string;
+            url: string;
         }
 
-        export interface ShareCallbackInfo extends core.ResultCallbackInfo{
+        export interface ShareCallbackInfo extends core.ResultCallbackInfo {
         }
 
-        export interface ShareSupportCallbackInfo extends core.ResultCallbackInfo{
-            share:number;
+        export interface ShareSupportCallbackInfo extends core.ResultCallbackInfo {
+            share: number;
         }
     }
 
@@ -299,48 +299,71 @@ module nest {
             /**
              * 邀请标题
              */
-            title:string;
+            title: string;
             /**
              * 邀请文字内容
              */
-            description:string;
+            description: string;
             /**
              * 邀请图片标题
              */
-            img_title:string;
+            img_title: string;
             /**
              * 邀请图标地址
              */
-            img_url:string;
+            img_url: string;
             /**
              * 邀请地址
              */
-            url:string;
+            url: string;
         }
 
-        export interface InviteCallbackInfo extends core.ResultCallbackInfo{
+        export interface InviteCallbackInfo extends core.ResultCallbackInfo {
         }
 
-        export interface InviteSupportCallbackInfo extends core.ResultCallbackInfo{
-            invite:number;
+        export interface InviteSupportCallbackInfo extends core.ResultCallbackInfo {
+            invite: number;
         }
     }
 
-    export module createRole {
+    export module role {
         /**
          * 创角接口传递参数
          */
-        export interface CreateRoleInfo {
+        export interface RoleInfo {
             /**
-             * 角色信息
+             * 服务器ID
              */
-            data:any;
+            serverId?: number;
+            /**
+             * 服务器名称
+             */
+            serverName?: string;
+            /**
+             * 昵称
+             */
+            nickName?: string;
+            /**
+             * 角色ID
+             */
+            roleId?: number | string;
+            /**
+             * 角色名称
+             */
+            roleName?: string;
+            /**
+             * 角色名称
+             */
+            level?: string;
         }
 
-        export interface CreateRoleCallbackInfo extends core.ResultCallbackInfo{
+        export interface roleCallbackInfo extends core.ResultCallbackInfo {
+            create?: number;
+            update?: number;
+            report?: number;
         }
 
-        export interface CreateRoleSupportCallbackInfo extends core.ResultCallbackInfo{
+        export interface CreateRoleSupportCallbackInfo extends core.ResultCallbackInfo {
         }
     }
 
@@ -349,28 +372,28 @@ module nest {
          * social接口传递参数
          */
         export interface SocialSupportCallbackInfo extends core.ResultCallbackInfo {
-            getFriends?:number;
-            openBBS?:number;
+            getFriends?: number;
+            openBBS?: number;
         }
     }
 
     export module app {
-        export interface AppSupportCallbackInfo extends core.ResultCallbackInfo{
-            attention?:number;
-            sendToDesktop?:number;
-            exitGame?:number;
-            getInfo?:number;
+        export interface AppSupportCallbackInfo extends core.ResultCallbackInfo {
+            attention?: number;
+            sendToDesktop?: number;
+            exitGame?: number;
+            getInfo?: number;
         }
 
         export interface GetInfoCallbackInfo extends core.ResultCallbackInfo {
-            contact:ContactInfo;//可用联系方式
+            contact: ContactInfo;//可用联系方式
         }
 
         export interface ContactInfo {
-            qq?:string[];//qq联系方式数组[],如果没有响应联系方式将没有该字段
-            qqgroup?:string[];//qq群联系方式数组[],如果没有响应联系方式将没有该字段
-            weixin?:string[];//微信联系方式数组[],如果没有响应联系方式将没有该字段
-            email?:string[];//email联系方式数组[],如果没有响应联系方式将没有该字段
+            qq?: string[];//qq联系方式数组[],如果没有响应联系方式将没有该字段
+            qqgroup?: string[];//qq群联系方式数组[],如果没有响应联系方式将没有该字段
+            weixin?: string[];//微信联系方式数组[],如果没有响应联系方式将没有该字段
+            email?: string[];//email联系方式数组[],如果没有响应联系方式将没有该字段
         }
 
         /**
@@ -380,7 +403,7 @@ module nest {
             /**
              * 透传参数
              */
-            ext:string;
+            ext: string;
         }
     }
 
@@ -401,18 +424,18 @@ declare module nest {
          * </pre>
          * @private
          */
-        function startup(startupInfo:nest.core.StartupInfo, callback:(resultInfo:nest.core.ResultCallbackInfo)=>void):void;
+        function startup(startupInfo: nest.core.StartupInfo, callback: (resultInfo: nest.core.ResultCallbackInfo) => void): void;
 
-        function callCustomMethod(customInfo:any, callback:Function):void;
+        function callCustomMethod(customInfo: any, callback: Function): void;
 
         /**
          * 添加回调函数
          * 渠道有可能有自己的逻辑进行一些操作，这时候会把操作带来的变化回调回来
          * @param callback 回调
          */
-        function addCallback(callback:(callbackInfo:nest.core.CallbackInfo)=>void):void;
+        function addCallback(callback: (callbackInfo: nest.core.CallbackInfo) => void): void;
     }
-    
+
     module iap {
         /**
          * 支付
@@ -430,7 +453,7 @@ declare module nest {
          *     });
          * </pre>
          */
-       function pay(payInfo:nest.iap.PayInfo, callback:(result:nest.iap.PayCallbackInfo)=>void):void;
+        function pay(payInfo: nest.iap.PayInfo, callback: (result: nest.iap.PayCallbackInfo) => void): void;
     }
 
     module share {
@@ -448,7 +471,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType):void;
+        function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
 
         /**
          * 设置默认分享内容,以便某些渠道在游戏外点击分享按钮时显示分享内容
@@ -456,7 +479,7 @@ declare module nest {
          * @param callback
          * @callback-param result 0 表示成功，-2表示失败
          */
-        function setDefaultData(shareInfo:nest.share.ShareInfo, callback:Function):void;
+        function setDefaultData(shareInfo: nest.share.ShareInfo, callback: Function): void;
 
         /**
          * 分享
@@ -476,34 +499,51 @@ declare module nest {
          *     });
          * </pre>
          */
-        function share(shareInfo:share.ShareInfo, callback:(resultInfo:share.ShareCallbackInfo)=>void):void;
+        function share(shareInfo: share.ShareInfo, callback: (resultInfo: share.ShareCallbackInfo) => void): void;
     }
 
-    module createRole {
+    module role {
         /**
-         * 是否支持创建角色
+         * 是否支持
          * @param info 请传递一个{}
          * @param callback 回调函数
-         * @example 以下代码获取是否支持创建角色
+         * @example 以下代码获取是否支持角色接口
          * <pre>
-         *     nest.share.isSupport({}, function (data){
+         *     nest.role.isSupport({}, function (data){
          *         if(data.result == 0) {
-         *             //获取是否支持分享
-         *             var share = data.share == 1;
+         *             //获取是否支持
+         *             var create = data.create == 1;
+         *             var report = data.report == 1;
+         *             var update = data.update == 1;
          *         }
          *     });
          * </pre>
          */
-        function isSupport(info:Object | createRoleSupportCallbackType, callback?:createRoleSupportCallbackType):void;
+        function isSupport(info: Object, callback?: roleSupportCallbackType): void;
 
         /**
-         * 创建角色
-         * @param shareInfo 创建角色参数
+         * 上传角色信息
+         * @param roleInfo 角色信息参数
          * @param callback 回调函数
          * @callback-param result
          */
-        function createRole(createRoleInfo:nest.createRole.CreateRoleInfo, callback:Function):void;
+        function report(roleInfo: nest.role.RoleInfo, callback: roleCallbackInfo): void;
 
+        /**
+         * 更新角色信息
+         * @param roleInfo 角色升级参数
+         * @param callback 回调函数
+         * @callback-param result
+         */
+        function update(roleInfo: nest.role.RoleInfo, callback: roleCallbackInfo): void;
+
+        /**
+         * 创建角色
+         * @param roleInfo 创建角色参数
+         * @param callback 回调函数
+         * @callback-param result
+         */
+        function create(roleInfo: nest.role.RoleInfo, callback: roleCallbackInfo): void;
     }
 
     module invite {
@@ -521,7 +561,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        function isSupport(info:Object | inviteSupportCallbackType, callback?:inviteSupportCallbackType):void;
+        function isSupport(info: Object | inviteSupportCallbackType, callback?: inviteSupportCallbackType): void;
 
         /**
          * 邀请
@@ -541,7 +581,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        function invite(inviteInfo:invite.InviteInfo, callback:(resultInfo:invite.InviteCallbackInfo)=>void):void;
+        function invite(inviteInfo: invite.InviteInfo, callback: (resultInfo: invite.InviteCallbackInfo) => void): void;
     }
 
     module social {
@@ -561,8 +601,8 @@ declare module nest {
          *     });
          * </pre>
          */
-        function isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType):void;
-        function getFriends(socialInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
+        function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
+        function getFriends(socialInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         /**
          * 打开BBS
          * @param socialInfo 请传递一个{}
@@ -579,7 +619,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        function openBBS(socialInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
+        function openBBS(socialInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
     }
 
     module app {
@@ -590,26 +630,26 @@ declare module nest {
          * @callback-param  { result:"0" , attention :"1" , sendToDesktop : "1" , exitGame : "1" , getInfo : "1"}
          * attention|sendToDesktop|exitGame|getInfo 1支持 0不支持
          */
-        function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType):void;
+        function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
         /**
          * 关注
          * @param appInfo
          * @param callback
          */
-        function attention(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
+        function attention(appInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         /**
          * 退出游戏，回到 App 界面
          * @param appInfo
          * @param callback
          */
-        function exitGame(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
+        function exitGame(appInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         /**
          * 发送到桌面
          * @param appInfo
          * @param callback
          * @param callback-param result 0表示添加桌面成功，-1表示添加失败
          */
-        function sendToDesktop(appInfo:app.SendToDesktopInfo, callback:(resultInfo:core.ResultCallbackInfo)=>void):void;
+        function sendToDesktop(appInfo: app.SendToDesktopInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         /**
          * 获取渠道信息
          * @param appInfo 获取信息参数,没有请传递{}
@@ -624,6 +664,6 @@ declare module nest {
 	     *   "email": //email联系方式数组[],如果没有响应联系方式将没有该字段
 	     * }
          */
-        function getInfo(appInfo:any, callback:(resultInfo:app.GetInfoCallbackInfo)=>void):void;
+        function getInfo(appInfo: any, callback: (resultInfo: app.GetInfoCallbackInfo) => void): void;
     }
 }

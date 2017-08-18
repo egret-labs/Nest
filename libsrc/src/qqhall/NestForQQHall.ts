@@ -366,3 +366,10 @@ module nest.qqhall.social {
 
     }
 }
+
+module nest.qqhall.role {
+    export function isSupport(info: Object, callback: Function) {
+        var roleCallbackInfo = { "create": 0, "update": 0, "report": 0 };
+        callback.call(null, roleCallbackInfo);
+    }
+}

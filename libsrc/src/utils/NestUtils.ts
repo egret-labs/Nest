@@ -51,7 +51,7 @@ module nest.utils {
      */
     export function $changeMethod(version:string):void {
         //console.log("[Nest]use module : " + version);
-        var arr = ["core", "user", "iap", "share", "social", "app", "invite", "createRole"];
+        var arr = ["core", "user", "iap", "share", "social", "app", "invite", "createRole", "role"];
         for (var i = 0; i < arr.length; i++) {
             var module = arr[i];
             if (nest[version] && nest[version][module]) {

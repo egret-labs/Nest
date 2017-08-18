@@ -326,7 +326,7 @@ var nest;
          */
         function $changeMethod(version) {
             //console.log("[Nest]use module : " + version);
-            var arr = ["core", "user", "iap", "share", "social", "app", "invite", "createRole"];
+            var arr = ["core", "user", "iap", "share", "social", "app", "invite", "createRole", "role"];
             for (var i = 0; i < arr.length; i++) {
                 var module = arr[i];
                 if (nest[version] && nest[version][module]) {
@@ -673,6 +673,14 @@ var nest;
             }
             social.openBBS = openBBS;
         })(social = runtime.social || (runtime.social = {}));
+        var role;
+        (function (role) {
+            function isSupport(info, callback) {
+                var roleCallbackInfo = { "create": 0, "update": 0, "report": 0 };
+                callback.call(null, roleCallbackInfo);
+            }
+            role.isSupport = isSupport;
+        })(role = runtime.role || (runtime.role = {}));
         var app;
         (function (app) {
             function isSupport(info, callback) {
@@ -1205,6 +1213,19 @@ var nest;
         })(app = cm.app || (cm.app = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+(function (nest) {
+    var cm;
+    (function (cm) {
+        var role;
+        (function (role) {
+            function isSupport(info, callback) {
+                var roleCallbackInfo = { "create": 0, "update": 0, "report": 0 };
+                callback.call(null, roleCallbackInfo);
+            }
+            role.isSupport = isSupport;
+        })(role = cm.role || (cm.role = {}));
+    })(cm = nest.cm || (nest.cm = {}));
+})(nest || (nest = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-2015, Egret Technology Inc.
@@ -1572,6 +1593,19 @@ var nest;
             }
             social.openBBS = openBBS;
         })(social = qqhall.social || (qqhall.social = {}));
+    })(qqhall = nest.qqhall || (nest.qqhall = {}));
+})(nest || (nest = {}));
+(function (nest) {
+    var qqhall;
+    (function (qqhall) {
+        var role;
+        (function (role) {
+            function isSupport(info, callback) {
+                var roleCallbackInfo = { "create": 0, "update": 0, "report": 0 };
+                callback.call(null, roleCallbackInfo);
+            }
+            role.isSupport = isSupport;
+        })(role = qqhall.role || (qqhall.role = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
 //////////////////////////////////////////////////////////////////////////////////////
@@ -2145,6 +2179,14 @@ var nest;
             }
             social.openBBS = openBBS;
         })(social = qqhall2.social || (qqhall2.social = {}));
+        var role;
+        (function (role) {
+            function isSupport(info, callback) {
+                var roleCallbackInfo = { "create": 0, "update": 0, "report": 0 };
+                callback.call(null, roleCallbackInfo);
+            }
+            role.isSupport = isSupport;
+        })(role = qqhall2.role || (qqhall2.role = {}));
     })(qqhall2 = nest.qqhall2 || (nest.qqhall2 = {}));
 })(nest || (nest = {}));
 //////////////////////////////////////////////////////////////////////////////////////
@@ -2309,33 +2351,14 @@ var nest;
             }
             invite_1.invite = invite;
         })(invite = h5.invite || (h5.invite = {}));
-        var createRole;
-        (function (createRole_1) {
+        var role;
+        (function (role) {
             function isSupport(info, callback) {
-                var egretH5SdkCallback = function (data) {
-                    var status = data.status;
-                    var createRoleCallbackInfo = { "createRole": status };
-                    callback.call(null, createRoleCallbackInfo);
-                };
-                EgretH5Sdk.isOpenCreateRole(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
+                var roleCallbackInfo = { "create": 0, "update": 0, "report": 0 };
+                callback.call(null, roleCallbackInfo);
             }
-            createRole_1.isSupport = isSupport;
-            function createRole(createRoleInfo, callback) {
-                var egretH5SdkCallback = function (data) {
-                    var status = data.status;
-                    if (status == 0) {
-                        status = -1;
-                    }
-                    else if (status == 1) {
-                        status = 0;
-                    }
-                    var createRoleCallbackInfo = { "status": status, "result": status };
-                    callback.call(null, createRoleCallbackInfo);
-                };
-                EgretH5Sdk.createRole(nest.utils.$APP_ID, nest.h5.uid, createRoleInfo, egretH5SdkCallback, null);
-            }
-            createRole_1.createRole = createRole;
-        })(createRole = h5.createRole || (h5.createRole = {}));
+            role.isSupport = isSupport;
+        })(role = h5.role || (h5.role = {}));
         var social;
         (function (social) {
             function isSupport(info, callback) {
@@ -2469,7 +2492,7 @@ var nest;
             invite_2.invite = invite;
         })(invite = h5_2.invite || (h5_2.invite = {}));
         var createRole;
-        (function (createRole_2) {
+        (function (createRole_1) {
             function isSupport(info, callback) {
                 var supportCreateRoleCallback = function (data) {
                     var status = data.result;
@@ -2478,13 +2501,47 @@ var nest;
                 };
                 EgretH5Sdk.isSupportCreateRole({}, supportCreateRoleCallback);
             }
-            createRole_2.isSupport = isSupport;
+            createRole_1.isSupport = isSupport;
             function createRole(createRoleInfo, callback) {
-                createRoleInfo["data"] = createRoleInfo.data;
                 EgretH5Sdk.createRole(createRoleInfo, callback);
             }
-            createRole_2.createRole = createRole;
+            createRole_1.createRole = createRole;
         })(createRole = h5_2.createRole || (h5_2.createRole = {}));
+        var role;
+        (function (role) {
+            function isSupport(info, callback) {
+                var create;
+                var update;
+                var report;
+                var createCallback = function (data) {
+                    create = data.result;
+                    EgretH5Sdk.isSupportUpdateRole({}, updateCallback);
+                };
+                var updateCallback = function (data) {
+                    update = data.result;
+                    EgretH5Sdk.isSupportReportRole({}, reportCallback);
+                };
+                var reportCallback = function (data) {
+                    report = data.result;
+                    var roleCallbackInfo = { "create": create, "update": update, "report": report, "msg": data.msg };
+                    callback.call(null, roleCallbackInfo);
+                };
+                EgretH5Sdk.isSupportCreateRole({}, createCallback);
+            }
+            role.isSupport = isSupport;
+            function create(roleInfo, callback) {
+                EgretH5Sdk.createRole(roleInfo, callback);
+            }
+            role.create = create;
+            function update(roleInfo, callback) {
+                EgretH5Sdk.updateRole(roleInfo, callback);
+            }
+            role.update = update;
+            function report(roleInfo, callback) {
+                EgretH5Sdk.reportRole(roleInfo, callback);
+            }
+            role.report = report;
+        })(role = h5_2.role || (h5_2.role = {}));
         var social;
         (function (social) {
             function isSupport(info, callback) {

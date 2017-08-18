@@ -32,16 +32,16 @@
  * @private
  */
 module nest.h5 {
-    export var uid:number = undefined;
+    export var uid: number = undefined;
 
     export module user {
-        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
+        export function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType) {
             var loginType = [];
             if (utils.$isQQBrowser()) {
                 loginType.push("qq");
                 loginType.push("wx");
             }
-            var loginCallbackInfo:nest.user.UserSupportCallbackInfo = {
+            var loginCallbackInfo: nest.user.UserSupportCallbackInfo = {
                 "result": 0,
                 "loginType": loginType,
                 "loginTypes": undefined,
@@ -50,14 +50,14 @@ module nest.h5 {
             callback.call(null, loginCallbackInfo);
         }
 
-        export function checkLogin(loginInfo:nest.user.LoginInfo, callback:Function) {
+        export function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function) {
             var egretH5SdkCallback = function (data) {
                 nest.h5.uid = data.id;
                 var status = data.status;
                 if (nest.h5.uid) {
                     status = 0;
                 }
-                var loginCallbackInfo:nest.user.LoginCallbackInfo = {
+                var loginCallbackInfo: nest.user.LoginCallbackInfo = {
                     "result": status,
                     "token": data.token
                 };
@@ -66,14 +66,14 @@ module nest.h5 {
             EgretH5Sdk.checkLogin(egretH5SdkCallback, null);
         }
 
-        export function login(loginInfo:nest.user.LoginInfo, callback:Function) {
+        export function login(loginInfo: nest.user.LoginInfo, callback: Function) {
             var egretH5SdkCallback = function (data) {
                 nest.h5.uid = data.id;
                 var status = data.status;
                 if (nest.h5.uid) {
                     status = 0;
                 }
-                var loginCallbackInfo:nest.user.LoginCallbackInfo = {
+                var loginCallbackInfo: nest.user.LoginCallbackInfo = {
                     "result": status,
                     "token": data.token
                 };
@@ -82,18 +82,18 @@ module nest.h5 {
             EgretH5Sdk.login(egretH5SdkCallback, null, loginInfo.loginType);
         }
 
-        export function logout(loginInfo:nest.user.LoginInfo, callback:Function) {
+        export function logout(loginInfo: nest.user.LoginInfo, callback: Function) {
             var egretH5SdkCallback = function (data) {
                 var status = data.status;
                 var result = status == 1 ? 0 : 1;
-                callback.call(null, {"result": result});
+                callback.call(null, { "result": result });
             };
             EgretH5Sdk.logout(egretH5SdkCallback, null);
         }
     }
 
     export module iap {
-        export function pay(orderInfo:nest.iap.PayInfo, callback:Function) {
+        export function pay(orderInfo: nest.iap.PayInfo, callback: Function) {
             if (nest.h5.uid) {
                 orderInfo["appId"] = nest.utils.$APP_ID;
                 orderInfo["uId"] = nest.h5.uid;
@@ -105,16 +105,16 @@ module nest.h5 {
     }
 
     export module share {
-        export function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType) {
+        export function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType) {
             var egretH5SdkCallback = function (data) {
                 var status = data.status;
-                var loginCallbackInfo = {"share": status};
+                var loginCallbackInfo = { "share": status };
                 callback.call(null, loginCallbackInfo);
             };
             EgretH5Sdk.isOpenShare(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
         }
 
-        export function share(shareInfo:nest.share.ShareInfo, callback:Function) {
+        export function share(shareInfo: nest.share.ShareInfo, callback: Function) {
             var egretH5SdkCallback = function (data) {
                 var status = data.status;
                 if (status == 0) {
@@ -123,7 +123,7 @@ module nest.h5 {
                 else if (status == 1) {
                     status = 0;
                 }
-                var loginCallbackInfo = {"status": status, "result": status};
+                var loginCallbackInfo = { "status": status, "result": status };
                 callback.call(null, loginCallbackInfo);
             };
             EgretH5Sdk.share(nest.utils.$APP_ID, nest.h5.uid, shareInfo, egretH5SdkCallback, null);
@@ -131,16 +131,16 @@ module nest.h5 {
     }
 
     export module invite {
-        export function isSupport(info:Object | inviteSupportCallbackType, callback?:inviteSupportCallbackType) {
+        export function isSupport(info: Object | inviteSupportCallbackType, callback?: inviteSupportCallbackType) {
             var egretH5SdkCallback = function (data) {
                 var status = data.status;
-                var loginCallbackInfo = {"invite": status};
+                var loginCallbackInfo = { "invite": status };
                 callback.call(null, loginCallbackInfo);
             };
             EgretH5Sdk.isOpenInvite(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
         }
 
-        export function invite(inviteInfo:nest.invite.InviteInfo, callback:Function) {
+        export function invite(inviteInfo: nest.invite.InviteInfo, callback: Function) {
             var egretH5SdkCallback = function (data) {
                 var status = data.status;
                 if (status == 0) {
@@ -149,75 +149,56 @@ module nest.h5 {
                 else if (status == 1) {
                     status = 0;
                 }
-                var loginCallbackInfo = {"status": status, "result": status};
+                var loginCallbackInfo = { "status": status, "result": status };
                 callback.call(null, loginCallbackInfo);
             };
             EgretH5Sdk.invite(nest.utils.$APP_ID, nest.h5.uid, inviteInfo, egretH5SdkCallback, null);
         }
     }
 
-    export module createRole {
-        export function isSupport(info:Object | createRoleSupportCallbackType, callback?:createRoleSupportCallbackType) {
-            var egretH5SdkCallback = function (data) {
-                var status = data.status;
-                var createRoleCallbackInfo = {"createRole": status};
-                callback.call(null, createRoleCallbackInfo);
-            };
-            EgretH5Sdk.isOpenCreateRole(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
-        }
-
-        export function createRole(createRoleInfo:nest.createRole.CreateRoleInfo, callback:Function) {
-            var egretH5SdkCallback = function (data) {
-                var status = data.status;
-                if (status == 0) {
-                    status = -1;
-                }
-                else if (status == 1) {
-                    status = 0;
-                }
-                var createRoleCallbackInfo = {"status": status, "result": status};
-                callback.call(null, createRoleCallbackInfo);
-            };
-            EgretH5Sdk.createRole(nest.utils.$APP_ID, nest.h5.uid, createRoleInfo, egretH5SdkCallback, null);
+    export module role {
+        export function isSupport(info: Object, callback: roleSupportCallbackType) {
+            var roleCallbackInfo = { "create": 0, "update": 0, "report": 0 };
+            callback.call(null, roleCallbackInfo);
         }
     }
 
     export module social {
-        export function isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType) {
-            callback.call(null, {"result": 0, "getFriends": 0, "openBBS": 0});
+        export function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType) {
+            callback.call(null, { "result": 0, "getFriends": 0, "openBBS": 0 });
         }
 
-        export function getFriends(data, callback:Function) {
+        export function getFriends(data, callback: Function) {
             //
         }
 
-        export function openBBS(data, callback:Function) {
+        export function openBBS(data, callback: Function) {
             //
         }
     }
 
     export module app {
-        export function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType) {
+        export function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType) {
             var egretH5SdkCallback = function (data) {
                 var status = data.status;
-                var loginCallbackInfo = {"attention": status};
+                var loginCallbackInfo = { "attention": status };
                 callback.call(null, loginCallbackInfo);
             };
             EgretH5Sdk.isOpenAttention(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
         }
 
-        export function attention(appInfo:any, callback:Function) {
+        export function attention(appInfo: any, callback: Function) {
             EgretH5Sdk.attention(nest.utils.$APP_ID, nest.h5.uid);
-            callback.call(null, {"result": 0});
+            callback.call(null, { "result": 0 });
         }
 
-        export function sendToDesktop(appInfo:any, callback:Function) {
-            callback.call(null, {"result": -1});
+        export function sendToDesktop(appInfo: any, callback: Function) {
+            callback.call(null, { "result": -1 });
         }
 
-        export function getInfo(appInfo:any, callback:Function) {
+        export function getInfo(appInfo: any, callback: Function) {
             var egretH5SdkCallback = function (data) {
-                var callbackInfo = {result: 0, "contact": data.contact};
+                var callbackInfo = { result: 0, "contact": data.contact };
                 callback.call(null, callbackInfo);
             };
             EgretH5Sdk.getCustomInfo(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
@@ -233,8 +214,8 @@ module nest.h5 {
  */
 module nest.h5_2 {
     export module user {
-        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
-            var loginCallbackInfo:nest.user.UserSupportCallbackInfo = {
+        export function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType) {
+            var loginCallbackInfo: nest.user.UserSupportCallbackInfo = {
                 "result": 0,
                 "loginType": undefined,
                 "loginTypes": undefined,
@@ -249,68 +230,68 @@ module nest.h5_2 {
 
         }
 
-        export function checkLogin(loginInfo:nest.user.LoginInfo, callback:Function) {
+        export function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function) {
             EgretH5Sdk.checkLogin(loginInfo, callback);
         }
 
-        export function login(loginInfo:nest.user.LoginInfo, callback:Function) {
+        export function login(loginInfo: nest.user.LoginInfo, callback: Function) {
             EgretH5Sdk.login(loginInfo, callback);
         }
 
-        export function logout(loginInfo:nest.user.LoginInfo, callback:Function) {
+        export function logout(loginInfo: nest.user.LoginInfo, callback: Function) {
             EgretH5Sdk.logout(loginInfo, callback);
         }
 
-        export function getInfo(loginInfo:nest.user.LoginInfo, callback:Function) {
-            callback.call(null, {"result": -2});
+        export function getInfo(loginInfo: nest.user.LoginInfo, callback: Function) {
+            callback.call(null, { "result": -2 });
         }
     }
 
     export module iap {
-        export function pay(orderInfo:nest.iap.PayInfo, callback:Function) {
+        export function pay(orderInfo: nest.iap.PayInfo, callback: Function) {
             EgretH5Sdk.pay(orderInfo, callback);
         }
     }
 
     export module share {
-        export function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType) {
+        export function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType) {
             var supportShareCallback = function (data) {
                 var status = data.result;
-                var shareCallbackInfo = {"share": status, "msg":data.msg};
+                var shareCallbackInfo = { "share": status, "msg": data.msg };
                 callback.call(null, shareCallbackInfo);
             };
             EgretH5Sdk.isSupportShare({}, supportShareCallback);
         }
 
-        export function setDefaultData(shareInfo:nest.share.ShareInfo, callback:Function) {
+        export function setDefaultData(shareInfo: nest.share.ShareInfo, callback: Function) {
             shareInfo["imgUrl"] = shareInfo.img_url;
             EgretH5Sdk.setShareDefaultData(shareInfo, callback);
         }
 
-        export function share(shareInfo:nest.share.ShareInfo, callback:Function) {
+        export function share(shareInfo: nest.share.ShareInfo, callback: Function) {
             shareInfo["imgUrl"] = shareInfo.img_url;
             EgretH5Sdk.share(shareInfo, callback);
         }
     }
 
     export module invite {
-        export function isSupport(info:Object | inviteSupportCallbackType, callback?:inviteSupportCallbackType) {
+        export function isSupport(info: Object | inviteSupportCallbackType, callback?: inviteSupportCallbackType) {
             var supportInviteCallback = function (data) {
                 var status = data.result;
-                var inviteCallbackInfo = {"invite": status, "msg":data.msg};
+                var inviteCallbackInfo = { "invite": status, "msg": data.msg };
                 callback.call(null, inviteCallbackInfo);
             };
             EgretH5Sdk.isSupportInvite({}, supportInviteCallback);
         }
 
-        export function invite(inviteInfo:nest.invite.InviteInfo, callback:Function) {
+        export function invite(inviteInfo: nest.invite.InviteInfo, callback: Function) {
             inviteInfo["imgUrl"] = inviteInfo.img_url;
             EgretH5Sdk.invite(inviteInfo, callback);
         }
     }
 
     export module createRole {
-        export function isSupport(info:Object | createRoleSupportCallbackType, callback?:createRoleSupportCallbackType) {
+        export function isSupport(info:Object | roleSupportCallbackType, callback?:roleSupportCallbackType) {
             var supportCreateRoleCallback = function (data) {
                 var status = data.result;
                 var createRoleCallbackInfo = {"createRole": status, "msg":data.msg};
@@ -319,34 +300,67 @@ module nest.h5_2 {
             EgretH5Sdk.isSupportCreateRole({}, supportCreateRoleCallback);
         }
 
-        export function createRole(createRoleInfo:nest.createRole.CreateRoleInfo, callback:Function) {
-            createRoleInfo["data"] = createRoleInfo.data;
+        export function createRole(createRoleInfo:nest.role.RoleInfo, callback:Function) {
             EgretH5Sdk.createRole(createRoleInfo, callback);
         }
     }
 
+    export module role {
+        export function isSupport(info: Object, callback: roleSupportCallbackType) {
+            let create;
+            let update;
+            let report;
+            var createCallback = function (data) {
+                create = data.result;
+                EgretH5Sdk.isSupportUpdateRole({}, updateCallback);
+            };
+            var updateCallback = function (data) {
+                update = data.result;
+                EgretH5Sdk.isSupportReportRole({}, reportCallback);
+            };
+            var reportCallback = function (data) {
+                report = data.result;
+                var roleCallbackInfo = { "create": create, "update": update, "report": report, "msg": data.msg };
+                callback.call(null, roleCallbackInfo);
+            };
+            EgretH5Sdk.isSupportCreateRole({}, createCallback);
+        }
+
+        export function create(roleInfo: nest.role.RoleInfo, callback: Function) {
+            EgretH5Sdk.createRole(roleInfo, callback);
+        }
+
+        export function update(roleInfo: nest.role.RoleInfo, callback: Function) {
+            EgretH5Sdk.updateRole(roleInfo, callback);
+        }
+
+        export function report(roleInfo: nest.role.RoleInfo, callback: Function) {
+            EgretH5Sdk.reportRole(roleInfo, callback);
+        }
+    }
+
     export module social {
-        export function isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType) {
+        export function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType) {
             var openBBS;
             var openBBSCallback = function (data) {
                 openBBS = data.result;
-                var callbackInfo = {"result": 0, "getFriends": 0, "openBBS": openBBS};
+                var callbackInfo = { "result": 0, "getFriends": 0, "openBBS": openBBS };
                 callback.call(null, callbackInfo);
             };
             EgretH5Sdk.isSupportAttention({}, openBBSCallback);
         }
 
-        export function getFriends(data, callback:Function) {
-            callback.call(null, {"result": -2});
+        export function getFriends(data, callback: Function) {
+            callback.call(null, { "result": -2 });
         }
 
-        export function openBBS(data, callback:Function) {
+        export function openBBS(data, callback: Function) {
             EgretH5Sdk.openBBS(data, callback);
         }
     }
 
     export module app {
-        export function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType) {
+        export function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType) {
             var attention;
             var sendToDesktop;
             var attentionCallback = function (data) {
@@ -355,25 +369,25 @@ module nest.h5_2 {
             };
             var sendToDesktopCallback = function (data) {
                 sendToDesktop = data.result;
-                var callbackInfo = {"attention": attention, "getInfo": 1, "exitGame": 0, "sendToDesktop": sendToDesktop};
+                var callbackInfo = { "attention": attention, "getInfo": 1, "exitGame": 0, "sendToDesktop": sendToDesktop };
                 callback.call(null, callbackInfo);
             };
             EgretH5Sdk.isSupportAttention({}, attentionCallback);
         }
 
-        export function attention(appInfo:any, callback:Function) {
+        export function attention(appInfo: any, callback: Function) {
             EgretH5Sdk.attention({}, callback);
         }
 
-        export function sendToDesktop(appInfo:any, callback:Function) {
+        export function sendToDesktop(appInfo: any, callback: Function) {
             EgretH5Sdk.sendToDesktop(appInfo, callback);
         }
 
-        export function exitGame(appInfo:any, callback:Function) {
-            callback.call(null, {"result": -2});
+        export function exitGame(appInfo: any, callback: Function) {
+            callback.call(null, { "result": -2 });
         }
 
-        export function getInfo(appInfo:any, callback:Function) {
+        export function getInfo(appInfo: any, callback: Function) {
             EgretH5Sdk.getCustomInfo({}, callback);
         }
     }

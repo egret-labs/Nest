@@ -36,25 +36,25 @@ module nest.cm {
      * @private
      */
     export interface EgretData {
-        egretUserId:string;
+        egretUserId: string;
     }
     /*
      * @private
      */
     export interface NestData {
 
-        module:string;
+        module: string;
 
-        action:string;
+        action: string;
 
-        param?:any;
+        param?: any;
 
-        postData?:any;
+        postData?: any;
     }
     /*
      * @private
      */
-    export function callRuntime(data:NestData, callback) {
+    export function callRuntime(data: NestData, callback) {
         var deviceId;
         if (deviceId = egret.localStorage.getItem("deviceid")) {
             console.log("cm old local deviceid " + deviceId);
@@ -71,7 +71,7 @@ module nest.cm {
             console.log("cm old CMPAY_EGRET.version " + CMPAY_EGRET.getVersion());
 
             var tag = (CMPAY_EGRET.getVersion() == 0 || CMPAY_EGRET.getVersion() == false) ? "getUid" : "get_device_info";
-            var isFinish:boolean = false;
+            var isFinish: boolean = false;
 
             var sendData = function (id) {
                 if (isFinish) {
@@ -113,9 +113,9 @@ module nest.cm {
     /*
      * @private
      */
-    export function loginBefore(callback):void {
+    export function loginBefore(callback): void {
         var postdata = {};
-        var url:string = nest.utils.$API_DOMAIN + "app/getInfo";
+        var url: string = nest.utils.$API_DOMAIN + "app/getInfo";
         postdata["egretChanId"] = utils.$getSpid();
         postdata["egretGameId"] = utils.$APP_ID;
         postdata["debug"] = 1;
@@ -128,12 +128,12 @@ module nest.cm {
     /*
      * @private
      */
-    export function loginAfter(postdata, callback, isNew:boolean):void {
+    export function loginAfter(postdata, callback, isNew: boolean): void {
 
         var sendData = {};
         sendData["access_token"] = postdata["access_token"];
         sendData["openid"] = postdata["openid"];
-        var url:string = nest.utils.$API_DOMAIN + "game/" + utils.$getSpid() + "/" + utils.$APP_ID + "/";
+        var url: string = nest.utils.$API_DOMAIN + "game/" + utils.$getSpid() + "/" + utils.$APP_ID + "/";
         sendData["runtime"] = 1;
         sendData["showGame"] = 1;
         if (isNew) {
@@ -149,8 +149,8 @@ module nest.cm {
     /*
      * @private
      */
-    export function payBefore(orderInfo:nest.iap.PayInfo, callback):void {
-        var url:string = nest.utils.$API_DOMAIN + "user/placeOrder";
+    export function payBefore(orderInfo: nest.iap.PayInfo, callback): void {
+        var url: string = nest.utils.$API_DOMAIN + "user/placeOrder";
 
         var postdata = {
             "id": user.egretInfo.egretUserId,
@@ -173,11 +173,11 @@ module nest.cm {
      * @param callback
      */
     function quickRegister(postdata, callback) {
-        var url:string = "http://gclogin.liebao.cn/api/user/quick_register";
+        var url: string = "http://gclogin.liebao.cn/api/user/quick_register";
         setProxy(url, postdata, egret.URLRequestMethod.POST, callback);
     }
 
-    function setProxy(url:string, postData:Object, method:string, callback:Function):void {
+    function setProxy(url: string, postData: Object, method: string, callback: Function): void {
         var cmpostdata = "";
         for (var key in postData) {
             cmpostdata += key + "=" + postData[key] + "&";
@@ -188,13 +188,13 @@ module nest.cm {
 
         console.log("cm old solution =" + url + "?" + cmpostdata);
 
-        var loader:egret.URLLoader = new egret.URLLoader();
+        var loader: egret.URLLoader = new egret.URLLoader();
         loader.addEventListener(egret.Event.COMPLETE, function () {
             console.log("cm old solution  =" + loader.data);
             var jsonObj = JSON.parse(loader.data);
             callback(jsonObj);
         }, this);
-        var request:egret.URLRequest = new egret.URLRequest(url);
+        var request: egret.URLRequest = new egret.URLRequest(url);
         request.method = method;
         request.data = new egret.URLVariables(cmpostdata);
         loader.load(request);
@@ -207,16 +207,16 @@ module nest.cm.user {
     /*
      * @private
      */
-    export var egretInfo:any;
+    export var egretInfo: any;
     /*
      * @private
      */
-    export function checkLogin(loginInfo:nest.user.LoginInfo, callback) {
+    export function checkLogin(loginInfo: nest.user.LoginInfo, callback) {
 
         var postData = {};
 
         function checkAfter(resultData) {
-            egretInfo = {egretUserId: resultData["data"]["id"]};
+            egretInfo = { egretUserId: resultData["data"]["id"] };
             resultData["data"]["result"] = resultData["status"];
             callback(resultData["data"]);
         }
@@ -233,7 +233,7 @@ module nest.cm.user {
                 nest.cm.loginAfter(resultData, checkAfter, false);
             }
             else {
-                callback({"result": 1});
+                callback({ "result": 1 });
             }
         }
 
@@ -295,7 +295,7 @@ module nest.cm.user {
                 });
             }
             else {
-                callback({"result": 1});
+                callback({ "result": 1 });
             }
         }
 
@@ -309,19 +309,19 @@ module nest.cm.user {
      * @param callback
      * @callback-param  @see nest.user.LoginCallbackInfo
      */
-    export function login(loginInfo:nest.user.LoginInfo, callback:Function) {
-        var data = {module: "user", action: "login", param: loginInfo};
+    export function login(loginInfo: nest.user.LoginInfo, callback: Function) {
+        var data = { module: "user", action: "login", param: loginInfo };
         nest.cm.callRuntime(data, callback);
     }
 
-    export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
+    export function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType) {
         console.log("cm old nest isSupport start");
-        
-        callback({getInfo:0, loginType:null, loginTypes:null, result:0});
+
+        callback({ getInfo: 0, loginType: null, loginTypes: null, result: 0 });
         // nest.runtime.user.isSupport(info, callback);
     }
 
-    export function logout(loginInfo:nest.user.LoginInfo, callback:Function) {
+    export function logout(loginInfo: nest.user.LoginInfo, callback: Function) {
         nest.runtime.user.logout(loginInfo, callback);
     }
 }
@@ -330,14 +330,14 @@ module nest.cm.user {
  */
 module nest.cm.iap {
 
-    var isFirst:boolean = true;
+    var isFirst: boolean = true;
 
     /**
      * 支付
      * @param orderInfo
      * @param callback
      */
-    export function pay(orderInfo:nest.iap.PayInfo, callback:Function) {
+    export function pay(orderInfo: nest.iap.PayInfo, callback: Function) {
         var succInt = 0;
         var cancInt = -1;
         var failInt = -2;
@@ -348,14 +348,14 @@ module nest.cm.iap {
                     CMPAY_EGRET.on('cmpay_order_complete', function (msg) {
                         console.log("cm old solution cmpay_order_complete  " + JSON.stringify(msg, null, 4));
                         if (msg["success"] == true) {
-                            callback({"result": succInt});
+                            callback({ "result": succInt });
                         }
                         else {
                             if (msg["ret"] == 2) {//取消
-                                callback({"result": cancInt});
+                                callback({ "result": cancInt });
                             }
                             else {
-                                callback({"result": failInt});
+                                callback({ "result": failInt });
                             }
                         }
                     });
@@ -380,7 +380,7 @@ module nest.cm.iap {
                 CMPAY_EGRET.purchase(option);
             }
             else {//失败
-                callback({result: failInt});
+                callback({ result: failInt });
             }
 
 
@@ -393,15 +393,15 @@ module nest.cm.iap {
  * @private
  */
 module nest.cm.social {
-    export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
+    export function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType) {
         nest.runtime.social.isSupport(info, callback);
     }
 
-    export function getFriends(socialInfo, callback:Function) {
+    export function getFriends(socialInfo, callback: Function) {
         nest.runtime.social.getFriends(socialInfo, callback);
     }
 
-    export function openBBS(socialInfo, callback:Function) {
+    export function openBBS(socialInfo, callback: Function) {
         nest.runtime.social.openBBS(socialInfo, callback);
     }
 }
@@ -416,8 +416,8 @@ module nest.cm.share {
      * @param callback
      * @callback-param {status:0, share:0}
      */
-    export function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType) {
-        callback({result: 0, share: 0});
+    export function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType) {
+        callback({ result: 0, share: 0 });
     }
 }
 /*
@@ -429,19 +429,19 @@ module nest.cm.app {
      * @private
      */
     export interface IDesktopInfo {
-        Title:string;           // 桌面图标标题，不要超过五个中文字
-        DetailUrl:string;      // 桌面图标对应的页面url
+        Title: string;           // 桌面图标标题，不要超过五个中文字
+        DetailUrl: string;      // 桌面图标对应的页面url
         PicUrl: string; //120*120
     }
 
-    var desktopInfo:IDesktopInfo;
+    var desktopInfo: IDesktopInfo;
 
     /**
      * @private
      * 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
      * @param param
      */
-    export function $initDesktop(param:IDesktopInfo) {
+    export function $initDesktop(param: IDesktopInfo) {
         desktopInfo = param;
         egret.ExternalInterface.call("save_shortcut_info", JSON.stringify({
             token: String(Math.random()),
@@ -455,12 +455,12 @@ module nest.cm.app {
      * @param callback
      * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
      */
-    export function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType) {
+    export function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType) {
         if (CMPAY_EGRET.getVersion() != false && !isNaN(CMPAY_EGRET.getVersion()) && CMPAY_EGRET.getVersion() > 301030) {
-            callback({result: 0, sendToDesktop: 1, attention: 0});
+            callback({ result: 0, sendToDesktop: 1, attention: 0 });
         }
         else {
-            callback({result: 0, sendToDesktop: 0, attention: 0});
+            callback({ result: 0, sendToDesktop: 0, attention: 0 });
         }
     }
 
@@ -471,7 +471,7 @@ module nest.cm.app {
      * @param callback
      * @param callback-param result 0表示添加桌面成功，-1表示添加失败
      */
-    export function sendToDesktop(appInfo:any, callback:Function) {
+    export function sendToDesktop(appInfo: any, callback: Function) {
         if (desktopInfo) {
             egret.ExternalInterface.call("push_icon", JSON.stringify({
                 title: desktopInfo.Title,
@@ -479,10 +479,17 @@ module nest.cm.app {
                 picUrl: desktopInfo.PicUrl
             }));
 
-            callback({result: 0});
+            callback({ result: 0 });
         }
         else {
-            callback({result: -1});
+            callback({ result: -1 });
         }
+    }
+}
+
+module nest.cm.role {
+    export function isSupport(info: Object, callback: Function) {
+        var roleCallbackInfo = { "create": 0, "update": 0, "report": 0 };
+        callback.call(null, roleCallbackInfo);
     }
 }

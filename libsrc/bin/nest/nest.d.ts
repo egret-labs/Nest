@@ -2,7 +2,7 @@ declare module nest {
     type userSupportCallbackType = (resultInfo: nest.user.UserSupportCallbackInfo) => void;
     type shareSupportCallbackType = (resultInfo: nest.share.ShareSupportCallbackInfo) => void;
     type inviteSupportCallbackType = (resultInfo: nest.invite.InviteSupportCallbackInfo) => void;
-    type createRoleSupportCallbackType = (resultInfo: nest.invite.InviteSupportCallbackInfo) => void;
+    type roleSupportCallbackType = (resultInfo: nest.role.CreateRoleSupportCallbackInfo) => void;
     type socialSupportCallbackType = (resultInfo: nest.social.SocialSupportCallbackInfo) => void;
     type appSupportCallbackType = (resultInfo: nest.app.AppSupportCallbackInfo) => void;
     module core {
@@ -272,17 +272,40 @@ declare module nest {
             invite: number;
         }
     }
-    module createRole {
+    module role {
         /**
          * 创角接口传递参数
          */
-        interface CreateRoleInfo {
+        interface RoleInfo {
             /**
-             * 角色信息
+             * 服务器ID
              */
-            data: any;
+            serverId?: number;
+            /**
+             * 服务器名称
+             */
+            serverName?: string;
+            /**
+             * 昵称
+             */
+            nickName?: string;
+            /**
+             * 角色ID
+             */
+            roleId?: number | string;
+            /**
+             * 角色名称
+             */
+            roleName?: string;
+            /**
+             * 角色名称
+             */
+            level?: string;
         }
-        interface CreateRoleCallbackInfo extends core.ResultCallbackInfo {
+        interface roleCallbackInfo extends core.ResultCallbackInfo {
+            create?: number;
+            update?: number;
+            report?: number;
         }
         interface CreateRoleSupportCallbackInfo extends core.ResultCallbackInfo {
         }
@@ -408,29 +431,45 @@ declare module nest {
          */
         function share(shareInfo: share.ShareInfo, callback: (resultInfo: share.ShareCallbackInfo) => void): void;
     }
-    module createRole {
+    module role {
         /**
-         * 是否支持创建角色
+         * 是否支持
          * @param info 请传递一个{}
          * @param callback 回调函数
-         * @example 以下代码获取是否支持创建角色
+         * @example 以下代码获取是否支持角色接口
          * <pre>
-         *     nest.share.isSupport({}, function (data){
+         *     nest.role.isSupport({}, function (data){
          *         if(data.result == 0) {
-         *             //获取是否支持分享
-         *             var share = data.share == 1;
+         *             //获取是否支持
+         *             var create = data.create == 1;
+         *             var report = data.report == 1;
+         *             var update = data.update == 1;
          *         }
          *     });
          * </pre>
          */
-        function isSupport(info: Object | createRoleSupportCallbackType, callback?: createRoleSupportCallbackType): void;
+        function isSupport(info: Object, callback?: roleSupportCallbackType): void;
         /**
-         * 创建角色
-         * @param shareInfo 创建角色参数
+         * 上传角色信息
+         * @param roleInfo 角色信息参数
          * @param callback 回调函数
          * @callback-param result
          */
-        function createRole(createRoleInfo: nest.createRole.CreateRoleInfo, callback: Function): void;
+        function report(roleInfo: nest.role.RoleInfo, callback: roleCallbackInfo): void;
+        /**
+         * 更新角色信息
+         * @param roleInfo 角色升级参数
+         * @param callback 回调函数
+         * @callback-param result
+         */
+        function update(roleInfo: nest.role.RoleInfo, callback: roleCallbackInfo): void;
+        /**
+         * 创建角色
+         * @param roleInfo 创建角色参数
+         * @param callback 回调函数
+         * @callback-param result
+         */
+        function create(roleInfo: nest.role.RoleInfo, callback: roleCallbackInfo): void;
     }
     module invite {
         /**
@@ -723,6 +762,9 @@ declare module nest.runtime {
         function getFriends(socialInfo: any, callback: Function): void;
         function openBBS(socialInfo: any, callback: Function): void;
     }
+    module role {
+        function isSupport(info: Object, callback: roleSupportCallbackType): void;
+    }
     module app {
         function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
         function attention(appInfo: any, callback: Function): void;
@@ -823,6 +865,9 @@ declare module nest.cm.app {
      */
     function sendToDesktop(appInfo: any, callback: Function): void;
 }
+declare module nest.cm.role {
+    function isSupport(info: Object, callback: Function): void;
+}
 /**
  * @private
  */
@@ -900,6 +945,9 @@ declare module nest.qqhall.social {
     function getFriends(socialInfo: any, callback: Function): void;
     function openBBS(socialInfo: any, callback: Function): void;
 }
+declare module nest.qqhall.role {
+    function isSupport(info: Object, callback: Function): void;
+}
 /**
  * @private
  */
@@ -938,6 +986,9 @@ declare module nest.qqhall2 {
         function getFriends(socialInfo: any, callback: Function): void;
         function openBBS(socialInfo: any, callback: Function): void;
     }
+    module role {
+        function isSupport(info: Object, callback: roleSupportCallbackType): void;
+    }
 }
 /**
  * @private
@@ -961,9 +1012,8 @@ declare module nest.h5 {
         function isSupport(info: Object | inviteSupportCallbackType, callback?: inviteSupportCallbackType): void;
         function invite(inviteInfo: nest.invite.InviteInfo, callback: Function): void;
     }
-    module createRole {
-        function isSupport(info: Object | createRoleSupportCallbackType, callback?: createRoleSupportCallbackType): void;
-        function createRole(createRoleInfo: nest.createRole.CreateRoleInfo, callback: Function): void;
+    module role {
+        function isSupport(info: Object, callback: roleSupportCallbackType): void;
     }
     module social {
         function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
@@ -1001,8 +1051,14 @@ declare module nest.h5_2 {
         function invite(inviteInfo: nest.invite.InviteInfo, callback: Function): void;
     }
     module createRole {
-        function isSupport(info: Object | createRoleSupportCallbackType, callback?: createRoleSupportCallbackType): void;
-        function createRole(createRoleInfo: nest.createRole.CreateRoleInfo, callback: Function): void;
+        function isSupport(info: Object | roleSupportCallbackType, callback?: roleSupportCallbackType): void;
+        function createRole(createRoleInfo: nest.role.RoleInfo, callback: Function): void;
+    }
+    module role {
+        function isSupport(info: Object, callback: roleSupportCallbackType): void;
+        function create(roleInfo: nest.role.RoleInfo, callback: Function): void;
+        function update(roleInfo: nest.role.RoleInfo, callback: Function): void;
+        function report(roleInfo: nest.role.RoleInfo, callback: Function): void;
     }
     module social {
         function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;

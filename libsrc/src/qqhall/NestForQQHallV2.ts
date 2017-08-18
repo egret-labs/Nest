@@ -49,15 +49,15 @@ module nest.qqhall2 {
     var user_info_callback_type = 208;
     var login_type_callback_type = 209;
 
-    var loginCallback:Function = null;
-    var payCallback:Function = null;
-    var shareCallback:Function = null;
-    var refreshTokenCallback:Function = null;
-    var checkCallback:Function = null;
-    var userInfoCallback:Function = null;
-    var loginTypeCallback:Function = null;
+    var loginCallback: Function = null;
+    var payCallback: Function = null;
+    var shareCallback: Function = null;
+    var refreshTokenCallback: Function = null;
+    var checkCallback: Function = null;
+    var userInfoCallback: Function = null;
+    var loginTypeCallback: Function = null;
 
-    var version:string = "1.0.0";
+    var version: string = "1.0.0";
 
     var appid;
     var appsig;
@@ -94,7 +94,7 @@ module nest.qqhall2 {
     var payInfo;
     var customMeta;
 
-    function setProxy(url:string, postData:Object, method:string, callback:Function):void {
+    function setProxy(url: string, postData: Object, method: string, callback: Function): void {
         var postdata = "";
         for (var key in postData) {
             postdata += key + "=" + encodeURIComponent(postData[key]) + "&";
@@ -108,20 +108,20 @@ module nest.qqhall2 {
             nest.utils.$log(msg.slice(i * 450, (i + 1) * 450));
         }
 
-        var loader:egret.URLLoader = new egret.URLLoader();
+        var loader: egret.URLLoader = new egret.URLLoader();
         loader.addEventListener(egret.Event.COMPLETE, function () {
             nest.utils.$log("[Nest]qq hall2 get data : " + loader.data);
             var jsonObj = JSON.parse(loader.data);
             callback(jsonObj);
         }, this);
-        var request:egret.URLRequest = new egret.URLRequest(url);
+        var request: egret.URLRequest = new egret.URLRequest(url);
         request.method = method;
         request.data = new egret.URLVariables(postdata);
         loader.load(request);
     }
 
-    function payBefore(orderInfo:nest.iap.PayInfo, callback):void {
-        var url:string = nest.utils.$API_DOMAIN + "user/placeOrder";
+    function payBefore(orderInfo: nest.iap.PayInfo, callback): void {
+        var url: string = nest.utils.$API_DOMAIN + "user/placeOrder";
 
         var postdata = {
             "id": userId,
@@ -139,16 +139,16 @@ module nest.qqhall2 {
         });
     }
 
-    function payAfter(payInfo, callback):void {
-        var url:string = nest.utils.$API_DOMAIN + "pay/" + utils.$getSpid() + "/" + utils.$APP_ID;
+    function payAfter(payInfo, callback): void {
+        var url: string = nest.utils.$API_DOMAIN + "pay/" + utils.$getSpid() + "/" + utils.$APP_ID;
 
         setProxy(url, payInfo, egret.URLRequestMethod.GET, function (resultData) {
             callback(resultData);
         });
     }
 
-    function callHall(data:any) {
-        var msg:string = JSON.stringify(data);
+    function callHall(data: any) {
+        var msg: string = JSON.stringify(data);
         nest.utils.$log("call hall : " + msg);
         egret.ExternalInterface.call("HALL_EGRET_MSG_FROM", msg);
     }
@@ -203,14 +203,14 @@ module nest.qqhall2 {
         });
     }
 
-    export function init():void {
-        egret.ExternalInterface.addCallback("HALL_EGRET_MSG_TO", function (data:string) {
+    export function init(): void {
+        egret.ExternalInterface.addCallback("HALL_EGRET_MSG_TO", function (data: string) {
             nest.utils.$log("get hall data : " + data);
             for (var i = 0; i < Math.ceil(data.length / 450); i++) {
                 nest.utils.$log(data.slice(i * 450, (i + 1) * 450));
             }
-            var info:any = JSON.parse(data);
-            var result:number;
+            var info: any = JSON.parse(data);
+            var result: number;
             switch (info.msgType) {
                 case login_callback_type:
                     if (loginCallback) {
@@ -230,7 +230,7 @@ module nest.qqhall2 {
                             var send = function () {
                                 if (loginCallback) {
                                     var api = nest.utils.$API_DOMAIN + "game/" + utils.$getSpid() + "/" + utils.$APP_ID;
-                                    var sendData:any = {};
+                                    var sendData: any = {};
                                     sendData.openId = openId;
                                     sendData.accessToken = accessToken;
                                     sendData.payToken = payToken;
@@ -280,7 +280,7 @@ module nest.qqhall2 {
                         }
                         else {
                             //登录失败
-                            loginCallback.call(null, {result: -2});
+                            loginCallback.call(null, { result: -2 });
                             loginCallback = null;
                         }
                     }
@@ -289,12 +289,12 @@ module nest.qqhall2 {
                     if (payCallback) {
                         if (payType == 0) {
                             //支付取消
-                            if(info.resultCode == 2) {
+                            if (info.resultCode == 2) {
                                 payOrderInfo = null;
-                                payCallback.call(null, {result: -1, status: -1});
+                                payCallback.call(null, { result: -1, status: -1 });
                                 payCallback = null;
                             }
-                            else if(info.resultCode == 0) {
+                            else if (info.resultCode == 0) {
                                 check(function () {
                                     iap.repay();
                                 })
@@ -302,27 +302,27 @@ module nest.qqhall2 {
                             //支付失败
                             else {
                                 payOrderInfo = null;
-                                payCallback.call(null, {result: -2, status: -2});
+                                payCallback.call(null, { result: -2, status: -2 });
                                 payCallback = null;
                             }
                         }
                         else {
                             //后台验证支付
-                            var payAfterData:any = {};
+                            var payAfterData: any = {};
                             payAfterData.realSaveNum = info.realSaveNum;
                             payAfterData.orderno = info.orderno;
                             payAfterData.customMeta = customMeta;
                             payAfter(payAfterData, function (data) {
                                 if (data.code == 0) {
                                     payOrderInfo = null;
-                                    payCallback.call(null, {result: 0, status: 0});
+                                    payCallback.call(null, { result: 0, status: 0 });
                                     payCallback = null;
                                     //刷新下余额
                                     check(null);
                                 }
                                 else {
                                     payOrderInfo = null;
-                                    payCallback.call(null, {result: -2, status: -2});
+                                    payCallback.call(null, { result: -2, status: -2 });
                                     payCallback = null;
                                 }
                             });
@@ -333,7 +333,7 @@ module nest.qqhall2 {
                 case share_callback_type:
                     if (shareCallback) {
                         result = <number>info.errorid;
-                        shareCallback.call(null, {result: result, status: result});
+                        shareCallback.call(null, { result: result, status: result });
                         shareCallback = null;
                     }
                     break;
@@ -392,7 +392,7 @@ module nest.qqhall2 {
     }
 
     export module user {
-        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
+        export function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType) {
             getLoginType(function () {
                 var result = 0;
                 var loginCallbackInfo = {
@@ -408,9 +408,9 @@ module nest.qqhall2 {
             })
         }
 
-        export function checkLogin(loginInfo:nest.user.LoginInfo, callback:Function) {
+        export function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function) {
             //获取appid
-            var url:string = nest.utils.$API_DOMAIN + "app/getSignInfo";
+            var url: string = nest.utils.$API_DOMAIN + "app/getSignInfo";
             var postdata = {
                 "egretChanId": utils.$getSpid(),
                 "appId": utils.$APP_ID
@@ -431,7 +431,7 @@ module nest.qqhall2 {
             });
         }
 
-        export function login(loginInfo:nest.user.LoginInfo, callback:Function) {
+        export function login(loginInfo: nest.user.LoginInfo, callback: Function) {
             loginCallback = callback;
             pf = loginInfo.loginType;
             callHall({
@@ -446,14 +446,14 @@ module nest.qqhall2 {
     }
 
     export module iap {
-        export function pay(orderInfo:nest.iap.PayInfo, callback:Function) {
+        export function pay(orderInfo: nest.iap.PayInfo, callback: Function) {
             if (payOrderInfo) {
                 return;
             }
             payOrderInfo = orderInfo;
             //刷新票据,之后去开平获取金额,之后决定充值还是购买商品
             refreshToken(function () {
-                payBefore(orderInfo, function (data:any) {
+                payBefore(orderInfo, function (data: any) {
                     data = data.data;
                     payValue = data.payValue;
                     payInfo = data.payInfo;
@@ -475,12 +475,12 @@ module nest.qqhall2 {
         /**
          * 大厅充值成功后，再次调用付费接口
          */
-        export function repay():void {
+        export function repay(): void {
             if (payValue > balance) {
                 //充值的钱还是不够
                 if (payCallback) {
                     payOrderInfo = null;
-                    payCallback.call(null, {result: -2, status: -2});
+                    payCallback.call(null, { result: -2, status: -2 });
                     payCallback = null;
                 }
             }
@@ -511,7 +511,7 @@ module nest.qqhall2 {
     }
 
     export module app {
-        export function isSupport(info:Object | appSupportCallbackType, callback?:appSupportCallbackType) {
+        export function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType) {
             var result = 0;
             var loginCallbackInfo = {
                 "status": result,
@@ -523,21 +523,21 @@ module nest.qqhall2 {
             callback.call(null, loginCallbackInfo);
         }
 
-        export function exitGame(appInfo:any, callback:(resultInfo:core.ResultCallbackInfo)=>void) {
+        export function exitGame(appInfo: any, callback: (resultInfo: core.ResultCallbackInfo) => void) {
 
         }
 
-        export function attention(appInfo:any, callback:Function) {
+        export function attention(appInfo: any, callback: Function) {
 
         }
 
-        export function sendToDesktop(appInfo:any, callback:Function) {
+        export function sendToDesktop(appInfo: any, callback: Function) {
 
         }
     }
 
     export module share {
-        export function isSupport(info:Object | shareSupportCallbackType, callback?:shareSupportCallbackType) {
+        export function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType) {
             var result = 0;
             var loginCallbackInfo = {
                 "status": result,
@@ -554,7 +554,7 @@ module nest.qqhall2 {
          * @param callback
          * @callback-param result 0 表示分享成功，-1表示用户取消
          */
-        export function share(shareInfo:nest.share.ShareInfo, callback:Function) {
+        export function share(shareInfo: nest.share.ShareInfo, callback: Function) {
             shareCallback = callback;
             refreshToken(function () {
                 callHall({
@@ -577,7 +577,7 @@ module nest.qqhall2 {
     }
 
     export module social {
-        export function isSupport(info:Object | socialSupportCallbackType, callback?:socialSupportCallbackType) {
+        export function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType) {
             var status = 0;
             var loginCallbackInfo = {
                 "status": status,
@@ -588,12 +588,19 @@ module nest.qqhall2 {
             callback.call(null, loginCallbackInfo);
         }
 
-        export function getFriends(socialInfo, callback:Function) {
+        export function getFriends(socialInfo, callback: Function) {
 
         }
 
-        export function openBBS(socialInfo, callback:Function) {
+        export function openBBS(socialInfo, callback: Function) {
 
+        }
+    }
+
+    export module role {
+        export function isSupport(info: Object, callback: roleSupportCallbackType) {
+            var roleCallbackInfo = { "create": 0, "update": 0, "report": 0 };
+            callback.call(null, roleCallbackInfo);
         }
     }
 }

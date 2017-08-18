@@ -33,12 +33,12 @@
  */
 module nest.runtime {
     export module core {
-        export function callCustomMethod(customInfo:any, callback:Function) {
-            var data = {module: "core", action: "callCustomMethod", param: customInfo};
+        export function callCustomMethod(customInfo: any, callback: Function) {
+            var data = { module: "core", action: "callCustomMethod", param: customInfo };
             callRuntime(data, callback);
         }
 
-        export function addCallback(callback:(callbackInfo:nest.core.CallbackInfo)=>void) {
+        export function addCallback(callback: (callbackInfo: nest.core.CallbackInfo) => void) {
             var tag = "nest_callback";
             egret.ExternalInterface.addCallback(tag, function (data) {
                 var obj = JSON.parse(data);
@@ -48,11 +48,11 @@ module nest.runtime {
     }
 
     export module user {
-        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
-            var data = {module: "user", action: "isSupport", param: info};
+        export function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType) {
+            var data = { module: "user", action: "isSupport", param: info };
             //登出逻辑特殊处理
             //todo 等qq浏览器更新后删除
-            if(nest.utils.$isQQBrowser()) {
+            if (nest.utils.$isQQBrowser()) {
                 var cb = function (data) {
                     data.logout = 1;
                     callback.call(null, data);
@@ -64,95 +64,102 @@ module nest.runtime {
             }
         }
 
-        export function checkLogin(loginInfo:nest.user.LoginInfo, callback:Function) {
-            var data = {module: "user", action: "checkLogin", param: loginInfo};
+        export function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function) {
+            var data = { module: "user", action: "checkLogin", param: loginInfo };
             callRuntime(data, callback);
         }
 
-        export function login(loginInfo:nest.user.LoginInfo, callback:Function) {
-            var data = {module: "user", action: "login", param: loginInfo};
+        export function login(loginInfo: nest.user.LoginInfo, callback: Function) {
+            var data = { module: "user", action: "login", param: loginInfo };
             callRuntime(data, callback, true);
         }
 
-        export function logout(loginInfo:nest.user.LoginInfo, callback:Function) {
-            var nestVersion:any = egret.getOption("egret.runtime.nest");
+        export function logout(loginInfo: nest.user.LoginInfo, callback: Function) {
+            var nestVersion: any = egret.getOption("egret.runtime.nest");
             if (nestVersion >= 4 || nestVersion == "custom") {
-                var data = {module: "user", action: "logout", param: loginInfo};
+                var data = { module: "user", action: "logout", param: loginInfo };
                 callRuntime(data, callback);
             }
             else {
-                callback({"result": 0});
+                callback({ "result": 0 });
             }
         }
 
-        export function getInfo(loginInfo:nest.user.LoginInfo, callback:(resultInfo:Object)=>void) {
-            var data = {module: "user", action: "getInfo", param: loginInfo};
+        export function getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void) {
+            var data = { module: "user", action: "getInfo", param: loginInfo };
             callRuntime(data, callback);
         }
     }
 
     export module iap {
-        export function pay(orderInfo:nest.iap.PayInfo, callback:Function) {
-            var data = {module: "iap", action: "pay", "param": orderInfo};
+        export function pay(orderInfo: nest.iap.PayInfo, callback: Function) {
+            var data = { module: "iap", action: "pay", "param": orderInfo };
             callRuntime(data, callback);
         }
     }
 
     export module share {
-        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
-            var data = {module: "share", action: "isSupport", param: info};
+        export function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType) {
+            var data = { module: "share", action: "isSupport", param: info };
             callRuntime(data, callback);
         }
 
-        export function setDefaultData(shareInfo:nest.share.ShareInfo, callback:Function) {
-            callback.call(null, {"result": -2});
+        export function setDefaultData(shareInfo: nest.share.ShareInfo, callback: Function) {
+            callback.call(null, { "result": -2 });
         }
 
-        export function share(shareInfo:nest.share.ShareInfo, callback:Function) {
-            var data = {module: "share", action: "share", param: shareInfo};
+        export function share(shareInfo: nest.share.ShareInfo, callback: Function) {
+            var data = { module: "share", action: "share", param: shareInfo };
             callRuntime(data, callback, true);
         }
     }
 
     export module social {
-        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
-            var data = {module: "social", action: "isSupport", param: info};
+        export function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType) {
+            var data = { module: "social", action: "isSupport", param: info };
             callRuntime(data, callback);
         }
 
-        export function getFriends(socialInfo, callback:Function) {
-            var data = {module: "social", action: "getFriends", param: socialInfo};
+        export function getFriends(socialInfo, callback: Function) {
+            var data = { module: "social", action: "getFriends", param: socialInfo };
             callRuntime(data, callback);
         }
 
-        export function openBBS(socialInfo, callback:Function) {
-            var data = {module: "social", action: "openBBS", param: socialInfo};
+        export function openBBS(socialInfo, callback: Function) {
+            var data = { module: "social", action: "openBBS", param: socialInfo };
             callRuntime(data, callback);
+        }
+    }
+    
+    export module role {
+        export function isSupport(info: Object, callback: roleSupportCallbackType) {
+            var roleCallbackInfo = { "create": 0, "update": 0, "report": 0 };
+            callback.call(null, roleCallbackInfo);
         }
     }
 
     export module app {
-        export function isSupport(info:Object | userSupportCallbackType, callback?:userSupportCallbackType) {
-            var data = {module: "app", action: "isSupport", param: info};
+        export function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType) {
+            var data = { module: "app", action: "isSupport", param: info };
             callRuntime(data, callback);
         }
 
-        export function attention(appInfo:any, callback:Function) {
-            var data = {module: "app", action: "attention", param: appInfo};
+        export function attention(appInfo: any, callback: Function) {
+            var data = { module: "app", action: "attention", param: appInfo };
             callRuntime(data, callback);
         }
 
-        export function exitGame(appInfo:any, callback:Function) {
-            var data = {module: "app", action: "exitGame", param: appInfo};
+        export function exitGame(appInfo: any, callback: Function) {
+            var data = { module: "app", action: "exitGame", param: appInfo };
             callRuntime(data, callback);
         }
 
-        export function sendToDesktop(appInfo:any, callback:Function) {
-            var data = {module: "app", action: "sendToDesktop", param: appInfo};
+        export function sendToDesktop(appInfo: any, callback: Function) {
+            var data = { module: "app", action: "sendToDesktop", param: appInfo };
             callRuntime(data, callback);
         }
 
-        export function getInfo(appInfo:any, callback:Function) {
+        export function getInfo(appInfo: any, callback: Function) {
             var url = nest.utils.$API_DOMAIN + "user/getCustomInfo";
             var data = {
                 appId: utils.$APP_ID,
@@ -160,33 +167,33 @@ module nest.runtime {
                 egretChanId: utils.$getSpid()
             };
 
-            utils.setProxy(url, data, egret.URLRequestMethod.GET, function(data) {
+            utils.setProxy(url, data, egret.URLRequestMethod.GET, function (data) {
                 var callbackData = data.data;
                 callbackData.result = 0;
-                if(data.code == 0) {
+                if (data.code == 0) {
                     callback.call(null, callbackData);
                 }
                 else {
-                    callback.call(null, {result: -2});
+                    callback.call(null, { result: -2 });
                 }
             }, function () {
-                callback.call(null, {result: -2});
+                callback.call(null, { result: -2 });
             });
         }
     }
 
-    var externalArr:Array<any> = [];
+    var externalArr: Array<any> = [];
 
     export interface NestData {
 
-        module:string;
+        module: string;
 
-        action:string;
+        action: string;
 
-        param?:any;
+        param?: any;
     }
 
-    export function callRuntime(data:NestData, callback, parallel:boolean = false) {
+    export function callRuntime(data: NestData, callback, parallel: boolean = false) {
         var tag = "nest";
         if (parallel) {
             egret.ExternalInterface.addCallback(tag, function (data) {
@@ -196,14 +203,14 @@ module nest.runtime {
             egret.ExternalInterface.call(tag, JSON.stringify(data));
         }
         else {
-            externalArr.push({"data": data, "callback": callback});
+            externalArr.push({ "data": data, "callback": callback });
             _getData();
         }
     }
 
-    var isRunning:boolean = false;
+    var isRunning: boolean = false;
 
-    export function _getData():void {
+    export function _getData(): void {
         if (externalArr.length) {
             if (isRunning) {
                 return;
