@@ -527,7 +527,7 @@ declare module nest {
          * @param callback 回调函数
          * @callback-param result
          */
-        function report(roleInfo: nest.role.RoleInfo, callback: roleCallbackInfo): void;
+        function report(roleInfo: nest.role.RoleInfo, callback: (resultInfo: role.roleCallbackInfo) => void): void;
 
         /**
          * 更新角色信息
@@ -535,7 +535,7 @@ declare module nest {
          * @param callback 回调函数
          * @callback-param result
          */
-        function update(roleInfo: nest.role.RoleInfo, callback: roleCallbackInfo): void;
+        function update(roleInfo: nest.role.RoleInfo, callback: (resultInfo: role.roleCallbackInfo) => void): void;
 
         /**
          * 创建角色
@@ -543,7 +543,7 @@ declare module nest {
          * @param callback 回调函数
          * @callback-param result
          */
-        function create(roleInfo: nest.role.RoleInfo, callback: roleCallbackInfo): void;
+        function create(roleInfo: nest.role.RoleInfo, callback: (resultInfo: role.roleCallbackInfo) => void): void;
     }
 
     module invite {
