@@ -31,7 +31,7 @@ module nest {
     export type userSupportCallbackType = (resultInfo: nest.user.UserSupportCallbackInfo) => void;
     export type shareSupportCallbackType = (resultInfo: nest.share.ShareSupportCallbackInfo) => void;
     export type inviteSupportCallbackType = (resultInfo: nest.invite.InviteSupportCallbackInfo) => void;
-    export type roleSupportCallbackType = (resultInfo: nest.role.CreateRoleSupportCallbackInfo) => void;
+    export type roleSupportCallbackType = (resultInfo: nest.role.roleSupportCallbackInfo) => void;
     export type socialSupportCallbackType = (resultInfo: nest.social.SocialSupportCallbackInfo) => void;
     export type appSupportCallbackType = (resultInfo: nest.app.AppSupportCallbackInfo) => void;
 
@@ -357,13 +357,10 @@ module nest {
             level?: string;
         }
 
-        export interface roleCallbackInfo extends core.ResultCallbackInfo {
+        export interface roleSupportCallbackInfo extends core.ResultCallbackInfo {
             create?: number;
             update?: number;
             report?: number;
-        }
-
-        export interface CreateRoleSupportCallbackInfo extends core.ResultCallbackInfo {
         }
     }
 
@@ -527,7 +524,7 @@ declare module nest {
          * @param callback 回调函数
          * @callback-param result
          */
-        function report(roleInfo: nest.role.RoleInfo, callback: (resultInfo: role.roleCallbackInfo) => void): void;
+        function report(roleInfo: nest.role.RoleInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
 
         /**
          * 更新角色信息
@@ -535,7 +532,7 @@ declare module nest {
          * @param callback 回调函数
          * @callback-param result
          */
-        function update(roleInfo: nest.role.RoleInfo, callback: (resultInfo: role.roleCallbackInfo) => void): void;
+        function update(roleInfo: nest.role.RoleInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
 
         /**
          * 创建角色
@@ -543,7 +540,7 @@ declare module nest {
          * @param callback 回调函数
          * @callback-param result
          */
-        function create(roleInfo: nest.role.RoleInfo, callback: (resultInfo: role.roleCallbackInfo) => void): void;
+        function create(roleInfo: nest.role.RoleInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
     }
 
     module invite {

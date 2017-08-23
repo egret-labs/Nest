@@ -326,7 +326,7 @@ var nest;
          */
         function $changeMethod(version) {
             //console.log("[Nest]use module : " + version);
-            var arr = ["core", "user", "iap", "share", "social", "app", "invite", "createRole", "role"];
+            var arr = ["core", "user", "iap", "share", "social", "app", "invite", "role"];
             for (var i = 0; i < arr.length; i++) {
                 var module = arr[i];
                 if (nest[version] && nest[version][module]) {
@@ -2491,22 +2491,6 @@ var nest;
             }
             invite_2.invite = invite;
         })(invite = h5_2.invite || (h5_2.invite = {}));
-        var createRole;
-        (function (createRole_1) {
-            function isSupport(info, callback) {
-                var supportCreateRoleCallback = function (data) {
-                    var status = data.result;
-                    var createRoleCallbackInfo = { "createRole": status, "msg": data.msg };
-                    callback.call(null, createRoleCallbackInfo);
-                };
-                EgretH5Sdk.isSupportCreateRole({}, supportCreateRoleCallback);
-            }
-            createRole_1.isSupport = isSupport;
-            function createRole(createRoleInfo, callback) {
-                EgretH5Sdk.createRole(createRoleInfo, callback);
-            }
-            createRole_1.createRole = createRole;
-        })(createRole = h5_2.createRole || (h5_2.createRole = {}));
         var role;
         (function (role) {
             function isSupport(info, callback) {

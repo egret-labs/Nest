@@ -290,21 +290,6 @@ module nest.h5_2 {
         }
     }
 
-    export module createRole {
-        export function isSupport(info:Object | roleSupportCallbackType, callback?:roleSupportCallbackType) {
-            var supportCreateRoleCallback = function (data) {
-                var status = data.result;
-                var createRoleCallbackInfo = {"createRole": status, "msg":data.msg};
-                callback.call(null, createRoleCallbackInfo);
-            };
-            EgretH5Sdk.isSupportCreateRole({}, supportCreateRoleCallback);
-        }
-
-        export function createRole(createRoleInfo:nest.role.RoleInfo, callback:Function) {
-            EgretH5Sdk.createRole(createRoleInfo, callback);
-        }
-    }
-
     export module role {
         export function isSupport(info: Object, callback: roleSupportCallbackType) {
             let create;

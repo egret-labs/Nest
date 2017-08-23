@@ -2,7 +2,7 @@ declare module nest {
     type userSupportCallbackType = (resultInfo: nest.user.UserSupportCallbackInfo) => void;
     type shareSupportCallbackType = (resultInfo: nest.share.ShareSupportCallbackInfo) => void;
     type inviteSupportCallbackType = (resultInfo: nest.invite.InviteSupportCallbackInfo) => void;
-    type roleSupportCallbackType = (resultInfo: nest.role.CreateRoleSupportCallbackInfo) => void;
+    type roleSupportCallbackType = (resultInfo: nest.role.roleSupportCallbackInfo) => void;
     type socialSupportCallbackType = (resultInfo: nest.social.SocialSupportCallbackInfo) => void;
     type appSupportCallbackType = (resultInfo: nest.app.AppSupportCallbackInfo) => void;
     module core {
@@ -302,12 +302,10 @@ declare module nest {
              */
             level?: string;
         }
-        interface roleCallbackInfo extends core.ResultCallbackInfo {
+        interface roleSupportCallbackInfo extends core.ResultCallbackInfo {
             create?: number;
             update?: number;
             report?: number;
-        }
-        interface CreateRoleSupportCallbackInfo extends core.ResultCallbackInfo {
         }
     }
     module social {
@@ -455,21 +453,21 @@ declare module nest {
          * @param callback 回调函数
          * @callback-param result
          */
-        function report(roleInfo: nest.role.RoleInfo, callback: (resultInfo: role.roleCallbackInfo) => void): void;
+        function report(roleInfo: nest.role.RoleInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         /**
          * 更新角色信息
          * @param roleInfo 角色升级参数
          * @param callback 回调函数
          * @callback-param result
          */
-        function update(roleInfo: nest.role.RoleInfo, callback: (resultInfo: role.roleCallbackInfo) => void): void;
+        function update(roleInfo: nest.role.RoleInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
         /**
          * 创建角色
          * @param roleInfo 创建角色参数
          * @param callback 回调函数
          * @callback-param result
          */
-        function create(roleInfo: nest.role.RoleInfo, callback: (resultInfo: role.roleCallbackInfo) => void): void;
+        function create(roleInfo: nest.role.RoleInfo, callback: (resultInfo: core.ResultCallbackInfo) => void): void;
     }
     module invite {
         /**
@@ -1049,10 +1047,6 @@ declare module nest.h5_2 {
     module invite {
         function isSupport(info: Object | inviteSupportCallbackType, callback?: inviteSupportCallbackType): void;
         function invite(inviteInfo: nest.invite.InviteInfo, callback: Function): void;
-    }
-    module createRole {
-        function isSupport(info: Object | roleSupportCallbackType, callback?: roleSupportCallbackType): void;
-        function createRole(createRoleInfo: nest.role.RoleInfo, callback: Function): void;
     }
     module role {
         function isSupport(info: Object, callback: roleSupportCallbackType): void;
