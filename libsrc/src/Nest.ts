@@ -558,7 +558,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        function isSupport(info: Object | inviteSupportCallbackType, callback?: inviteSupportCallbackType): void;
+        function isSupport(info: Object, callback?: inviteSupportCallbackType): void;
 
         /**
          * 邀请

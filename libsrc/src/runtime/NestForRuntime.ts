@@ -138,6 +138,13 @@ module nest.runtime {
         }
     }
 
+    export module invite {
+        export function isSupport(info: Object, callback?: inviteSupportCallbackType) {
+            var inviteCallbackInfo = { "invite": 0 };
+            callback.call(null, inviteCallbackInfo);
+        }
+    }
+
     export module app {
         export function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType) {
             var data = { module: "app", action: "isSupport", param: info };

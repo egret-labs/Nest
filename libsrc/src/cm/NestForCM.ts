@@ -493,3 +493,10 @@ module nest.cm.role {
         callback.call(null, roleCallbackInfo);
     }
 }
+
+module nest.cm.invite {
+    export function isSupport(info: Object, callback?: Function) {
+        var inviteCallbackInfo = { "invite": 0 };
+        callback.call(null, inviteCallbackInfo);
+    }
+}

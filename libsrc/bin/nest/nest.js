@@ -681,6 +681,14 @@ var nest;
             }
             role.isSupport = isSupport;
         })(role = runtime.role || (runtime.role = {}));
+        var invite;
+        (function (invite) {
+            function isSupport(info, callback) {
+                var inviteCallbackInfo = { "invite": 0 };
+                callback.call(null, inviteCallbackInfo);
+            }
+            invite.isSupport = isSupport;
+        })(invite = runtime.invite || (runtime.invite = {}));
         var app;
         (function (app) {
             function isSupport(info, callback) {
@@ -1226,6 +1234,19 @@ var nest;
         })(role = cm.role || (cm.role = {}));
     })(cm = nest.cm || (nest.cm = {}));
 })(nest || (nest = {}));
+(function (nest) {
+    var cm;
+    (function (cm) {
+        var invite;
+        (function (invite) {
+            function isSupport(info, callback) {
+                var inviteCallbackInfo = { "invite": 0 };
+                callback.call(null, inviteCallbackInfo);
+            }
+            invite.isSupport = isSupport;
+        })(invite = cm.invite || (cm.invite = {}));
+    })(cm = nest.cm || (nest.cm = {}));
+})(nest || (nest = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-2015, Egret Technology Inc.
@@ -1606,6 +1627,19 @@ var nest;
             }
             role.isSupport = isSupport;
         })(role = qqhall.role || (qqhall.role = {}));
+    })(qqhall = nest.qqhall || (nest.qqhall = {}));
+})(nest || (nest = {}));
+(function (nest) {
+    var qqhall;
+    (function (qqhall) {
+        var invite;
+        (function (invite) {
+            function isSupport(info, callback) {
+                var loginCallbackInfo = { "invite": 0 };
+                callback.call(null, loginCallbackInfo);
+            }
+            invite.isSupport = isSupport;
+        })(invite = qqhall.invite || (qqhall.invite = {}));
     })(qqhall = nest.qqhall || (nest.qqhall = {}));
 })(nest || (nest = {}));
 //////////////////////////////////////////////////////////////////////////////////////
@@ -2187,6 +2221,14 @@ var nest;
             }
             role.isSupport = isSupport;
         })(role = qqhall2.role || (qqhall2.role = {}));
+        var invite;
+        (function (invite) {
+            function isSupport(info, callback) {
+                var inviteCallbackInfo = { "invite": 0 };
+                callback.call(null, inviteCallbackInfo);
+            }
+            invite.isSupport = isSupport;
+        })(invite = qqhall2.invite || (qqhall2.invite = {}));
     })(qqhall2 = nest.qqhall2 || (nest.qqhall2 = {}));
 })(nest || (nest = {}));
 //////////////////////////////////////////////////////////////////////////////////////
@@ -2329,8 +2371,8 @@ var nest;
             function isSupport(info, callback) {
                 var egretH5SdkCallback = function (data) {
                     var status = data.status;
-                    var loginCallbackInfo = { "invite": status };
-                    callback.call(null, loginCallbackInfo);
+                    var inviteCallbackInfo = { "invite": status };
+                    callback.call(null, inviteCallbackInfo);
                 };
                 EgretH5Sdk.isOpenInvite(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
             }
@@ -2344,8 +2386,8 @@ var nest;
                     else if (status == 1) {
                         status = 0;
                     }
-                    var loginCallbackInfo = { "status": status, "result": status };
-                    callback.call(null, loginCallbackInfo);
+                    var inviteCallbackInfo = { "status": status, "result": status };
+                    callback.call(null, inviteCallbackInfo);
                 };
                 EgretH5Sdk.invite(nest.utils.$APP_ID, nest.h5.uid, inviteInfo, egretH5SdkCallback, null);
             }

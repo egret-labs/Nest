@@ -373,3 +373,10 @@ module nest.qqhall.role {
         callback.call(null, roleCallbackInfo);
     }
 }
+
+module nest.qqhall.invite {
+    export function isSupport(info: Object, callback?: Function) {
+        var loginCallbackInfo = { "invite": 0 };
+        callback.call(null, loginCallbackInfo);
+    }
+}

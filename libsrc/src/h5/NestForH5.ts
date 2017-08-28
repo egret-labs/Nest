@@ -131,11 +131,11 @@ module nest.h5 {
     }
 
     export module invite {
-        export function isSupport(info: Object | inviteSupportCallbackType, callback?: inviteSupportCallbackType) {
+        export function isSupport(info: Object, callback?: inviteSupportCallbackType) {
             var egretH5SdkCallback = function (data) {
                 var status = data.status;
-                var loginCallbackInfo = { "invite": status };
-                callback.call(null, loginCallbackInfo);
+                var inviteCallbackInfo = { "invite": status };
+                callback.call(null, inviteCallbackInfo);
             };
             EgretH5Sdk.isOpenInvite(nest.utils.$APP_ID, nest.h5.uid, egretH5SdkCallback, null);
         }
@@ -149,8 +149,8 @@ module nest.h5 {
                 else if (status == 1) {
                     status = 0;
                 }
-                var loginCallbackInfo = { "status": status, "result": status };
-                callback.call(null, loginCallbackInfo);
+                var inviteCallbackInfo = { "status": status, "result": status };
+                callback.call(null, inviteCallbackInfo);
             };
             EgretH5Sdk.invite(nest.utils.$APP_ID, nest.h5.uid, inviteInfo, egretH5SdkCallback, null);
         }

@@ -603,4 +603,11 @@ module nest.qqhall2 {
             callback.call(null, roleCallbackInfo);
         }
     }
+
+    export module invite {
+        export function isSupport(info: Object, callback?: inviteSupportCallbackType) {
+            var inviteCallbackInfo = { "invite": 0 };
+            callback.call(null, inviteCallbackInfo);
+        }
+    }
 }

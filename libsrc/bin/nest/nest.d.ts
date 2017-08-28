@@ -484,7 +484,7 @@ declare module nest {
          *     });
          * </pre>
          */
-        function isSupport(info: Object | inviteSupportCallbackType, callback?: inviteSupportCallbackType): void;
+        function isSupport(info: Object, callback?: inviteSupportCallbackType): void;
         /**
          * 邀请
          * @param inviteInfo 邀请参数
@@ -763,6 +763,9 @@ declare module nest.runtime {
     module role {
         function isSupport(info: Object, callback: roleSupportCallbackType): void;
     }
+    module invite {
+        function isSupport(info: Object, callback?: inviteSupportCallbackType): void;
+    }
     module app {
         function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
         function attention(appInfo: any, callback: Function): void;
@@ -866,6 +869,9 @@ declare module nest.cm.app {
 declare module nest.cm.role {
     function isSupport(info: Object, callback: Function): void;
 }
+declare module nest.cm.invite {
+    function isSupport(info: Object, callback?: Function): void;
+}
 /**
  * @private
  */
@@ -946,6 +952,9 @@ declare module nest.qqhall.social {
 declare module nest.qqhall.role {
     function isSupport(info: Object, callback: Function): void;
 }
+declare module nest.qqhall.invite {
+    function isSupport(info: Object, callback?: Function): void;
+}
 /**
  * @private
  */
@@ -987,6 +996,9 @@ declare module nest.qqhall2 {
     module role {
         function isSupport(info: Object, callback: roleSupportCallbackType): void;
     }
+    module invite {
+        function isSupport(info: Object, callback?: inviteSupportCallbackType): void;
+    }
 }
 /**
  * @private
@@ -1007,7 +1019,7 @@ declare module nest.h5 {
         function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
     }
     module invite {
-        function isSupport(info: Object | inviteSupportCallbackType, callback?: inviteSupportCallbackType): void;
+        function isSupport(info: Object, callback?: inviteSupportCallbackType): void;
         function invite(inviteInfo: nest.invite.InviteInfo, callback: Function): void;
     }
     module role {
