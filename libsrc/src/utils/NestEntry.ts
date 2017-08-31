@@ -101,7 +101,7 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
             nest.utils.$changeMethod("h5_2");
 
             //加载h5sdk
-            var url = sdkDomain + "/misc/scripts/egreth5sdk.js";
+            var url = sdkDomain + "/misc/scripts/egreth5sdk.js?v=" + (Date.now() + Math.random());
             var s = document.createElement('script');
             if (s.hasOwnProperty("async")) {
                 s.async = false;
