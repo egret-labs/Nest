@@ -857,6 +857,7 @@ declare module nest.native {
     }
     function callRuntime(data: NestData, callback: any, parallel?: boolean): void;
     function _getData(): void;
+    function init(params: any, callback: Function): void;
 }
 /**
  * @private

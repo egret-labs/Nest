@@ -185,4 +185,9 @@ module nest.native {
             egret.ExternalInterface.call(tag, JSON.stringify(info["data"]));
         }
     }
+
+    export function init(params:any, callback:Function):void {
+        var data = {module: "core", action: "init", param: params};
+        callRuntime(data, callback);
+    }
 }

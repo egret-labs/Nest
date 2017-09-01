@@ -2272,6 +2272,11 @@ var nest;
             }
         }
         native._getData = _getData;
+        function init(params, callback) {
+            var data = { module: "core", action: "init", param: params };
+            callRuntime(data, callback);
+        }
+        native.init = init;
     })(native = nest.native || (nest.native = {}));
 })(nest || (nest = {}));
 //////////////////////////////////////////////////////////////////////////////////////
@@ -2320,6 +2325,11 @@ nest.core.startup = function (info, callback) {
     if (nest.utils.$getOption("egretnative") == "true") {
         console.log("is egretnative");
         nest.utils.$changeMethod("native");
+        nest.native.init({ appid: nest.utils.$APP_ID, debug: nest.utils.$DEBUG_LOG }, function () {
+            console.log("nest startup");
+            callback({ "result": 0 });
+        });
+        return;
     }
     else if (nest.utils.$isRuntime) {
         //qq渠道换为腾讯云

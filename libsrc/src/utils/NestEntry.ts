@@ -47,6 +47,11 @@ nest.core.startup = function (info:nest.core.StartupInfo, callback:Function) {
     if (nest.utils.$getOption("egretnative") == "true") {
         console.log("is egretnative");
         nest.utils.$changeMethod("native");
+        nest.native.init({appid:nest.utils.$APP_ID, debug: nest.utils.$DEBUG_LOG}, function() {
+            console.log("nest startup");
+            callback({"result": 0});
+        });
+        return;
     }
     // rt1
     else if (nest.utils.$isRuntime) {
