@@ -150,7 +150,7 @@ module nest.native {
     }
 
     export function callRuntime(data:NestData, callback, parallel:boolean = false) {
-        var tag = "nest";
+        var tag = "sdkPlugin";
         if (parallel) {
             egret.ExternalInterface.addCallback(tag, function (data) {
                 var obj = JSON.parse(data);
@@ -174,7 +174,7 @@ module nest.native {
             isRunning = true;
             var info = externalArr.shift();
 
-            var tag = "nest";
+            var tag = "sdkPlugin";
             egret.ExternalInterface.addCallback(tag, function (data) {
                 var obj = JSON.parse(data);
                 info["callback"](obj.data);

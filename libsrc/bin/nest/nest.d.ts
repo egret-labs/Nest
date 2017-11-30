@@ -441,157 +441,6 @@ declare module nest {
         function getInfo(appInfo: any, callback: (resultInfo: app.GetInfoCallbackInfo) => void): void;
     }
 }
-declare module nest.utils {
-    var $API_DOMAIN: string;
-    var $APP_ID: number;
-    var $DEBUG_LOG: boolean;
-    var $EGRET_SUPPORT: boolean;
-    function $changeMethod(version: string): void;
-    var $isRuntime: boolean;
-    var $spid: number;
-    function $getSpid(): number;
-    function $getChannelTag(): string;
-    function $isQQBrowser(): boolean;
-    function $isTargetPlatform(target: number): boolean;
-    function $getOption(key: string): string;
-    function $log(msg: string): void;
-    function setProxy(url: string, postData: Object, method: string, callback: Function, errCallback: Function): void;
-}
-/**
- * @private
- */
-declare module nest.utils.localStorage {
-    function setItem(key: string, value: string): void;
-    function getItem(key: string): string;
-}
-/**
- * @private
- */
-declare module nest.runtime {
-    module core {
-        function callCustomMethod(customInfo: any, callback: Function): void;
-        function addCallback(callback: (callbackInfo: nest.core.CallbackInfo) => void): void;
-    }
-    module user {
-        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
-        function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
-        function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
-        function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
-        function getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void): void;
-    }
-    module iap {
-        function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
-    }
-    module share {
-        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
-        function setDefaultData(shareInfo: nest.share.ShareInfo, callback: Function): void;
-        function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
-    }
-    module social {
-        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
-        function getFriends(socialInfo: any, callback: Function): void;
-        function openBBS(socialInfo: any, callback: Function): void;
-    }
-    module app {
-        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
-        function attention(appInfo: any, callback: Function): void;
-        function exitGame(appInfo: any, callback: Function): void;
-        function sendToDesktop(appInfo: any, callback: Function): void;
-        function getInfo(appInfo: any, callback: Function): void;
-    }
-    interface NestData {
-        module: string;
-        action: string;
-        param?: any;
-    }
-    function callRuntime(data: NestData, callback: any, parallel?: boolean): void;
-    function _getData(): void;
-}
-declare module nest.cm {
-    interface EgretData {
-        egretUserId: string;
-    }
-    interface NestData {
-        module: string;
-        action: string;
-        param?: any;
-        postData?: any;
-    }
-    function callRuntime(data: NestData, callback: any): void;
-    function loginBefore(callback: any): void;
-    function loginAfter(postdata: any, callback: any, isNew: boolean): void;
-    function payBefore(orderInfo: nest.iap.PayInfo, callback: any): void;
-}
-declare module nest.cm.user {
-    var egretInfo: any;
-    function checkLogin(loginInfo: nest.user.LoginInfo, callback: any): void;
-    /**
-     * @private
-     * 调用渠道登录接口
-     * @param loginInfo
-     * @param callback
-     * @callback-param  @see nest.user.LoginCallbackInfo
-     */
-    function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
-    function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
-    function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
-}
-declare module nest.cm.iap {
-    /**
-     * 支付
-     * @param orderInfo
-     * @param callback
-     */
-    function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
-}
-/**
- * @private
- */
-declare module nest.cm.social {
-    function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
-    function getFriends(socialInfo: any, callback: Function): void;
-    function openBBS(socialInfo: any, callback: Function): void;
-}
-declare module nest.cm.share {
-    /**
-     * 是否支持分享
-     * @priavte
-     * @param callback
-     * @callback-param {status:0, share:0}
-     */
-    function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
-}
-declare module nest.cm.app {
-    /**
-     * @private
-     */
-    interface IDesktopInfo {
-        Title: string;
-        DetailUrl: string;
-        PicUrl: string;
-    }
-    /**
-     * @private
-     * 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
-     * @param param
-     */
-    function $initDesktop(param: IDesktopInfo): void;
-    /**
-     * @private
-     * 是否支持特定功能
-     * @param callback
-     * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
-     */
-    function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
-    /**
-     * @private
-     * 发送到桌面
-     * @param appInfo
-     * @param callback
-     * @param callback-param result 0表示添加桌面成功，-1表示添加失败
-     */
-    function sendToDesktop(appInfo: any, callback: Function): void;
-}
 declare module nest {
     module easyuser {
         /**
@@ -713,6 +562,191 @@ declare module nest {
          */
         function getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void): void;
     }
+}
+declare module nest.utils {
+    var $API_DOMAIN: string;
+    var $APP_ID: number;
+    var $DEBUG_LOG: boolean;
+    var $EGRET_SUPPORT: boolean;
+    function $changeMethod(version: string): void;
+    var $isRuntime: boolean;
+    var $spid: number;
+    function $getSpid(): number;
+    function $getChannelTag(): string;
+    function $isQQBrowser(): boolean;
+    function $isTargetPlatform(target: number): boolean;
+    function $getOption(key: string): string;
+    function $log(msg: string): void;
+    function setProxy(url: string, postData: Object, method: string, callback: Function, errCallback: Function): void;
+}
+/**
+ * @private
+ */
+declare module nest.utils.localStorage {
+    function setItem(key: string, value: string): void;
+    function getItem(key: string): string;
+}
+declare module nest.cm {
+    interface EgretData {
+        egretUserId: string;
+    }
+    interface NestData {
+        module: string;
+        action: string;
+        param?: any;
+        postData?: any;
+    }
+    function callRuntime(data: NestData, callback: any): void;
+    function loginBefore(callback: any): void;
+    function loginAfter(postdata: any, callback: any, isNew: boolean): void;
+    function payBefore(orderInfo: nest.iap.PayInfo, callback: any): void;
+}
+declare module nest.cm.user {
+    var egretInfo: any;
+    function checkLogin(loginInfo: nest.user.LoginInfo, callback: any): void;
+    /**
+     * @private
+     * 调用渠道登录接口
+     * @param loginInfo
+     * @param callback
+     * @callback-param  @see nest.user.LoginCallbackInfo
+     */
+    function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+    function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+    function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
+}
+declare module nest.cm.iap {
+    /**
+     * 支付
+     * @param orderInfo
+     * @param callback
+     */
+    function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+}
+/**
+ * @private
+ */
+declare module nest.cm.social {
+    function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+    function getFriends(socialInfo: any, callback: Function): void;
+    function openBBS(socialInfo: any, callback: Function): void;
+}
+declare module nest.cm.share {
+    /**
+     * 是否支持分享
+     * @priavte
+     * @param callback
+     * @callback-param {status:0, share:0}
+     */
+    function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
+}
+declare module nest.cm.app {
+    /**
+     * @private
+     */
+    interface IDesktopInfo {
+        Title: string;
+        DetailUrl: string;
+        PicUrl: string;
+    }
+    /**
+     * @private
+     * 初始化浏览器快捷登陆需要的信息（目前只有猎豹可用，其他为空实现）
+     * @param param
+     */
+    function $initDesktop(param: IDesktopInfo): void;
+    /**
+     * @private
+     * 是否支持特定功能
+     * @param callback
+     * @callback-param  { status:"0" , attention :"1" , sendToDesktop : "1"}
+     */
+    function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
+    /**
+     * @private
+     * 发送到桌面
+     * @param appInfo
+     * @param callback
+     * @param callback-param result 0表示添加桌面成功，-1表示添加失败
+     */
+    function sendToDesktop(appInfo: any, callback: Function): void;
+}
+/**
+ * @private
+ */
+declare module nest.qqhall {
+    var login_call_type: number;
+    var login_back_call_type: number;
+    var pay_call_type: number;
+    var share_call_type: number;
+    var login_callback_type: number;
+    var pay_callback_type: number;
+    var share_callback_type: number;
+    var loginCallback: Function;
+    var payCallback: Function;
+    var shareCallback: Function;
+    var version: string;
+    var loginNum: number;
+    var gameType: any;
+    var gameVersion: any;
+    var OpenId: any;
+    var OpenKey: any;
+    var enterType: any;
+    var enterId: any;
+    var payToken: any;
+    var userId: any;
+    var payOrderInfo: any;
+    function payBefore(orderInfo: nest.iap.PayInfo, callback: any): void;
+    function callHall(data: any): void;
+    function init(): void;
+}
+/**
+ * @private
+ */
+declare module nest.qqhall.user {
+    function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+    function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
+    function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+}
+/**
+ * @private
+ */
+declare module nest.qqhall.iap {
+    function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+    /**
+     * 大厅充值成功后，再次调用付费接口
+     */
+    function repay(): void;
+}
+/**
+ * @private
+ */
+declare module nest.qqhall.app {
+    function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
+    function exitGame(callback: Function): void;
+    function attention(appInfo: any, callback: Function): void;
+    function sendToDesktop(appInfo: any, callback: Function): void;
+}
+/**
+ * @private
+ */
+declare module nest.qqhall.share {
+    function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
+    /**
+     * 分享
+     * @param shareInfo
+     * @param callback
+     * @callback-param result 0 表示分享成功，-1表示用户取消
+     */
+    function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
+}
+/**
+ * @private
+ */
+declare module nest.qqhall.social {
+    function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
+    function getFriends(socialInfo: any, callback: Function): void;
+    function openBBS(socialInfo: any, callback: Function): void;
 }
 /**
  * @private
@@ -862,77 +896,43 @@ declare module nest.native {
 /**
  * @private
  */
-declare module nest.qqhall {
-    var login_call_type: number;
-    var login_back_call_type: number;
-    var pay_call_type: number;
-    var share_call_type: number;
-    var login_callback_type: number;
-    var pay_callback_type: number;
-    var share_callback_type: number;
-    var loginCallback: Function;
-    var payCallback: Function;
-    var shareCallback: Function;
-    var version: string;
-    var loginNum: number;
-    var gameType: any;
-    var gameVersion: any;
-    var OpenId: any;
-    var OpenKey: any;
-    var enterType: any;
-    var enterId: any;
-    var payToken: any;
-    var userId: any;
-    var payOrderInfo: any;
-    function payBefore(orderInfo: nest.iap.PayInfo, callback: any): void;
-    function callHall(data: any): void;
-    function init(): void;
-}
-/**
- * @private
- */
-declare module nest.qqhall.user {
-    function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
-    function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
-    function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
-}
-/**
- * @private
- */
-declare module nest.qqhall.iap {
-    function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
-    /**
-     * 大厅充值成功后，再次调用付费接口
-     */
-    function repay(): void;
-}
-/**
- * @private
- */
-declare module nest.qqhall.app {
-    function isSupport(info: Object | appSupportCallbackType, callback?: appSupportCallbackType): void;
-    function exitGame(callback: Function): void;
-    function attention(appInfo: any, callback: Function): void;
-    function sendToDesktop(appInfo: any, callback: Function): void;
-}
-/**
- * @private
- */
-declare module nest.qqhall.share {
-    function isSupport(info: Object | shareSupportCallbackType, callback?: shareSupportCallbackType): void;
-    /**
-     * 分享
-     * @param shareInfo
-     * @param callback
-     * @callback-param result 0 表示分享成功，-1表示用户取消
-     */
-    function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
-}
-/**
- * @private
- */
-declare module nest.qqhall.social {
-    function isSupport(info: Object | socialSupportCallbackType, callback?: socialSupportCallbackType): void;
-    function getFriends(socialInfo: any, callback: Function): void;
-    function openBBS(socialInfo: any, callback: Function): void;
+declare module nest.runtime {
+    module core {
+        function callCustomMethod(customInfo: any, callback: Function): void;
+        function addCallback(callback: (callbackInfo: nest.core.CallbackInfo) => void): void;
+    }
+    module user {
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+        function checkLogin(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function login(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function logout(loginInfo: nest.user.LoginInfo, callback: Function): void;
+        function getInfo(loginInfo: nest.user.LoginInfo, callback: (resultInfo: Object) => void): void;
+    }
+    module iap {
+        function pay(orderInfo: nest.iap.PayInfo, callback: Function): void;
+    }
+    module share {
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+        function setDefaultData(shareInfo: nest.share.ShareInfo, callback: Function): void;
+        function share(shareInfo: nest.share.ShareInfo, callback: Function): void;
+    }
+    module social {
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+        function getFriends(socialInfo: any, callback: Function): void;
+        function openBBS(socialInfo: any, callback: Function): void;
+    }
+    module app {
+        function isSupport(info: Object | userSupportCallbackType, callback?: userSupportCallbackType): void;
+        function attention(appInfo: any, callback: Function): void;
+        function exitGame(appInfo: any, callback: Function): void;
+        function sendToDesktop(appInfo: any, callback: Function): void;
+        function getInfo(appInfo: any, callback: Function): void;
+    }
+    interface NestData {
+        module: string;
+        action: string;
+        param?: any;
+    }
+    function callRuntime(data: NestData, callback: any, parallel?: boolean): void;
+    function _getData(): void;
 }
